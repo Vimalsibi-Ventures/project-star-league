@@ -31,7 +31,7 @@ export default function Navbar() {
                             LinkedIn
                         </a>
                         <a
-                            href="https://example.com/signup"
+                            href="https://tmoratio.netlify.app/tmforms.html"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-gray-600 hover:text-gray-900"
@@ -39,7 +39,7 @@ export default function Navbar() {
                             Role Signup
                         </a>
                         <a
-                            href="https://example.com/feedback"
+                            href="https://oratiofb.netlify.app/"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-gray-600 hover:text-gray-900"
