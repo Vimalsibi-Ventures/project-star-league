@@ -8,452 +8,225 @@ export default function AdminDashboard() {
     const [members, setMembers] = useState([]);
     const [meetings, setMeetings] = useState([]);
 
-    // Squadron form
     const [newSquadronName, setNewSquadronName] = useState('');
-
-    // Member form
     const [newMemberName, setNewMemberName] = useState('');
     const [newMemberSquadronId, setNewMemberSquadronId] = useState('');
 
-    // Meeting form
     const [meetingDate, setMeetingDate] = useState('');
     const [meetingType, setMeetingType] = useState('offline');
     const [selectedMeetingId, setSelectedMeetingId] = useState('');
-
     const [attendees, setAttendees] = useState([]);
     const [lateMembers, setLateMembers] = useState([]);
 
-    useEffect(() => {
-        fetchData();
-    }, []);
+    useEffect(() => { fetchData(); }, []);
 
     const fetchData = async () => {
         const [squadronsRes, membersRes, meetingsRes] = await Promise.all([
-            fetch('/api/squadrons'),
-            fetch('/api/members'),
-            fetch('/api/meetings')
+            fetch('/api/squadrons'), fetch('/api/members'), fetch('/api/meetings')
         ]);
-
         setSquadrons(await squadronsRes.json());
         setMembers(await membersRes.json());
         setMeetings(await meetingsRes.json());
     };
 
+    // ... (Keep existing handlers: handleCreateSquadron, handleDeleteSquadron, etc.) ...
+    // Note: Re-implementing handlers here for brevity, assume they are the same logic as before.
     const handleCreateSquadron = async (e) => {
         e.preventDefault();
-        await fetch('/api/squadrons', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: newSquadronName })
-        });
-        setNewSquadronName('');
-        fetchData();
+        await fetch('/api/squadrons', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: newSquadronName }) });
+        setNewSquadronName(''); fetchData();
     };
-
     const handleDeleteSquadron = async (id) => {
-        if (confirm('Delete this squadron and all its members?')) {
-            await fetch('/api/squadrons', {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id })
-            });
+        if (confirm('Delete this squadron?')) {
+            await fetch('/api/squadrons', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
             fetchData();
         }
     };
-
     const handleCreateMember = async (e) => {
         e.preventDefault();
-        await fetch('/api/members', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: newMemberName, squadronId: newMemberSquadronId })
-        });
-        setNewMemberName('');
-        setNewMemberSquadronId('');
-        fetchData();
+        await fetch('/api/members', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: newMemberName, squadronId: newMemberSquadronId }) });
+        setNewMemberName(''); setNewMemberSquadronId(''); fetchData();
     };
-
     const handleDeleteMember = async (id) => {
-        if (confirm('Delete this member?')) {
-            await fetch('/api/members', {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id })
-            });
+        if (confirm('Delete member?')) {
+            await fetch('/api/members', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
             fetchData();
         }
     };
-
     const handleCreateMeeting = async (e) => {
         e.preventDefault();
-        await fetch('/api/meetings', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ date: meetingDate, type: meetingType })
-        });
-        setMeetingDate('');
-        fetchData();
+        await fetch('/api/meetings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ date: meetingDate, type: meetingType }) });
+        setMeetingDate(''); fetchData();
     };
-
     const handleScoreMeeting = async () => {
-        if (!selectedMeetingId) {
-            alert('Please select a meeting');
-            return;
-        }
-
-        // Calculate scores based on attendance
+        if (!selectedMeetingId) return alert('Select a meeting');
         const meeting = meetings.find(m => m.id === selectedMeetingId);
         if (!meeting) return;
 
         const starsPerAttendee = meetingType === 'online' ? 5 : 10;
-
-        // Group attendees by squadron
         const squadronAttendees = {};
-        attendees.forEach(memberId => {
-            const member = members.find(m => m.id === memberId);
-            if (member) {
-                if (!squadronAttendees[member.squadronId]) {
-                    squadronAttendees[member.squadronId] = [];
-                }
-                squadronAttendees[member.squadronId].push(memberId);
+
+        // Group attendees
+        attendees.forEach(id => {
+            const m = members.find(mem => mem.id === id);
+            if (m) {
+                if (!squadronAttendees[m.squadronId]) squadronAttendees[m.squadronId] = [];
+                squadronAttendees[m.squadronId].push(id);
             }
         });
 
-        // Create transactions for each squadron
-        for (const [squadronId, memberIds] of Object.entries(squadronAttendees)) {
-            let totalStars = memberIds.length * starsPerAttendee;
+        // Score
+        for (const [sqId, mIds] of Object.entries(squadronAttendees)) {
+            let total = mIds.length * starsPerAttendee;
+            const sqMembers = members.filter(m => m.squadronId === sqId);
+            if (sqMembers.length === 4 && mIds.length === 4) total += 20;
 
-            // Check if all 4 members attended
-            const squadronMembers = members.filter(m => m.squadronId === squadronId);
-            if (squadronMembers.length === 4 && memberIds.length === 4) {
-                totalStars += 20;
-                // Perfect attendance bonus
-            }
-
-            // Create attendance transaction
             await fetch('/api/transactions', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    meetingId: selectedMeetingId,
-                    squadronId,
-                    category: 'Attendance',
-                    starsDelta: totalStars,
-                    description: `${memberIds.length} members attended (${meetingType})`
-                })
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ meetingId: selectedMeetingId, squadronId: sqId, category: 'Attendance', starsDelta: total, description: `${mIds.length} attended` })
             });
         }
 
-        // Deduct stars for lateness
-        for (const memberId of lateMembers) {
-            const member = members.find(m => m.id === memberId);
-            if (member) {
+        // Late
+        for (const mId of lateMembers) {
+            const m = members.find(mem => mem.id === mId);
+            if (m) {
                 await fetch('/api/transactions', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        meetingId: selectedMeetingId,
-                        squadronId: member.squadronId,
-                        memberId: memberId,
-                        category: 'Lateness',
-                        starsDelta: -5,
-                        description: `${member.name} was late`
-                    })
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ meetingId: selectedMeetingId, squadronId: m.squadronId, memberId: mId, category: 'Lateness', starsDelta: -5, description: `${m.name} late` })
                 });
             }
         }
-
-        alert('Meeting scored!');
-        setAttendees([]);
-        setLateMembers([]);
-        fetchData();
+        alert('Scored!'); setAttendees([]); setLateMembers([]); fetchData();
     };
-
     const handleFinalizeMeeting = async (id) => {
-        if (confirm('Finalize this meeting? It will be locked.')) {
-            await fetch('/api/meetings', {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id })
-            });
+        if (confirm('Lock meeting?')) {
+            await fetch('/api/meetings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
             fetchData();
         }
     };
-
     const handleResetSystem = async () => {
-        if (confirm('RESET ENTIRE SYSTEM? This cannot be undone!')) {
-            await fetch('/api/squadrons', {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ resetAll: true })
-            });
+        if (confirm('RESET ALL?')) {
+            await fetch('/api/squadrons', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ resetAll: true }) });
             fetchData();
         }
     };
 
-    const toggleAttendee = (memberId) => {
-        setAttendees(prev =>
-            prev.includes(memberId)
-                ? prev.filter(id => id !== memberId)
-                : [...prev, memberId]
-        );
-    };
+    const toggleAttendee = (id) => setAttendees(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
+    const toggleLateMember = (id) => setLateMembers(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
 
-    const toggleLateMember = (memberId) => {
-        setLateMembers(prev =>
-            prev.includes(memberId)
-                ? prev.filter(id => id !== memberId)
-                : [...prev, memberId]
-        );
-    };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-[#0e1117] via-[#151a23] to-[#0e1117] pt-[72px]">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                <div className="flex justify-between items-center mb-8">
-                    <h1 className="text-3xl font-bold text-[#e6e9f0]">Admin Dashboard</h1>
-                    <Link href="/" className="text-[#4f8cff] hover:text-[#38e8ff] transition-colors">
-                        View Public Site →
+        <div className="min-h-screen pt-[100px] pb-20 px-6">
+            <div className="max-w-7xl mx-auto">
+                <div className="flex justify-between items-center mb-10">
+                    <div>
+                        <h1 className="text-4xl font-black text-white uppercase tracking-tight">Mission Control</h1>
+                        <p className="text-gray-400 text-sm uppercase tracking-widest mt-1">League Administration</p>
+                    </div>
+                    <Link href="/" className="px-6 py-2 bg-[#fbbf24] text-black font-bold uppercase rounded-md shadow-[0_0_15px_rgba(251,191,36,0.4)] hover:scale-105 transition-transform">
+                        View Arena
                     </Link>
                 </div>
 
-                {/* Meetings & Scoring */}
-                <section className="mb-12 bg-[#151a23] border border-[#2a3245] rounded-lg p-6 shadow-lg">
-                    <h2 className="text-2xl font-semibold text-[#e6e9f0] mb-6">Meetings & Scoring</h2>
+                {/* MEETING CONTROLS */}
+                <div className="glass-card rounded-2xl p-8 mb-8 border-l-4 border-l-[#fbbf24]">
+                    <h2 className="text-xl font-bold text-white uppercase tracking-wide mb-6 flex items-center gap-2">
+                        <span className="w-3 h-3 bg-[#fbbf24] rounded-full animate-pulse"></span>
+                        Live Operations
+                    </h2>
 
-                    <form onSubmit={handleCreateMeeting} className="mb-6">
-                        <h3 className="text-lg font-medium text-[#e6e9f0] mb-3">Create New Meeting</h3>
-                        <div className="grid grid-cols-3 gap-4">
-                            <input
-                                type="date"
-                                value={meetingDate}
-                                onChange={(e) => setMeetingDate(e.target.value)}
-                                className="px-3 py-2 bg-[#1c2333] text-[#e6e9f0] border border-[#2a3245] rounded-md focus:outline-none focus:border-[#4f8cff] focus:shadow-[0_0_0_1px_rgba(79,140,255,0.4)]"
-                                required
-                            />
-                            <select
-                                value={meetingType}
-                                onChange={(e) => setMeetingType(e.target.value)}
-                                className="px-3 py-2 bg-[#1c2333] text-[#e6e9f0] border border-[#2a3245] rounded-md focus:outline-none focus:border-[#4f8cff] focus:shadow-[0_0_0_1px_rgba(79,140,255,0.4)]"
-                            >
-                                <option value="offline">Offline</option>
-                                <option value="online">Online</option>
-                            </select>
-                            <button
-                                type="submit"
-                                className="bg-[#4f8cff] text-white px-4 py-2 rounded-md hover:bg-[#3b7ae8] hover:shadow-[0_0_12px_rgba(79,140,255,0.5)] transition-all"
-                            >
-                                Create Meeting
-                            </button>
-                        </div>
-                    </form>
-
-                    <div className="border-t border-[#2a3245] pt-6">
-                        <h3 className="text-lg font-medium text-[#e6e9f0] mb-3">Score Meeting</h3>
-
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium text-[#9aa4bf] mb-2">
-                                Select Meeting
-                            </label>
-                            <select
-                                value={selectedMeetingId}
-                                onChange={(e) => setSelectedMeetingId(e.target.value)}
-                                className="w-full px-3 py-2 bg-[#1c2333] text-[#e6e9f0] border border-[#2a3245] rounded-md focus:outline-none focus:border-[#4f8cff] focus:shadow-[0_0_0_1px_rgba(79,140,255,0.4)]"
-                            >
-                                <option value="">-- Select a meeting --</option>
-                                {meetings.filter(m => !m.finalized).map(meeting => (
-                                    <option key={meeting.id} value={meeting.id}>
-                                        {meeting.date} ({meeting.type})
-                                    </option>
-                                ))}
-                            </select>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        {/* CREATE MEETING */}
+                        <div className="bg-white/5 p-6 rounded-xl border border-white/5">
+                            <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">Initialize Session</h3>
+                            <form onSubmit={handleCreateMeeting} className="flex gap-3">
+                                <input type="date" value={meetingDate} onChange={(e) => setMeetingDate(e.target.value)} className="bg-black/40 border-white/10 rounded px-3 py-2 text-white w-full" required />
+                                <select value={meetingType} onChange={(e) => setMeetingType(e.target.value)} className="bg-black/40 border-white/10 rounded px-3 py-2 text-white w-full">
+                                    <option value="offline">Offline</option>
+                                    <option value="online">Online</option>
+                                </select>
+                                <button type="submit" className="bg-[#fbbf24] text-black font-bold px-4 py-2 rounded uppercase text-sm hover:bg-[#f59e0b]">Create</button>
+                            </form>
                         </div>
 
-                        {selectedMeetingId && (
-                            <>
-                                <div className="mb-4">
-                                    <h4 className="text-sm font-medium text-[#9aa4bf] mb-2">Mark Attendance</h4>
-                                    <div className="grid grid-cols-2 gap-2">
-                                        {members.map(member => {
-                                            const squadron = squadrons.find(s => s.id === member.squadronId);
-                                            return (
-                                                <label key={member.id} className="flex items-center text-[#e6e9f0] hover:text-[#38e8ff] transition-colors cursor-pointer">
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={attendees.includes(member.id)}
-                                                        onChange={() => toggleAttendee(member.id)}
-                                                        className="mr-2 w-4 h-4 text-[#4f8cff] bg-[#1c2333] border-[#2a3245] rounded focus:ring-[#4f8cff]"
-                                                    />
-                                                    <span className="text-sm">
-                                                        {member.name} ({squadron?.name})
-                                                    </span>
-                                                </label>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
+                        {/* SCORECARD */}
+                        <div className="bg-white/5 p-6 rounded-xl border border-white/5">
+                            <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">Scorecard</h3>
+                            <select value={selectedMeetingId} onChange={(e) => setSelectedMeetingId(e.target.value)} className="w-full bg-black/40 border-white/10 rounded px-4 py-3 text-white mb-4">
+                                <option value="">Select Active Session...</option>
+                                {meetings.filter(m => !m.finalized).map(m => <option key={m.id} value={m.id}>{m.date} ({m.type})</option>)}
+                            </select>
 
-                                <div className="mb-4">
-                                    <h4 className="text-sm font-medium text-[#9aa4bf] mb-2">Mark Late Members</h4>
-                                    <div className="grid grid-cols-2 gap-2">
-                                        {attendees.map(memberId => {
-                                            const member = members.find(m => m.id === memberId);
-                                            return (
-                                                <label key={memberId} className="flex items-center text-[#e6e9f0] hover:text-[#38e8ff] transition-colors cursor-pointer">
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={lateMembers.includes(memberId)}
-                                                        onChange={() => toggleLateMember(memberId)}
-                                                        className="mr-2 w-4 h-4 text-[#4f8cff] bg-[#1c2333] border-[#2a3245] rounded focus:ring-[#4f8cff]"
-                                                    />
-                                                    <span className="text-sm">{member?.name}</span>
-                                                </label>
-                                            );
-                                        })}
+                            {selectedMeetingId && (
+                                <div className="space-y-4">
+                                    <div className="p-4 bg-black/40 rounded border border-white/5 max-h-40 overflow-y-auto">
+                                        {members.map(m => (
+                                            <label key={m.id} className="flex items-center gap-3 py-1 hover:bg-white/5 px-2 rounded cursor-pointer">
+                                                <input type="checkbox" checked={attendees.includes(m.id)} onChange={() => toggleAttendee(m.id)} className="accent-[#fbbf24]" />
+                                                <span className="text-sm text-gray-300">{m.name}</span>
+                                            </label>
+                                        ))}
                                     </div>
+                                    <button onClick={handleScoreMeeting} className="w-full bg-white/10 text-[#fbbf24] border border-[#fbbf24]/50 font-bold py-2 rounded uppercase text-sm hover:bg-[#fbbf24] hover:text-black transition-all">
+                                        Submit Scores
+                                    </button>
                                 </div>
-
-                                <button
-                                    onClick={handleScoreMeeting}
-                                    className="bg-[#4f8cff] text-white px-6 py-2 rounded-md hover:bg-[#3b7ae8] hover:shadow-[0_0_12px_rgba(79,140,255,0.5)] transition-all"
-                                >
-                                    Calculate & Save Scores
-                                </button>
-                            </>
-                        )}
+                            )}
+                        </div>
                     </div>
+                </div>
 
-                    <div className="border-t border-[#2a3245] pt-6 mt-6">
-                        <h3 className="text-lg font-medium text-[#e6e9f0] mb-3">Meetings List</h3>
-                        <div className="space-y-0">
-                            {meetings.map(meeting => (
-                                <div key={meeting.id} className="flex justify-between items-center p-3 border-b border-[#2a3245] hover:bg-[#1c2333] hover:shadow-[0_0_8px_rgba(79,140,255,0.2)] transition-all">
-                                    <span className="text-sm text-[#e6e9f0]">
-                                        {meeting.date} - {meeting.type}
-                                        {meeting.finalized && ' (Finalized)'}
-                                    </span>
-                                    {!meeting.finalized && (
-                                        <button
-                                            onClick={() => handleFinalizeMeeting(meeting.id)}
-                                            className="bg-[#4f8cff] text-white px-3 py-1 rounded text-sm hover:bg-[#3b7ae8] hover:shadow-[0_0_8px_rgba(79,140,255,0.4)] transition-all"
-                                        >
-                                            Finalize
-                                        </button>
-                                    )}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    {/* SQUADRONS */}
+                    <div className="glass-card rounded-2xl p-8">
+                        <h2 className="text-lg font-bold text-white uppercase tracking-wide mb-6">Squadrons</h2>
+                        <form onSubmit={handleCreateSquadron} className="flex gap-2 mb-6">
+                            <input type="text" value={newSquadronName} onChange={(e) => setNewSquadronName(e.target.value)} placeholder="New Squadron Name" className="flex-1 bg-black/40 border-white/10 rounded px-4 py-2 text-white" required />
+                            <button type="submit" className="bg-white/10 text-white font-bold px-4 py-2 rounded uppercase text-sm border border-white/20 hover:bg-white/20">Add</button>
+                        </form>
+                        <div className="space-y-2 max-h-60 overflow-y-auto pr-2">
+                            {squadrons.map(s => (
+                                <div key={s.id} className="flex justify-between items-center p-3 bg-white/5 rounded border border-white/5">
+                                    <span className="font-bold text-white">{s.name}</span>
+                                    <button onClick={() => handleDeleteSquadron(s.id)} className="text-red-400 text-[10px] font-bold uppercase hover:text-red-300">Delete</button>
                                 </div>
                             ))}
                         </div>
                     </div>
-                </section>
 
-                {/* Squadrons */}
-                <section className="mb-12 bg-[#151a23] border border-[#2a3245] rounded-lg p-6 shadow-lg">
-                    <h2 className="text-2xl font-semibold text-[#e6e9f0] mb-6">Squadrons</h2>
-
-                    <form onSubmit={handleCreateSquadron} className="mb-6">
-                        <div className="flex gap-4">
-                            <input
-                                type="text"
-                                value={newSquadronName}
-                                onChange={(e) => setNewSquadronName(e.target.value)}
-                                placeholder="Squadron name"
-                                className="flex-1 px-3 py-2 bg-[#1c2333] text-[#e6e9f0] border border-[#2a3245] rounded-md placeholder:text-[#6b7280] focus:outline-none focus:border-[#4f8cff] focus:shadow-[0_0_0_1px_rgba(79,140,255,0.4)]"
-                                required
-                            />
-                            <button
-                                type="submit"
-                                className="bg-[#4f8cff] text-white px-6 py-2 rounded-md hover:bg-[#3b7ae8] hover:shadow-[0_0_12px_rgba(79,140,255,0.5)] transition-all"
-                            >
-                                Create Squadron
-                            </button>
-                        </div>
-                    </form>
-
-                    <div className="space-y-0">
-                        {squadrons.map((squadron, index) => (
-                            <div key={squadron.id} className="flex justify-between items-center p-3 border-b border-[#2a3245] hover:bg-[#1c2333] hover:shadow-[0_0_8px_rgba(79,140,255,0.2)] transition-all">
-                                <span className="font-medium text-[#e6e9f0]">{squadron.name}</span>
-                                <button
-                                    onClick={() => handleDeleteSquadron(squadron.id)}
-                                    className="bg-[#ef4444] text-white px-3 py-1 rounded text-sm hover:bg-[#dc2626] hover:shadow-[0_0_8px_rgba(239,68,68,0.4)] transition-all"
-                                >
-                                    Delete
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                </section>
-
-                {/* Members */}
-                <section className="mb-12 bg-[#151a23] border border-[#2a3245] rounded-lg p-6 shadow-lg">
-                    <h2 className="text-2xl font-semibold text-[#e6e9f0] mb-6">Members</h2>
-
-                    <form onSubmit={handleCreateMember} className="mb-6">
-                        <div className="grid grid-cols-3 gap-4">
-                            <input
-                                type="text"
-                                value={newMemberName}
-                                onChange={(e) => setNewMemberName(e.target.value)}
-                                placeholder="Member name"
-                                className="px-3 py-2 bg-[#1c2333] text-[#e6e9f0] border border-[#2a3245] rounded-md placeholder:text-[#6b7280] focus:outline-none focus:border-[#4f8cff] focus:shadow-[0_0_0_1px_rgba(79,140,255,0.4)]"
-                                required
-                            />
-                            <select
-                                value={newMemberSquadronId}
-                                onChange={(e) => setNewMemberSquadronId(e.target.value)}
-                                className="px-3 py-2 bg-[#1c2333] text-[#e6e9f0] border border-[#2a3245] rounded-md focus:outline-none focus:border-[#4f8cff] focus:shadow-[0_0_0_1px_rgba(79,140,255,0.4)]"
-                                required
-                            >
-                                <option value="">Select squadron</option>
-                                {squadrons.map(squadron => (
-                                    <option key={squadron.id} value={squadron.id}>
-                                        {squadron.name}
-                                    </option>
-                                ))}
+                    {/* MEMBERS */}
+                    <div className="glass-card rounded-2xl p-8">
+                        <h2 className="text-lg font-bold text-white uppercase tracking-wide mb-6">Agents</h2>
+                        <form onSubmit={handleCreateMember} className="flex gap-2 mb-6">
+                            <input type="text" value={newMemberName} onChange={(e) => setNewMemberName(e.target.value)} placeholder="Agent Name" className="flex-1 bg-black/40 border-white/10 rounded px-4 py-2 text-white" required />
+                            <select value={newMemberSquadronId} onChange={(e) => setNewMemberSquadronId(e.target.value)} className="bg-black/40 border-white/10 rounded px-2 py-2 text-white w-32" required>
+                                <option value="">Squadron</option>
+                                {squadrons.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                             </select>
-                            <button
-                                type="submit"
-                                className="bg-[#4f8cff] text-white px-6 py-2 rounded-md hover:bg-[#3b7ae8] hover:shadow-[0_0_12px_rgba(79,140,255,0.5)] transition-all"
-                            >
-                                Add Member
-                            </button>
-                        </div>
-                    </form>
-
-                    <div className="space-y-0">
-                        {members.map((member, index) => {
-                            const squadron = squadrons.find(s => s.id === member.squadronId);
-                            return (
-                                <div key={member.id} className="flex justify-between items-center p-3 border-b border-[#2a3245] hover:bg-[#1c2333] hover:shadow-[0_0_8px_rgba(79,140,255,0.2)] transition-all">
-                                    <span className="text-[#e6e9f0]">
-                                        {member.name} - <span className="text-[#9aa4bf]">{squadron?.name}</span>
-                                    </span>
-                                    <button
-                                        onClick={() => handleDeleteMember(member.id)}
-                                        className="bg-[#ef4444] text-white px-3 py-1 rounded text-sm hover:bg-[#dc2626] hover:shadow-[0_0_8px_rgba(239,68,68,0.4)] transition-all"
-                                    >
-                                        Delete
-                                    </button>
+                            <button type="submit" className="bg-white/10 text-white font-bold px-4 py-2 rounded uppercase text-sm border border-white/20 hover:bg-white/20">Add</button>
+                        </form>
+                        <div className="space-y-2 max-h-60 overflow-y-auto pr-2">
+                            {members.map(m => (
+                                <div key={m.id} className="flex justify-between items-center p-3 bg-white/5 rounded border border-white/5">
+                                    <span className="text-gray-300 text-sm">{m.name}</span>
+                                    <button onClick={() => handleDeleteMember(m.id)} className="text-red-400 text-[10px] font-bold uppercase hover:text-red-300">Remove</button>
                                 </div>
-                            );
-                        })}
+                            ))}
+                        </div>
                     </div>
-                </section>
+                </div>
 
-                {/* System Reset */}
-                <section className="bg-[#151a23] border border-[#2a3245] rounded-lg p-6 shadow-lg">
-                    <h2 className="text-2xl font-semibold text-[#e6e9f0] mb-4">Danger Zone</h2>
-                    <p className="text-[#9aa4bf] mb-4">
-                        This will delete ALL squadrons, members, meetings, and transactions.
-                        This cannot be undone!
-                    </p>
-                    <button
-                        onClick={handleResetSystem}
-                        className="bg-[#ef4444] text-white px-6 py-2 rounded-md hover:bg-[#dc2626] hover:shadow-[0_0_12px_rgba(239,68,68,0.5)] transition-all"
-                    >
-                        Reset Entire System
+                {/* DANGER ZONE */}
+                <div className="border border-red-500/30 bg-red-500/5 rounded-xl p-6 flex justify-between items-center">
+                    <div>
+                        <h3 className="text-red-500 font-bold uppercase tracking-widest text-sm">Nuclear Option</h3>
+                        <p className="text-red-400/60 text-xs mt-1">This action wipes all database records. Irreversible.</p>
+                    </div>
+                    <button onClick={handleResetSystem} className="bg-red-500/10 text-red-500 border border-red-500/50 px-6 py-2 rounded font-bold uppercase text-xs hover:bg-red-500 hover:text-black transition-all">
+                        Reset System
                     </button>
-                </section>
+                </div>
             </div>
         </div>
     );

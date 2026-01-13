@@ -10,25 +10,25 @@ export default function MeetingsPage() {
     );
 
     return (
-        <div className="min-h-screen bg-[#0e1117] pt-[72px]">
+        <div className="min-h-screen bg-[#0d0f14] pt-[72px]">
             <div className="max-w-7xl mx-auto px-8 py-12">
-                <Link href="/" className="text-[#9aa4bf] hover:text-[#4f8cff] mb-6 inline-block transition-colors">
-                    ← Back to Home
+                <Link href="/" className="text-[#b3b8c5] hover:text-[#f5c518] mb-8 inline-block transition-colors font-medium text-sm uppercase tracking-wide">
+                    ← Back to Arena
                 </Link>
 
-                <h1 className="text-3xl font-bold text-[#e6e9f0] mb-8">Meetings</h1>
+                <h1 className="text-4xl font-black text-[#f5f7fa] mb-8 uppercase tracking-wide">Past Sessions</h1>
 
                 {sortedMeetings.length === 0 ? (
-                    <div className="bg-[#151a23] border border-[#2a3245] rounded-lg p-6 text-center text-[#9aa4bf]">
-                        No meetings yet
+                    <div className="bg-[#161a22] border border-[#2a2f3a] rounded-xl p-12 text-center text-[#7a8194]">
+                        No meeting records found
                     </div>
                 ) : (
                     <div className="space-y-6">
                         {sortedMeetings.map(meeting => (
-                            <div key={meeting.id} className="bg-[#151a23] border border-[#2a3245] rounded-lg p-6 hover:shadow-[0_0_12px_rgba(79,140,255,0.15)] transition-all">
+                            <div key={meeting.id} className="bg-[#161a22] border border-[#2a2f3a] rounded-xl p-6 hover:border-[#f5c518]/30 transition-all group">
                                 <div className="flex justify-between items-start mb-4">
                                     <div>
-                                        <h2 className="text-xl font-semibold text-[#e6e9f0]">
+                                        <h2 className="text-2xl font-bold text-[#f5f7fa] group-hover:text-[#f5c518] transition-colors">
                                             {new Date(meeting.date).toLocaleDateString('en-US', {
                                                 weekday: 'long',
                                                 year: 'numeric',
@@ -36,31 +36,31 @@ export default function MeetingsPage() {
                                                 day: 'numeric'
                                             })}
                                         </h2>
-                                        <p className="text-sm text-[#9aa4bf] mt-1">
-                                            Type: {meeting.type} | Status: {meeting.finalized ? 'Finalized' : 'Draft'}
-                                        </p>
+                                        <div className="flex gap-2 mt-2">
+                                            <span className="px-2 py-0.5 rounded bg-[#1f2430] border border-[#2a2f3a] text-xs font-bold uppercase text-[#7a8194]">
+                                                {meeting.type}
+                                            </span>
+                                            <span className={`px-2 py-0.5 rounded border text-xs font-bold uppercase ${meeting.finalized
+                                                    ? 'bg-[#1f2430] border-[#f5c518]/30 text-[#f5c518]'
+                                                    : 'bg-[#1f2430] border-[#2a2f3a] text-[#7a8194]'
+                                                }`}>
+                                                {meeting.finalized ? 'Finalized' : 'Draft'}
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
 
                                 {meeting.roles && (
-                                    <div className="mt-4">
-                                        <h3 className="font-semibold text-[#e6e9f0] mb-2">Role Assignments</h3>
-                                        <div className="grid grid-cols-2 gap-2">
+                                    <div className="mt-6 pt-4 border-t border-[#2a2f3a]">
+                                        <h3 className="text-xs font-bold text-[#7a8194] uppercase tracking-widest mb-3">Roster</h3>
+                                        <div className="grid grid-cols-2 gap-y-2 gap-x-4">
                                             {Object.entries(meeting.roles).map(([role, memberName]) => (
-                                                <div key={role} className="text-sm text-[#9aa4bf]">
-                                                    <span className="font-medium">{role}:</span> {memberName}
+                                                <div key={role} className="flex justify-between text-sm">
+                                                    <span className="text-[#b3b8c5]">{role}:</span>
+                                                    <span className="text-[#f5f7fa] font-medium">{memberName}</span>
                                                 </div>
                                             ))}
                                         </div>
-                                    </div>
-                                )}
-
-                                {meeting.auction && (
-                                    <div className="mt-4">
-                                        <h3 className="font-semibold text-[#e6e9f0] mb-2">Auction Result</h3>
-                                        <p className="text-sm text-[#9aa4bf]">
-                                            Winner: {meeting.auction.winner} | Bid: {meeting.auction.bid}★
-                                        </p>
                                     </div>
                                 )}
                             </div>

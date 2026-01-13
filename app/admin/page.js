@@ -27,50 +27,69 @@ export default function AdminLoginPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0e1117] via-[#151a23] to-[#0e1117] pt-[72px]">
-            <div className="bg-[#1c2333]/90 backdrop-blur-lg border border-[#2a3245] rounded-xl p-8 w-full max-w-md shadow-2xl">
-                <h1 className="text-2xl font-bold text-[#e6e9f0] mb-6 text-center">
-                    Admin Login
-                </h1>
+        <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
+            {/* BACKGROUND IMAGE - Lightened overlay for better visibility */}
+            <div
+                className="absolute inset-0 z-0"
+                style={{
+                    backgroundImage: `
+                        linear-gradient(rgba(10, 12, 16, 0.6), rgba(10, 12, 16, 0.8)),
+                        url('/images/login-bg.jpg')
+                    `,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center'
+                }}
+            />
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <label className="block text-sm font-medium text-[#9aa4bf] mb-2">
-                            Username
-                        </label>
-                        <input
-                            type="text"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            className="w-full px-3 py-2 bg-[#1c2333] text-[#e6e9f0] border border-[#2a3245] rounded-md placeholder:text-[#6b7280] focus:outline-none focus:border-[#4f8cff] focus:shadow-[0_0_0_1px_rgba(79,140,255,0.4)]"
-                            required
-                        />
+            <div className="relative z-10 w-full max-w-md px-6">
+                <div className="glass-card rounded-2xl p-10 border-t border-white/20">
+                    <div className="text-center mb-10">
+                        <div className="w-12 h-12 bg-[#fbbf24] rounded-xl mx-auto flex items-center justify-center mb-4 shadow-[0_0_20px_#fbbf24]">
+                            <span className="text-2xl">🔒</span>
+                        </div>
+                        <h1 className="text-2xl font-black text-white uppercase tracking-wider mb-2">
+                            Command Center
+                        </h1>
+                        <p className="text-gray-400 text-xs uppercase tracking-widest">Authorized Personnel Only</p>
                     </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-[#9aa4bf] mb-2">
-                            Password
-                        </label>
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="w-full px-3 py-2 bg-[#1c2333] text-[#e6e9f0] border border-[#2a3245] rounded-md placeholder:text-[#6b7280] focus:outline-none focus:border-[#4f8cff] focus:shadow-[0_0_0_1px_rgba(79,140,255,0.4)]"
-                            required
-                        />
-                    </div>
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <div>
+                            <input
+                                type="text"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                className="w-full px-4 py-3 bg-black/40 text-white border border-white/10 rounded-lg placeholder:text-gray-600 focus:border-[#fbbf24] focus:shadow-[0_0_15px_rgba(251,191,36,0.2)] transition-all outline-none"
+                                placeholder="USERNAME"
+                                required
+                            />
+                        </div>
 
-                    {error && (
-                        <p className="text-[#ef4444] text-sm">{error}</p>
-                    )}
+                        <div>
+                            <input
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="w-full px-4 py-3 bg-black/40 text-white border border-white/10 rounded-lg placeholder:text-gray-600 focus:border-[#fbbf24] focus:shadow-[0_0_15px_rgba(251,191,36,0.2)] transition-all outline-none"
+                                placeholder="PASSWORD"
+                                required
+                            />
+                        </div>
 
-                    <button
-                        type="submit"
-                        className="w-full bg-[#4f8cff] text-white py-2 rounded-md hover:bg-[#3b7ae8] hover:shadow-[0_0_12px_rgba(79,140,255,0.5)] font-medium transition-all"
-                    >
-                        Login
-                    </button>
-                </form>
+                        {error && (
+                            <div className="p-3 bg-red-500/10 border border-red-500/20 rounded text-red-400 text-xs text-center font-bold uppercase tracking-wide">
+                                {error}
+                            </div>
+                        )}
+
+                        <button
+                            type="submit"
+                            className="w-full bg-[#fbbf24] text-black py-3.5 rounded-lg hover:bg-[#f59e0b] hover:shadow-[0_0_20px_rgba(251,191,36,0.4)] font-bold uppercase tracking-wide transition-all transform active:scale-95"
+                        >
+                            Access Dashboard
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     );
