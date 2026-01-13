@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function AdminDashboard() {
+    const router = useRouter();
     const [squadrons, setSquadrons] = useState([]);
     const [members, setMembers] = useState([]);
     const [meetings, setMeetings] = useState([]);
@@ -140,9 +142,17 @@ export default function AdminDashboard() {
                         <h1 className="text-4xl font-black text-white uppercase tracking-tight">Mission Control</h1>
                         <p className="text-gray-400 text-sm uppercase tracking-widest mt-1">League Administration</p>
                     </div>
-                    <Link href="/" className="px-6 py-2 bg-[#fbbf24] text-black font-bold uppercase rounded-md shadow-[0_0_15px_rgba(251,191,36,0.4)] hover:scale-105 transition-transform">
-                        View Arena
-                    </Link>
+                    <div className="flex gap-4">
+                        <Link href="/admin/auction" className="px-6 py-2 bg-white/10 text-white font-bold uppercase rounded-md hover:bg-white/20 transition-all">
+                            Auction House
+                        </Link>
+                        <Link href="/admin/settings" className="px-6 py-2 bg-white/10 text-white font-bold uppercase rounded-md hover:bg-white/20 transition-all">
+                            Settings
+                        </Link>
+                        <Link href="/" className="px-6 py-2 bg-[#fbbf24] text-black font-bold uppercase rounded-md shadow-[0_0_15px_rgba(251,191,36,0.4)] hover:scale-105 transition-transform">
+                            View Arena
+                        </Link>
+                    </div>
                 </div>
 
                 {/* MEETING CONTROLS */}
@@ -171,7 +181,7 @@ export default function AdminDashboard() {
                             <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">Scorecard</h3>
                             <select value={selectedMeetingId} onChange={(e) => setSelectedMeetingId(e.target.value)} className="w-full bg-black/40 border-white/10 rounded px-4 py-3 text-white mb-4">
                                 <option value="">Select Active Session...</option>
-                                {meetings.filter(m => !m.finalized).map(m => <option key={m.id} value={m.id}>{m.date} ({m.type})</option>)}
+                                {meetings.filter(m => !m.finalized && m.status !== 'closed').map(m => <option key={m.id} value={m.id}>{m.date} ({m.type})</option>)}
                             </select>
 
                             {selectedMeetingId && (
@@ -216,6 +226,36 @@ export default function AdminDashboard() {
                                     </button>
                                 </div>
                             )}
+                        </div>
+                    </div>
+
+                    {/* SESSION LOGS */}
+                    <div className="mt-8 pt-8 border-t border-white/10">
+                        <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4">Session Logs</h3>
+                        <div className="space-y-2">
+                            {meetings.sort((a, b) => new Date(b.date) - new Date(a.date)).map(meeting => (
+                                <div key={meeting.id} className="flex justify-between items-center p-4 bg-white/5 border border-white/5 rounded hover:border-[#fbbf24]/30 transition-colors">
+                                    <span className="text-white font-mono text-sm">
+                                        {meeting.date} <span className="text-gray-500">|</span> <span className="uppercase text-xs font-bold tracking-wider">{meeting.type}</span>
+                                        {meeting.status === 'finalized' && <span className="ml-3 text-[#fbbf24] text-[10px] px-2 py-0.5 bg-[#fbbf24]/10 rounded border border-[#fbbf24]/20">SCORING DONE</span>}
+                                        {meeting.status === 'closed' && <span className="ml-3 text-gray-500 text-[10px] px-2 py-0.5 bg-white/5 rounded border border-white/10">CLOSED</span>}
+                                    </span>
+
+                                    <div className="flex gap-2">
+                                        {meeting.status === 'finalized' && (
+                                            <button
+                                                onClick={() => router.push(`/admin/resolution/${meeting.id}`)}
+                                                className="px-3 py-1 bg-[#fbbf24] text-black text-xs font-bold uppercase rounded hover:bg-[#f59e0b]"
+                                            >
+                                                Resolve Roles →
+                                            </button>
+                                        )}
+                                        {meeting.status === 'draft' && (
+                                            <span className="text-xs text-gray-500 uppercase italic px-2">Draft</span>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>

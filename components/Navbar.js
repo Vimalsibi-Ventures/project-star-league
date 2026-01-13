@@ -27,6 +27,13 @@ export default function Navbar() {
                     </a>
 
                     {/* Operational Links */}
+                    <Link
+                        href="/analytics"
+                        className="text-xs font-bold text-cyan-400 hover:text-cyan-300 uppercase tracking-wider transition-colors"
+                    >
+                        Analytics
+                    </Link>
+
                     <a
                         href="https://tmoratio.netlify.app/tmforms.html"
                         target="_blank"
