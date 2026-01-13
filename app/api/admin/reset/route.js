@@ -1,40 +1,25 @@
 import { NextResponse } from 'next/server';
 import { getDb, saveDb } from '@/lib/db';
-import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(request) {
-    const { type } = await request.json(); // 'soft' or 'hard'
+    const { type } = await request.json();
     const db = getDb();
 
     if (type === 'hard') {
-        saveDb({
-            squadrons: [],
-            members: [],
-            meetings: [],
-            auctions: [],
-            transactions: []
-        });
-        return NextResponse.json({ success: true, message: 'System Wiped' });
+        saveDb({ squadrons: [], members: [], meetings: [], auctions: [], transactions: [] });
+        return NextResponse.json({ success: true });
     }
 
     if (type === 'soft') {
-        // Clear operational data
+        // Clear Schedule & Operations
         db.meetings = [];
-        db.auctions = [];
-        db.transactions = []; // Clear ledger
+        // Note: We keep auctions array but unlink them from deleted meetings naturally
+        // Or we could clear auctions too since they are tied to meetings?
+        // Prompt says "Clears: meetings, meeting role resolutions... attendance". "Preserves: auction history".
+        // To preserve history, we shouldn't delete the auction objects, just breaks the link or keep as archive.
+        // We will keep them.
 
-        // Re-seed Squadrons with 100 stars
-        db.squadrons.forEach(sq => {
-            db.transactions.push({
-                id: uuidv4(),
-                meetingId: 'system-seed-reset',
-                squadronId: sq.id,
-                category: 'seed',
-                description: 'Term Start Seeding',
-                starsDelta: 100,
-                timestamp: new Date().toISOString()
-            });
-        });
+        // Ledger remains untouched as requested.
 
         saveDb(db);
         return NextResponse.json({ success: true, message: 'Term Reset Complete' });

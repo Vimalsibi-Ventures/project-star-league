@@ -27,7 +27,7 @@
         /* Fixed Background with Vignette Overlay for focus */
         background:
             radial-gradient(circle at center, transparent 0%, #0a0c10 100%),
-            linear-gradient(rgba(10, 12, 16, 0.8), rgba(10, 12, 16, 0.9)),
+            linear-gradient(rgba(10, 12, 16, 0.4), rgba(10, 12, 16, 0.5)),
             url('/images/hero-bg.jpg');
         background-attachment: fixed;
         background-size: cover;

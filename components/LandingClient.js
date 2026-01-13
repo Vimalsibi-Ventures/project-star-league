@@ -10,7 +10,7 @@ export default function LandingClient({ leaderboardData, memberData, upcomingMee
 
     return (
         <div className="min-h-screen pt-[80px] pb-20">
-            {/* ... [HERO SECTION REMAINS SAME] ... */}
+            {/* HERO SECTION */}
             <section className="w-full py-20 flex flex-col items-center justify-center text-center relative overflow-hidden">
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#fbbf24] opacity-5 blur-[120px] rounded-full pointer-events-none"></div>
                 <div className="relative z-10 px-6">
@@ -19,7 +19,7 @@ export default function LandingClient({ leaderboardData, memberData, upcomingMee
                         <span className="text-[#fbbf24] font-bold text-xs uppercase tracking-[0.2em]">Season Live</span>
                     </div>
                     <h1 className="text-6xl md:text-8xl font-black text-white mb-6 tracking-tighter uppercase drop-shadow-2xl">
-                        Oratio <span className="text-gradient-gold">Star League</span>
+                        Oratio's <span className="text-gradient-gold">Star League</span>
                     </h1>
                     <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto font-light leading-relaxed">
                         The ultimate competitive arena. Rise through the ranks, claim your stars, and dominate the leaderboard.
@@ -27,7 +27,7 @@ export default function LandingClient({ leaderboardData, memberData, upcomingMee
                 </div>
             </section>
 
-            {/* ... [LEADERBOARD SECTION REMAINS SAME] ... */}
+            {/* LEADERBOARD SECTION */}
             <section className="max-w-6xl mx-auto px-6 mb-24">
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
                     <div>
@@ -53,8 +53,11 @@ export default function LandingClient({ leaderboardData, memberData, upcomingMee
                 <div className="mb-8">
                     <h2 className="text-3xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
                         <span className="w-1.5 h-8 bg-gradient-to-b from-[#facc15] to-[#f59e0b] rounded-full"></span>
-                        Next Encounter
+                        Upcoming Encounter (Auction Results)
                     </h2>
+                    <p className="text-gray-500 text-xs mt-2 max-w-2xl">
+                        Displayed roles represent auctioned squadron rights. Final member assignments will be published by the VPE before the meeting.
+                    </p>
                 </div>
 
                 {upcomingMeeting ? (

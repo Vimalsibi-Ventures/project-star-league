@@ -21,7 +21,6 @@ export default function AdminDashboard() {
     const [selectedMeetingId, setSelectedMeetingId] = useState('');
     const [attendees, setAttendees] = useState([]); // Array of member IDs
     const [lateMembers, setLateMembers] = useState([]); // Array of member IDs
-    // We can add simple counts for Phase-1
     const [manualAdjustments, setManualAdjustments] = useState({}); // { [squadronId]: number }
 
     useEffect(() => { fetchData(); }, []);
@@ -71,7 +70,6 @@ export default function AdminDashboard() {
         if (!selectedMeetingId) return alert('Select a meeting');
 
         // Prepare Scoring Data Structure
-        // Group raw checkbox data into Squadron-based inputs
         const scoringData = {};
 
         squadrons.forEach(sq => {
@@ -82,9 +80,6 @@ export default function AdminDashboard() {
             const sqAttended = attendees.filter(id => sqMemberIds.includes(id));
             const sqLate = lateMembers.filter(id => sqMemberIds.includes(id));
             const manual = manualAdjustments[sq.id] || 0;
-
-            // Simple assumption for Phase-1: We aren't tracking roles/speeches explicitly in UI yet
-            // If you want to add them, you'd add state variables like `rolesCount: { [sqId]: 2 }`
 
             scoringData[sq.id] = {
                 attendedMemberIds: sqAttended,
@@ -107,7 +102,7 @@ export default function AdminDashboard() {
         });
 
         if (res.ok) {
-            alert('Meeting Finalized & Scored!');
+            alert('Attendance Scored! Now finalize roles.');
             setAttendees([]);
             setLateMembers([]);
             setSelectedMeetingId('');
@@ -120,7 +115,7 @@ export default function AdminDashboard() {
 
     const handleResetSystem = async () => {
         if (confirm('RESET ALL? Irreversible!')) {
-            await fetch('/api/squadrons', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ resetAll: true }) });
+            await fetch('/api/admin/reset', { method: 'POST', body: JSON.stringify({ type: 'hard' }) });
             fetchData();
         }
     };
@@ -178,10 +173,11 @@ export default function AdminDashboard() {
 
                         {/* SCORECARD */}
                         <div className="bg-white/5 p-6 rounded-xl border border-white/5">
-                            <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">Scorecard</h3>
+                            <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">Attendance Scorecard</h3>
                             <select value={selectedMeetingId} onChange={(e) => setSelectedMeetingId(e.target.value)} className="w-full bg-black/40 border-white/10 rounded px-4 py-3 text-white mb-4">
-                                <option value="">Select Active Session...</option>
-                                {meetings.filter(m => !m.finalized && m.status !== 'closed').map(m => <option key={m.id} value={m.id}>{m.date} ({m.type})</option>)}
+                                <option value="">Select LIVE Session...</option>
+                                {/* Hardening: Only show MEETING_LIVE sessions for attendance scoring */}
+                                {meetings.filter(m => m.status === 'meeting_live').map(m => <option key={m.id} value={m.id}>{m.date} ({m.type})</option>)}
                             </select>
 
                             {selectedMeetingId && (
@@ -197,8 +193,8 @@ export default function AdminDashboard() {
                                                         <h4 className="text-[#fbbf24] text-xs font-bold uppercase">{sq.name}</h4>
                                                         <input
                                                             type="number"
-                                                            placeholder="Manual Adj (+/-)"
-                                                            className="w-24 bg-black/40 border border-white/10 text-white text-xs px-2 py-1 rounded"
+                                                            placeholder="Adj"
+                                                            className="w-16 bg-black/40 border border-white/10 text-white text-xs px-2 py-1 rounded"
                                                             onChange={(e) => updateManual(sq.id, e.target.value)}
                                                         />
                                                     </div>
@@ -208,11 +204,11 @@ export default function AdminDashboard() {
                                                             <div className="flex gap-2">
                                                                 <label className="flex items-center gap-1 cursor-pointer">
                                                                     <input type="checkbox" checked={attendees.includes(m.id)} onChange={() => toggleAttendee(m.id)} className="accent-[#fbbf24]" />
-                                                                    <span className="text-[10px] uppercase text-gray-500">Present</span>
+                                                                    <span className="text-[10px] uppercase text-gray-500">P</span>
                                                                 </label>
                                                                 <label className="flex items-center gap-1 cursor-pointer">
                                                                     <input type="checkbox" checked={lateMembers.includes(m.id)} onChange={() => toggleLateMember(m.id)} className="accent-red-500" />
-                                                                    <span className="text-[10px] uppercase text-gray-500">Late</span>
+                                                                    <span className="text-[10px] uppercase text-gray-500">L</span>
                                                                 </label>
                                                             </div>
                                                         </div>
@@ -221,8 +217,8 @@ export default function AdminDashboard() {
                                             );
                                         })}
                                     </div>
-                                    <button onClick={handleScoreMeeting} className="w-full bg-white/10 text-[#fbbf24] border border-[#fbbf24]/50 font-bold py-3 rounded uppercase text-sm hover:bg-[#fbbf24] hover:text-black transition-all shadow-lg">
-                                        Finalize & Score Meeting
+                                    <button onClick={handleScoreMeeting} className="w-full bg-[#fbbf24] text-black font-bold py-3 rounded uppercase text-sm shadow-lg hover:bg-[#f59e0b]">
+                                        Score Attendance
                                     </button>
                                 </div>
                             )}
@@ -231,27 +227,41 @@ export default function AdminDashboard() {
 
                     {/* SESSION LOGS */}
                     <div className="mt-8 pt-8 border-t border-white/10">
-                        <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4">Session Logs</h3>
+                        <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4">Session Lifecycle</h3>
                         <div className="space-y-2">
                             {meetings.sort((a, b) => new Date(b.date) - new Date(a.date)).map(meeting => (
                                 <div key={meeting.id} className="flex justify-between items-center p-4 bg-white/5 border border-white/5 rounded hover:border-[#fbbf24]/30 transition-colors">
                                     <span className="text-white font-mono text-sm">
-                                        {meeting.date} <span className="text-gray-500">|</span> <span className="uppercase text-xs font-bold tracking-wider">{meeting.type}</span>
-                                        {meeting.status === 'finalized' && <span className="ml-3 text-[#fbbf24] text-[10px] px-2 py-0.5 bg-[#fbbf24]/10 rounded border border-[#fbbf24]/20">SCORING DONE</span>}
-                                        {meeting.status === 'closed' && <span className="ml-3 text-gray-500 text-[10px] px-2 py-0.5 bg-white/5 rounded border border-white/10">CLOSED</span>}
+                                        {meeting.date} <span className="text-gray-500">|</span>
+                                        <span className="uppercase text-xs font-bold tracking-wider ml-2">{meeting.status}</span>
                                     </span>
 
                                     <div className="flex gap-2">
-                                        {meeting.status === 'finalized' && (
+                                        {/* Pre-Meeting: Assign Roles */}
+                                        {['auction_finalized', 'role_resolution'].includes(meeting.status) && (
+                                            <button
+                                                onClick={() => router.push(`/admin/resolution/${meeting.id}`)}
+                                                className="px-3 py-1 bg-white/10 text-white text-xs font-bold uppercase rounded hover:bg-white/20"
+                                            >
+                                                Assign Roles (Pre) →
+                                            </button>
+                                        )}
+                                        {/* Post-Meeting: Resolve & Close */}
+                                        {meeting.status === 'attendance_finalized' && (
                                             <button
                                                 onClick={() => router.push(`/admin/resolution/${meeting.id}`)}
                                                 className="px-3 py-1 bg-[#fbbf24] text-black text-xs font-bold uppercase rounded hover:bg-[#f59e0b]"
                                             >
-                                                Resolve Roles →
+                                                Resolve & Close →
                                             </button>
                                         )}
+                                        {/* Closed */}
+                                        {meeting.status === 'closed' && (
+                                            <span className="text-xs text-gray-500 px-2 py-1">LOCKED</span>
+                                        )}
+                                        {/* Draft */}
                                         {meeting.status === 'draft' && (
-                                            <span className="text-xs text-gray-500 uppercase italic px-2">Draft</span>
+                                            <span className="text-xs text-gray-500 px-2 py-1 italic">DRAFT</span>
                                         )}
                                     </div>
                                 </div>

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getDb, saveDb } from '@/lib/db';
 import { computeMeetingTransactions } from '@/lib/scoringEngine';
+import { MEETING_STATUS } from '@/lib/constants';
 
 export async function POST(request) {
     const { meetingId, scoringData } = await request.json();
@@ -8,30 +9,27 @@ export async function POST(request) {
 
     const meeting = db.meetings.find(m => m.id === meetingId);
 
-    if (!meeting) {
-        return NextResponse.json({ error: 'Meeting not found' }, { status: 404 });
+    if (!meeting) return NextResponse.json({ error: 'Meeting not found' }, { status: 404 });
+
+    // Strict State Check
+    if (meeting.status !== MEETING_STATUS.MEETING_LIVE) {
+        // Allow if coming from ROLE_RESOLUTION for legacy/flexibility, but prefer LIVE
+        if (meeting.status !== MEETING_STATUS.ROLE_RESOLUTION && meeting.status !== MEETING_STATUS.AUCTION_FINALIZED) {
+            return NextResponse.json({ error: 'Meeting must be LIVE to score attendance' }, { status: 400 });
+        }
     }
 
-    if (meeting.status === 'finalized') {
-        return NextResponse.json({ error: 'Meeting already finalized' }, { status: 400 });
-    }
-
-    // Generate Transactions for each Squadron
     let newTransactions = [];
-
-    // scoringData is an object: { [squadronId]: { attendedMemberIds: [], ... } }
     Object.keys(scoringData).forEach(squadronId => {
         const inputs = scoringData[squadronId];
         const txs = computeMeetingTransactions(meeting, squadronId, inputs);
         newTransactions = [...newTransactions, ...txs];
     });
 
-    // Commit to DB
     db.transactions.push(...newTransactions);
 
-    // Update Meeting Status
-    meeting.status = 'finalized';
-    meeting.scoringData = scoringData; // Archive the inputs
+    meeting.status = MEETING_STATUS.ATTENDANCE_FINALIZED;
+    meeting.scoringData = scoringData;
 
     saveDb(db);
 

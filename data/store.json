@@ -108,50 +108,7 @@
       "joinedAt": "2026-01-13T17:26:30.095Z"
     }
   ],
-  "meetings": [
-    {
-      "id": "4f7742ab-e644-46f2-93d9-7dad30045b72",
-      "date": "2026-01-17",
-      "type": "online",
-      "status": "finalized",
-      "createdAt": "2026-01-13T17:26:36.271Z",
-      "scoringData": {
-        "c8355df5-9ebc-4121-a602-6c75ffe19873": {
-          "attendedMemberIds": [
-            "f73466fe-0a67-4b63-bd7c-c6b1b01773b1",
-            "6c20ba70-5612-44cb-9042-3bd213a303be",
-            "d5d9d88d-44ef-447b-818b-1cc44b4067f4"
-          ],
-          "lateMemberIds": [],
-          "rolesCount": 0,
-          "speechesCount": 0,
-          "awardsCount": 0,
-          "manualAdjustment": 0
-        },
-        "e43cf522-5047-4dc9-93f0-b59180c26632": {
-          "attendedMemberIds": [
-            "69a53272-130b-488c-811d-436d4cf25805",
-            "998e1ec6-e2a8-405e-8797-34571ba4ceb9"
-          ],
-          "lateMemberIds": [],
-          "rolesCount": 0,
-          "speechesCount": 0,
-          "awardsCount": 0,
-          "manualAdjustment": 0
-        },
-        "38e54c14-03df-4f07-b225-675ac7feb4dd": {
-          "attendedMemberIds": [
-            "16b83ce7-45e7-41b5-921b-c3b369e4422b"
-          ],
-          "lateMemberIds": [],
-          "rolesCount": 0,
-          "speechesCount": 0,
-          "awardsCount": 0,
-          "manualAdjustment": 0
-        }
-      }
-    }
-  ],
+  "meetings": [],
   "transactions": [
     {
       "id": "287ceb1c-e9bf-497e-ab68-32f72c737742",

@@ -1,11 +1,10 @@
 import { NextResponse } from 'next/server';
 import { getDb, saveDb } from '@/lib/db';
 import { v4 as uuidv4 } from 'uuid';
+import { MEETING_STATUS } from '@/lib/constants';
 
-// NEW: Add this GET handler so the frontend can fetch the auctions
 export async function GET() {
     const db = getDb();
-    // Return empty array if auctions doesn't exist yet
     return NextResponse.json(db.auctions || []);
 }
 
@@ -13,10 +12,13 @@ export async function POST(request) {
     const { meetingId, items } = await request.json();
     const db = getDb();
 
-    // Ensure auctions array exists
     if (!db.auctions) db.auctions = [];
 
-    let auction = db.auctions.find(a => a.meetingId === meetingId);
+    // Allow nullable meetingId for future binding, but if provided, validate
+    let auction = null;
+    if (meetingId) {
+        auction = db.auctions.find(a => a.meetingId === meetingId);
+    }
 
     if (auction && auction.status === 'finalized') {
         return NextResponse.json({ error: 'Auction already finalized' }, { status: 400 });
@@ -25,7 +27,7 @@ export async function POST(request) {
     if (!auction) {
         auction = {
             id: uuidv4(),
-            meetingId,
+            meetingId: meetingId || null, // Support unlinked auctions
             status: 'draft',
             createdAt: new Date().toISOString(),
             items: []
@@ -33,13 +35,21 @@ export async function POST(request) {
         db.auctions.push(auction);
     }
 
-    // Update items in draft
+    // Update items
     auction.items = items.map(item => ({
         id: item.id || uuidv4(),
         title: item.title,
         winningSquadronId: item.winningSquadronId || '',
         starsSpent: parseInt(item.starsSpent) || 0
     }));
+
+    // Update Meeting Status if linked
+    if (meetingId) {
+        const meeting = db.meetings.find(m => m.id === meetingId);
+        if (meeting && meeting.status === MEETING_STATUS.DRAFT) {
+            meeting.status = MEETING_STATUS.AUCTION_CONFIGURED;
+        }
+    }
 
     saveDb(db);
     return NextResponse.json({ success: true, auction });

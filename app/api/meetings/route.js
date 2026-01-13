@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getDb, saveDb } from '@/lib/db';
 import { v4 as uuidv4 } from 'uuid';
+import { MEETING_STATUS } from '@/lib/constants';
 
 export async function GET() {
     const db = getDb();
@@ -15,7 +16,8 @@ export async function POST(request) {
         id: uuidv4(),
         date,
         type,
-        status: 'draft',
+        status: MEETING_STATUS.DRAFT, // Enforce initial state
+        roleAssignments: [], // Initialize empty
         createdAt: new Date().toISOString()
     };
 
