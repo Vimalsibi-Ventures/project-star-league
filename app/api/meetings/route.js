@@ -1,18 +1,25 @@
 import { NextResponse } from 'next/server';
-import { getMeetings, createMeeting, finalizeMeeting } from '@/lib/data';
+import { getDb, saveDb } from '@/lib/db';
+import { v4 as uuidv4 } from 'uuid';
 
 export async function GET() {
-    return NextResponse.json(getMeetings());
+    const db = getDb();
+    return NextResponse.json(db.meetings);
 }
 
 export async function POST(request) {
-    const data = await request.json();
-    const meeting = createMeeting(data);
-    return NextResponse.json(meeting);
-}
+    const { date, type } = await request.json();
+    const db = getDb();
 
-export async function PUT(request) {
-    const { id } = await request.json();
-    finalizeMeeting(id);
-    return NextResponse.json({ success: true });
+    const newMeeting = {
+        id: uuidv4(),
+        date,
+        type,
+        status: 'draft',
+        createdAt: new Date().toISOString()
+    };
+
+    db.meetings.push(newMeeting);
+    saveDb(db);
+    return NextResponse.json(newMeeting);
 }

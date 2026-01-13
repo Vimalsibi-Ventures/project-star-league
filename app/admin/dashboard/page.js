@@ -14,9 +14,13 @@ export default function AdminDashboard() {
 
     const [meetingDate, setMeetingDate] = useState('');
     const [meetingType, setMeetingType] = useState('offline');
+
+    // SCORING STATE
     const [selectedMeetingId, setSelectedMeetingId] = useState('');
-    const [attendees, setAttendees] = useState([]);
-    const [lateMembers, setLateMembers] = useState([]);
+    const [attendees, setAttendees] = useState([]); // Array of member IDs
+    const [lateMembers, setLateMembers] = useState([]); // Array of member IDs
+    // We can add simple counts for Phase-1
+    const [manualAdjustments, setManualAdjustments] = useState({}); // { [squadronId]: number }
 
     useEffect(() => { fetchData(); }, []);
 
@@ -29,84 +33,91 @@ export default function AdminDashboard() {
         setMeetings(await meetingsRes.json());
     };
 
-    // ... (Keep existing handlers: handleCreateSquadron, handleDeleteSquadron, etc.) ...
-    // Note: Re-implementing handlers here for brevity, assume they are the same logic as before.
     const handleCreateSquadron = async (e) => {
         e.preventDefault();
         await fetch('/api/squadrons', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: newSquadronName }) });
         setNewSquadronName(''); fetchData();
     };
+
     const handleDeleteSquadron = async (id) => {
         if (confirm('Delete this squadron?')) {
             await fetch('/api/squadrons', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
             fetchData();
         }
     };
+
     const handleCreateMember = async (e) => {
         e.preventDefault();
         await fetch('/api/members', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: newMemberName, squadronId: newMemberSquadronId }) });
         setNewMemberName(''); setNewMemberSquadronId(''); fetchData();
     };
+
     const handleDeleteMember = async (id) => {
         if (confirm('Delete member?')) {
             await fetch('/api/members', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
             fetchData();
         }
     };
+
     const handleCreateMeeting = async (e) => {
         e.preventDefault();
         await fetch('/api/meetings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ date: meetingDate, type: meetingType }) });
         setMeetingDate(''); fetchData();
     };
+
     const handleScoreMeeting = async () => {
         if (!selectedMeetingId) return alert('Select a meeting');
-        const meeting = meetings.find(m => m.id === selectedMeetingId);
-        if (!meeting) return;
 
-        const starsPerAttendee = meetingType === 'online' ? 5 : 10;
-        const squadronAttendees = {};
+        // Prepare Scoring Data Structure
+        // Group raw checkbox data into Squadron-based inputs
+        const scoringData = {};
 
-        // Group attendees
-        attendees.forEach(id => {
-            const m = members.find(mem => mem.id === id);
-            if (m) {
-                if (!squadronAttendees[m.squadronId]) squadronAttendees[m.squadronId] = [];
-                squadronAttendees[m.squadronId].push(id);
-            }
+        squadrons.forEach(sq => {
+            const sqMembers = members.filter(m => m.squadronId === sq.id);
+            const sqMemberIds = sqMembers.map(m => m.id);
+
+            // Filter attendees/lates specific to this squadron
+            const sqAttended = attendees.filter(id => sqMemberIds.includes(id));
+            const sqLate = lateMembers.filter(id => sqMemberIds.includes(id));
+            const manual = manualAdjustments[sq.id] || 0;
+
+            // Simple assumption for Phase-1: We aren't tracking roles/speeches explicitly in UI yet
+            // If you want to add them, you'd add state variables like `rolesCount: { [sqId]: 2 }`
+
+            scoringData[sq.id] = {
+                attendedMemberIds: sqAttended,
+                lateMemberIds: sqLate,
+                rolesCount: 0,   // Placeholder for Phase 2
+                speechesCount: 0, // Placeholder for Phase 2
+                awardsCount: 0,   // Placeholder for Phase 2
+                manualAdjustment: parseInt(manual)
+            };
         });
 
-        // Score
-        for (const [sqId, mIds] of Object.entries(squadronAttendees)) {
-            let total = mIds.length * starsPerAttendee;
-            const sqMembers = members.filter(m => m.squadronId === sqId);
-            if (sqMembers.length === 4 && mIds.length === 4) total += 20;
+        // Send to Finalize API
+        const res = await fetch('/api/meetings/finalize', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                meetingId: selectedMeetingId,
+                scoringData
+            })
+        });
 
-            await fetch('/api/transactions', {
-                method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ meetingId: selectedMeetingId, squadronId: sqId, category: 'Attendance', starsDelta: total, description: `${mIds.length} attended` })
-            });
-        }
-
-        // Late
-        for (const mId of lateMembers) {
-            const m = members.find(mem => mem.id === mId);
-            if (m) {
-                await fetch('/api/transactions', {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ meetingId: selectedMeetingId, squadronId: m.squadronId, memberId: mId, category: 'Lateness', starsDelta: -5, description: `${m.name} late` })
-                });
-            }
-        }
-        alert('Scored!'); setAttendees([]); setLateMembers([]); fetchData();
-    };
-    const handleFinalizeMeeting = async (id) => {
-        if (confirm('Lock meeting?')) {
-            await fetch('/api/meetings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
+        if (res.ok) {
+            alert('Meeting Finalized & Scored!');
+            setAttendees([]);
+            setLateMembers([]);
+            setSelectedMeetingId('');
             fetchData();
+        } else {
+            const err = await res.json();
+            alert('Error: ' + err.error);
         }
     };
+
     const handleResetSystem = async () => {
-        if (confirm('RESET ALL?')) {
+        if (confirm('RESET ALL? Irreversible!')) {
             await fetch('/api/squadrons', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ resetAll: true }) });
             fetchData();
         }
@@ -114,6 +125,11 @@ export default function AdminDashboard() {
 
     const toggleAttendee = (id) => setAttendees(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
     const toggleLateMember = (id) => setLateMembers(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
+
+    // UI HELPER: Update manual adjustment for a squadron
+    const updateManual = (sqId, val) => {
+        setManualAdjustments(prev => ({ ...prev, [sqId]: val }));
+    };
 
 
     return (
@@ -159,17 +175,44 @@ export default function AdminDashboard() {
                             </select>
 
                             {selectedMeetingId && (
-                                <div className="space-y-4">
-                                    <div className="p-4 bg-black/40 rounded border border-white/5 max-h-40 overflow-y-auto">
-                                        {members.map(m => (
-                                            <label key={m.id} className="flex items-center gap-3 py-1 hover:bg-white/5 px-2 rounded cursor-pointer">
-                                                <input type="checkbox" checked={attendees.includes(m.id)} onChange={() => toggleAttendee(m.id)} className="accent-[#fbbf24]" />
-                                                <span className="text-sm text-gray-300">{m.name}</span>
-                                            </label>
-                                        ))}
+                                <div className="space-y-6">
+                                    <div className="max-h-60 overflow-y-auto pr-2 space-y-4">
+                                        {squadrons.map(sq => {
+                                            const sqMembers = members.filter(m => m.squadronId === sq.id);
+                                            if (sqMembers.length === 0) return null;
+
+                                            return (
+                                                <div key={sq.id} className="p-3 bg-black/20 rounded border border-white/5">
+                                                    <div className="flex justify-between items-center mb-2">
+                                                        <h4 className="text-[#fbbf24] text-xs font-bold uppercase">{sq.name}</h4>
+                                                        <input
+                                                            type="number"
+                                                            placeholder="Manual Adj (+/-)"
+                                                            className="w-24 bg-black/40 border border-white/10 text-white text-xs px-2 py-1 rounded"
+                                                            onChange={(e) => updateManual(sq.id, e.target.value)}
+                                                        />
+                                                    </div>
+                                                    {sqMembers.map(m => (
+                                                        <div key={m.id} className="flex justify-between items-center py-1">
+                                                            <span className="text-sm text-gray-300">{m.name}</span>
+                                                            <div className="flex gap-2">
+                                                                <label className="flex items-center gap-1 cursor-pointer">
+                                                                    <input type="checkbox" checked={attendees.includes(m.id)} onChange={() => toggleAttendee(m.id)} className="accent-[#fbbf24]" />
+                                                                    <span className="text-[10px] uppercase text-gray-500">Present</span>
+                                                                </label>
+                                                                <label className="flex items-center gap-1 cursor-pointer">
+                                                                    <input type="checkbox" checked={lateMembers.includes(m.id)} onChange={() => toggleLateMember(m.id)} className="accent-red-500" />
+                                                                    <span className="text-[10px] uppercase text-gray-500">Late</span>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            );
+                                        })}
                                     </div>
-                                    <button onClick={handleScoreMeeting} className="w-full bg-white/10 text-[#fbbf24] border border-[#fbbf24]/50 font-bold py-2 rounded uppercase text-sm hover:bg-[#fbbf24] hover:text-black transition-all">
-                                        Submit Scores
+                                    <button onClick={handleScoreMeeting} className="w-full bg-white/10 text-[#fbbf24] border border-[#fbbf24]/50 font-bold py-3 rounded uppercase text-sm hover:bg-[#fbbf24] hover:text-black transition-all shadow-lg">
+                                        Finalize & Score Meeting
                                     </button>
                                 </div>
                             )}

@@ -1,0 +1,16 @@
+{
+  "squadrons": [],
+  "members": [],
+  "meetings": [],
+  "transactions": [
+    {
+      "id": "ed824249-fd3b-436c-8916-823fe69d5cb0",
+      "meetingId": "system-seed",
+      "squadronId": "cfcefaaf-e465-45f1-8640-ae1b28e45a61",
+      "category": "seed",
+      "description": "Initial Squadron Funding",
+      "starsDelta": 100,
+      "timestamp": "2026-01-13T17:05:55.651Z"
+    }
+  ]
+}
