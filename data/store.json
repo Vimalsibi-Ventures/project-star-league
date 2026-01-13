@@ -1,16 +1,245 @@
 {
-  "squadrons": [],
-  "members": [],
-  "meetings": [],
+  "squadrons": [
+    {
+      "id": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+      "name": "Alpha",
+      "memberIds": [
+        "f73466fe-0a67-4b63-bd7c-c6b1b01773b1",
+        "6c20ba70-5612-44cb-9042-3bd213a303be",
+        "d5d9d88d-44ef-447b-818b-1cc44b4067f4",
+        "8f125611-6e65-418f-a0b3-001dda887e41"
+      ],
+      "createdAt": "2026-01-13T17:25:25.537Z"
+    },
+    {
+      "id": "e43cf522-5047-4dc9-93f0-b59180c26632",
+      "name": "Beta",
+      "memberIds": [
+        "69a53272-130b-488c-811d-436d4cf25805",
+        "bfe602dc-5592-4dca-bb98-fa08ee713487",
+        "998e1ec6-e2a8-405e-8797-34571ba4ceb9",
+        "ff1e72cb-4d50-44f1-bce5-4be91a0d932c"
+      ],
+      "createdAt": "2026-01-13T17:25:29.500Z"
+    },
+    {
+      "id": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+      "name": "Gamma",
+      "memberIds": [
+        "16b83ce7-45e7-41b5-921b-c3b369e4422b",
+        "e2c1b428-578e-4a3a-8faa-372c8adb6535",
+        "22b28603-c3d8-40a4-9532-315f45b732a3",
+        "e664a70e-9f00-4cc0-82be-86cf4de97ec7"
+      ],
+      "createdAt": "2026-01-13T17:25:33.199Z"
+    }
+  ],
+  "members": [
+    {
+      "id": "f73466fe-0a67-4b63-bd7c-c6b1b01773b1",
+      "name": "A",
+      "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+      "joinedAt": "2026-01-13T17:25:42.028Z"
+    },
+    {
+      "id": "6c20ba70-5612-44cb-9042-3bd213a303be",
+      "name": "B",
+      "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+      "joinedAt": "2026-01-13T17:25:45.695Z"
+    },
+    {
+      "id": "d5d9d88d-44ef-447b-818b-1cc44b4067f4",
+      "name": "C",
+      "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+      "joinedAt": "2026-01-13T17:25:48.977Z"
+    },
+    {
+      "id": "8f125611-6e65-418f-a0b3-001dda887e41",
+      "name": "D",
+      "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+      "joinedAt": "2026-01-13T17:25:52.378Z"
+    },
+    {
+      "id": "69a53272-130b-488c-811d-436d4cf25805",
+      "name": "E",
+      "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
+      "joinedAt": "2026-01-13T17:25:58.009Z"
+    },
+    {
+      "id": "bfe602dc-5592-4dca-bb98-fa08ee713487",
+      "name": "F",
+      "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
+      "joinedAt": "2026-01-13T17:26:01.896Z"
+    },
+    {
+      "id": "998e1ec6-e2a8-405e-8797-34571ba4ceb9",
+      "name": "G",
+      "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
+      "joinedAt": "2026-01-13T17:26:05.712Z"
+    },
+    {
+      "id": "ff1e72cb-4d50-44f1-bce5-4be91a0d932c",
+      "name": "H",
+      "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
+      "joinedAt": "2026-01-13T17:26:12.622Z"
+    },
+    {
+      "id": "16b83ce7-45e7-41b5-921b-c3b369e4422b",
+      "name": "I",
+      "squadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+      "joinedAt": "2026-01-13T17:26:17.536Z"
+    },
+    {
+      "id": "e2c1b428-578e-4a3a-8faa-372c8adb6535",
+      "name": "J",
+      "squadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+      "joinedAt": "2026-01-13T17:26:20.966Z"
+    },
+    {
+      "id": "22b28603-c3d8-40a4-9532-315f45b732a3",
+      "name": "K",
+      "squadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+      "joinedAt": "2026-01-13T17:26:24.086Z"
+    },
+    {
+      "id": "e664a70e-9f00-4cc0-82be-86cf4de97ec7",
+      "name": "L",
+      "squadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+      "joinedAt": "2026-01-13T17:26:30.095Z"
+    }
+  ],
+  "meetings": [
+    {
+      "id": "4f7742ab-e644-46f2-93d9-7dad30045b72",
+      "date": "2026-01-17",
+      "type": "online",
+      "status": "finalized",
+      "createdAt": "2026-01-13T17:26:36.271Z",
+      "scoringData": {
+        "c8355df5-9ebc-4121-a602-6c75ffe19873": {
+          "attendedMemberIds": [
+            "f73466fe-0a67-4b63-bd7c-c6b1b01773b1",
+            "6c20ba70-5612-44cb-9042-3bd213a303be",
+            "d5d9d88d-44ef-447b-818b-1cc44b4067f4"
+          ],
+          "lateMemberIds": [],
+          "rolesCount": 0,
+          "speechesCount": 0,
+          "awardsCount": 0,
+          "manualAdjustment": 0
+        },
+        "e43cf522-5047-4dc9-93f0-b59180c26632": {
+          "attendedMemberIds": [
+            "69a53272-130b-488c-811d-436d4cf25805",
+            "998e1ec6-e2a8-405e-8797-34571ba4ceb9"
+          ],
+          "lateMemberIds": [],
+          "rolesCount": 0,
+          "speechesCount": 0,
+          "awardsCount": 0,
+          "manualAdjustment": 0
+        },
+        "38e54c14-03df-4f07-b225-675ac7feb4dd": {
+          "attendedMemberIds": [
+            "16b83ce7-45e7-41b5-921b-c3b369e4422b"
+          ],
+          "lateMemberIds": [],
+          "rolesCount": 0,
+          "speechesCount": 0,
+          "awardsCount": 0,
+          "manualAdjustment": 0
+        }
+      }
+    }
+  ],
   "transactions": [
     {
-      "id": "ed824249-fd3b-436c-8916-823fe69d5cb0",
+      "id": "287ceb1c-e9bf-497e-ab68-32f72c737742",
       "meetingId": "system-seed",
-      "squadronId": "cfcefaaf-e465-45f1-8640-ae1b28e45a61",
+      "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
       "category": "seed",
       "description": "Initial Squadron Funding",
       "starsDelta": 100,
-      "timestamp": "2026-01-13T17:05:55.651Z"
+      "timestamp": "2026-01-13T17:25:25.537Z"
+    },
+    {
+      "id": "f57af6a9-93dc-45cf-9bed-e97e0ecbc328",
+      "meetingId": "system-seed",
+      "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
+      "category": "seed",
+      "description": "Initial Squadron Funding",
+      "starsDelta": 100,
+      "timestamp": "2026-01-13T17:25:29.500Z"
+    },
+    {
+      "id": "fa4b38f8-41c8-403c-a340-4957b563cdb1",
+      "meetingId": "system-seed",
+      "squadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+      "category": "seed",
+      "description": "Initial Squadron Funding",
+      "starsDelta": 100,
+      "timestamp": "2026-01-13T17:25:33.199Z"
+    },
+    {
+      "id": "1bcf796a-b818-4474-b0ef-04e90422c92a",
+      "meetingId": "4f7742ab-e644-46f2-93d9-7dad30045b72",
+      "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+      "memberId": "f73466fe-0a67-4b63-bd7c-c6b1b01773b1",
+      "category": "attendance",
+      "description": "Attended online meeting",
+      "starsDelta": 5,
+      "timestamp": "2026-01-13T17:27:00.970Z"
+    },
+    {
+      "id": "78745f0a-bb0c-431e-8bf1-f6c518dda539",
+      "meetingId": "4f7742ab-e644-46f2-93d9-7dad30045b72",
+      "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+      "memberId": "6c20ba70-5612-44cb-9042-3bd213a303be",
+      "category": "attendance",
+      "description": "Attended online meeting",
+      "starsDelta": 5,
+      "timestamp": "2026-01-13T17:27:00.970Z"
+    },
+    {
+      "id": "eab5597b-d94b-4b81-9001-9fe1f51405a3",
+      "meetingId": "4f7742ab-e644-46f2-93d9-7dad30045b72",
+      "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+      "memberId": "d5d9d88d-44ef-447b-818b-1cc44b4067f4",
+      "category": "attendance",
+      "description": "Attended online meeting",
+      "starsDelta": 5,
+      "timestamp": "2026-01-13T17:27:00.970Z"
+    },
+    {
+      "id": "bf26694c-1dbe-4fa1-9271-03e4472f6923",
+      "meetingId": "4f7742ab-e644-46f2-93d9-7dad30045b72",
+      "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
+      "memberId": "69a53272-130b-488c-811d-436d4cf25805",
+      "category": "attendance",
+      "description": "Attended online meeting",
+      "starsDelta": 5,
+      "timestamp": "2026-01-13T17:27:00.971Z"
+    },
+    {
+      "id": "5aca42e3-4824-41ce-a508-790d6a0df173",
+      "meetingId": "4f7742ab-e644-46f2-93d9-7dad30045b72",
+      "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
+      "memberId": "998e1ec6-e2a8-405e-8797-34571ba4ceb9",
+      "category": "attendance",
+      "description": "Attended online meeting",
+      "starsDelta": 5,
+      "timestamp": "2026-01-13T17:27:00.971Z"
+    },
+    {
+      "id": "2e1defcb-1af1-4cc2-ba39-05eda689fc59",
+      "meetingId": "4f7742ab-e644-46f2-93d9-7dad30045b72",
+      "squadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+      "memberId": "16b83ce7-45e7-41b5-921b-c3b369e4422b",
+      "category": "attendance",
+      "description": "Attended online meeting",
+      "starsDelta": 5,
+      "timestamp": "2026-01-13T17:27:00.971Z"
     }
-  ]
+  ],
+  "auctions": []
 }
