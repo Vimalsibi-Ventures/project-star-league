@@ -2,6 +2,72 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-    @apply bg-gray-50 text-gray-900;
+:root {
+    /* Background Tokens */
+    --bg-main: #0e1117;
+    --bg-surface: #151a23;
+    --bg-elevated: #1c2333;
+    --border-soft: #2a3245;
+
+    /* Text Tokens */
+    --text-primary: #e6e9f0;
+    --text-secondary: #9aa4bf;
+    --text-muted: #6b7280;
+
+    /* Accent Tokens */
+    --neon-blue: #4f8cff;
+    --neon-cyan: #38e8ff;
+    --neon-gold: #d4af37;
+    --danger: #ef4444;
+}
+
+@layer base {
+    body {
+        background-color: var(--bg-main);
+        color: var(--text-primary);
+    }
+    
+    * {
+        border-color: var(--border-soft);
+    }
+    
+    /* Universal Input Styling */
+    input[type="text"],
+    input[type="password"],
+    input[type="email"],
+    input[type="number"],
+    input[type="date"],
+    input[type="time"],
+    input[type="search"],
+    textarea,
+    select {
+        background-color: var(--bg-elevated);
+        color: var(--text-primary);
+        border: 1px solid var(--border-soft);
+        border-radius: 0.375rem;
+    }
+    
+    input[type="text"]:focus,
+    input[type="password"]:focus,
+    input[type="email"]:focus,
+    input[type="number"]:focus,
+    input[type="date"]:focus,
+    input[type="time"]:focus,
+    input[type="search"]:focus,
+    textarea:focus,
+    select:focus {
+        outline: none;
+        border-color: var(--neon-blue);
+        box-shadow: 0 0 0 1px rgba(79, 140, 255, 0.4);
+    }
+    
+    input::placeholder,
+    textarea::placeholder {
+        color: var(--text-muted);
+    }
+    
+    select option {
+        background-color: var(--bg-elevated);
+        color: var(--text-primary);
+    }
 }

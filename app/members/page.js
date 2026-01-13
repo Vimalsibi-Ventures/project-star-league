@@ -17,60 +17,68 @@ export default function MembersPage() {
     }).sort((a, b) => b.totalStars - a.totalStars);
 
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <Link href="/" className="text-blue-600 hover:text-blue-800 mb-6 inline-block">
-                ← Back to Squadron Leaderboard
-            </Link>
+        <div className="min-h-screen bg-[#0e1117] pt-[72px]">
+            <div className="max-w-7xl mx-auto px-8 py-12">
+                <Link href="/" className="text-[#9aa4bf] hover:text-[#4f8cff] mb-6 inline-block transition-colors">
+                    ← Back to Squadron Leaderboard
+                </Link>
 
-            <div className="text-center mb-12">
-                <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                    Individual Leaderboard
-                </h1>
-                <p className="text-lg text-gray-600">
-                    Top contributors across all squadrons
-                </p>
-            </div>
+                <div className="text-center mb-12">
+                    <h1 className="text-4xl font-bold text-[#e6e9f0] mb-4">
+                        Individual Leaderboard
+                    </h1>
+                    <p className="text-lg text-[#9aa4bf]">
+                        Top contributors across all squadrons
+                    </p>
+                </div>
 
-            <div className="bg-white shadow-md rounded-lg overflow-hidden">
-                <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                        <tr>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Rank
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Member Name
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Squadron
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Total Stars
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                        {memberData.map((member, index) => (
-                            <tr
-                                key={member.id}
-                                className={index === 0 ? 'bg-yellow-50' : ''}
-                            >
-                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    {index === 0 ? '🥇' : index + 1}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    {member.name}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {member.squadronName}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    ★ {member.totalStars}
-                                </td>
+                <div className="bg-[#151a23] border border-[#2a3245] rounded-lg overflow-hidden">
+                    <table className="min-w-full divide-y divide-[#2a3245]">
+                        <thead className="bg-[#0e1117]">
+                            <tr>
+                                <th className="px-8 py-4 text-left text-xs font-bold text-[#9aa4bf] uppercase tracking-wider">
+                                    Rank
+                                </th>
+                                <th className="px-8 py-4 text-left text-xs font-bold text-[#9aa4bf] uppercase tracking-wider">
+                                    Member Name
+                                </th>
+                                <th className="px-8 py-4 text-left text-xs font-bold text-[#9aa4bf] uppercase tracking-wider">
+                                    Squadron
+                                </th>
+                                <th className="px-8 py-4 text-left text-xs font-bold text-[#9aa4bf] uppercase tracking-wider">
+                                    Total Stars
+                                </th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody className="bg-[#151a23] divide-y divide-[#2a3245]">
+                            {memberData.map((member, index) => (
+                                <tr
+                                    key={member.id}
+                                    className={`hover:shadow-[0_0_8px_rgba(79,140,255,0.3)] transition-all ${
+                                        index === 0 ? 'bg-[#1c2333]' : index % 2 === 0 ? 'bg-[#151a23]' : 'bg-[#1a1f2e]'
+                                    }`}
+                                >
+                                    <td className={`px-8 py-5 whitespace-nowrap text-lg font-bold ${
+                                        index === 0 ? 'text-[#d4af37]' : 'text-[#e6e9f0]'
+                                    }`}>
+                                        {index === 0 ? '🥇' : index + 1}
+                                    </td>
+                                    <td className={`px-8 py-5 whitespace-nowrap text-base font-medium ${
+                                        index === 0 ? 'text-[#d4af37]' : 'text-[#e6e9f0]'
+                                    }`}>
+                                        {member.name}
+                                    </td>
+                                    <td className="px-8 py-5 whitespace-nowrap text-base text-[#9aa4bf]">
+                                        {member.squadronName}
+                                    </td>
+                                    <td className="px-8 py-5 whitespace-nowrap text-lg font-bold text-[#e6e9f0]">
+                                        ★ {member.totalStars}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );

@@ -208,251 +208,253 @@ export default function AdminDashboard() {
     };
 
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div className="flex justify-between items-center mb-8">
-                <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-                <Link href="/" className="text-blue-600 hover:text-blue-800">
-                    View Public Site →
-                </Link>
-            </div>
-
-            {/* Meetings & Scoring */}
-            <section className="mb-12 bg-white shadow-md rounded-lg p-6">
-                <h2 className="text-2xl font-semibold text-gray-900 mb-6">Meetings & Scoring</h2>
-
-                <form onSubmit={handleCreateMeeting} className="mb-6">
-                    <h3 className="text-lg font-medium text-gray-900 mb-3">Create New Meeting</h3>
-                    <div className="grid grid-cols-3 gap-4">
-                        <input
-                            type="date"
-                            value={meetingDate}
-                            onChange={(e) => setMeetingDate(e.target.value)}
-                            className="px-3 py-2 border border-gray-300 rounded-md"
-                            required
-                        />
-                        <select
-                            value={meetingType}
-                            onChange={(e) => setMeetingType(e.target.value)}
-                            className="px-3 py-2 border border-gray-300 rounded-md"
-                        >
-                            <option value="offline">Offline</option>
-                            <option value="online">Online</option>
-                        </select>
-                        <button
-                            type="submit"
-                            className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
-                        >
-                            Create Meeting
-                        </button>
-                    </div>
-                </form>
-
-                <div className="border-t pt-6">
-                    <h3 className="text-lg font-medium text-gray-900 mb-3">Score Meeting</h3>
-
-                    <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Select Meeting
-                        </label>
-                        <select
-                            value={selectedMeetingId}
-                            onChange={(e) => setSelectedMeetingId(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                        >
-                            <option value="">-- Select a meeting --</option>
-                            {meetings.filter(m => !m.finalized).map(meeting => (
-                                <option key={meeting.id} value={meeting.id}>
-                                    {meeting.date} ({meeting.type})
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-
-                    {selectedMeetingId && (
-                        <>
-                            <div className="mb-4">
-                                <h4 className="text-sm font-medium text-gray-700 mb-2">Mark Attendance</h4>
-                                <div className="grid grid-cols-2 gap-2">
-                                    {members.map(member => {
-                                        const squadron = squadrons.find(s => s.id === member.squadronId);
-                                        return (
-                                            <label key={member.id} className="flex items-center">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={attendees.includes(member.id)}
-                                                    onChange={() => toggleAttendee(member.id)}
-                                                    className="mr-2"
-                                                />
-                                                <span className="text-sm">
-                                                    {member.name} ({squadron?.name})
-                                                </span>
-                                            </label>
-                                        );
-                                    })}
-                                </div>
-                            </div>
-
-                            <div className="mb-4">
-                                <h4 className="text-sm font-medium text-gray-700 mb-2">Mark Late Members</h4>
-                                <div className="grid grid-cols-2 gap-2">
-                                    {attendees.map(memberId => {
-                                        const member = members.find(m => m.id === memberId);
-                                        return (
-                                            <label key={memberId} className="flex items-center">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={lateMembers.includes(memberId)}
-                                                    onChange={() => toggleLateMember(memberId)}
-                                                    className="mr-2"
-                                                />
-                                                <span className="text-sm">{member?.name}</span>
-                                            </label>
-                                        );
-                                    })}
-                                </div>
-                            </div>
-
-                            <button
-                                onClick={handleScoreMeeting}
-                                className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700"
-                            >
-                                Calculate & Save Scores
-                            </button>
-                        </>
-                    )}
+        <div className="min-h-screen bg-gradient-to-br from-[#0e1117] via-[#151a23] to-[#0e1117] pt-[72px]">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div className="flex justify-between items-center mb-8">
+                    <h1 className="text-3xl font-bold text-[#e6e9f0]">Admin Dashboard</h1>
+                    <Link href="/" className="text-[#4f8cff] hover:text-[#38e8ff] transition-colors">
+                        View Public Site →
+                    </Link>
                 </div>
 
-                <div className="border-t pt-6 mt-6">
-                    <h3 className="text-lg font-medium text-gray-900 mb-3">Meetings List</h3>
-                    <div className="space-y-2">
-                        {meetings.map(meeting => (
-                            <div key={meeting.id} className="flex justify-between items-center p-3 bg-gray-50 rounded">
-                                <span className="text-sm">
-                                    {meeting.date} - {meeting.type}
-                                    {meeting.finalized && ' (Finalized)'}
-                                </span>
-                                {!meeting.finalized && (
-                                    <button
-                                        onClick={() => handleFinalizeMeeting(meeting.id)}
-                                        className="bg-purple-600 text-white px-3 py-1 rounded text-sm hover:bg-purple-700"
-                                    >
-                                        Finalize
-                                    </button>
-                                )}
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
+                {/* Meetings & Scoring */}
+                <section className="mb-12 bg-[#151a23] border border-[#2a3245] rounded-lg p-6 shadow-lg">
+                    <h2 className="text-2xl font-semibold text-[#e6e9f0] mb-6">Meetings & Scoring</h2>
 
-            {/* Squadrons */}
-            <section className="mb-12 bg-white shadow-md rounded-lg p-6">
-                <h2 className="text-2xl font-semibold text-gray-900 mb-6">Squadrons</h2>
-
-                <form onSubmit={handleCreateSquadron} className="mb-6">
-                    <div className="flex gap-4">
-                        <input
-                            type="text"
-                            value={newSquadronName}
-                            onChange={(e) => setNewSquadronName(e.target.value)}
-                            placeholder="Squadron name"
-                            className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
-                            required
-                        />
-                        <button
-                            type="submit"
-                            className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700"
-                        >
-                            Create Squadron
-                        </button>
-                    </div>
-                </form>
-
-                <div className="space-y-2">
-                    {squadrons.map(squadron => (
-                        <div key={squadron.id} className="flex justify-between items-center p-3 bg-gray-50 rounded">
-                            <span className="font-medium">{squadron.name}</span>
-                            <button
-                                onClick={() => handleDeleteSquadron(squadron.id)}
-                                className="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700"
+                    <form onSubmit={handleCreateMeeting} className="mb-6">
+                        <h3 className="text-lg font-medium text-[#e6e9f0] mb-3">Create New Meeting</h3>
+                        <div className="grid grid-cols-3 gap-4">
+                            <input
+                                type="date"
+                                value={meetingDate}
+                                onChange={(e) => setMeetingDate(e.target.value)}
+                                className="px-3 py-2 bg-[#1c2333] text-[#e6e9f0] border border-[#2a3245] rounded-md focus:outline-none focus:border-[#4f8cff] focus:shadow-[0_0_0_1px_rgba(79,140,255,0.4)]"
+                                required
+                            />
+                            <select
+                                value={meetingType}
+                                onChange={(e) => setMeetingType(e.target.value)}
+                                className="px-3 py-2 bg-[#1c2333] text-[#e6e9f0] border border-[#2a3245] rounded-md focus:outline-none focus:border-[#4f8cff] focus:shadow-[0_0_0_1px_rgba(79,140,255,0.4)]"
                             >
-                                Delete
+                                <option value="offline">Offline</option>
+                                <option value="online">Online</option>
+                            </select>
+                            <button
+                                type="submit"
+                                className="bg-[#4f8cff] text-white px-4 py-2 rounded-md hover:bg-[#3b7ae8] hover:shadow-[0_0_12px_rgba(79,140,255,0.5)] transition-all"
+                            >
+                                Create Meeting
                             </button>
                         </div>
-                    ))}
-                </div>
-            </section>
+                    </form>
 
-            {/* Members */}
-            <section className="mb-12 bg-white shadow-md rounded-lg p-6">
-                <h2 className="text-2xl font-semibold text-gray-900 mb-6">Members</h2>
+                    <div className="border-t border-[#2a3245] pt-6">
+                        <h3 className="text-lg font-medium text-[#e6e9f0] mb-3">Score Meeting</h3>
 
-                <form onSubmit={handleCreateMember} className="mb-6">
-                    <div className="grid grid-cols-3 gap-4">
-                        <input
-                            type="text"
-                            value={newMemberName}
-                            onChange={(e) => setNewMemberName(e.target.value)}
-                            placeholder="Member name"
-                            className="px-3 py-2 border border-gray-300 rounded-md"
-                            required
-                        />
-                        <select
-                            value={newMemberSquadronId}
-                            onChange={(e) => setNewMemberSquadronId(e.target.value)}
-                            className="px-3 py-2 border border-gray-300 rounded-md"
-                            required
-                        >
-                            <option value="">Select squadron</option>
-                            {squadrons.map(squadron => (
-                                <option key={squadron.id} value={squadron.id}>
-                                    {squadron.name}
-                                </option>
-                            ))}
-                        </select>
-                        <button
-                            type="submit"
-                            className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700"
-                        >
-                            Add Member
-                        </button>
-                    </div>
-                </form>
+                        <div className="mb-4">
+                            <label className="block text-sm font-medium text-[#9aa4bf] mb-2">
+                                Select Meeting
+                            </label>
+                            <select
+                                value={selectedMeetingId}
+                                onChange={(e) => setSelectedMeetingId(e.target.value)}
+                                className="w-full px-3 py-2 bg-[#1c2333] text-[#e6e9f0] border border-[#2a3245] rounded-md focus:outline-none focus:border-[#4f8cff] focus:shadow-[0_0_0_1px_rgba(79,140,255,0.4)]"
+                            >
+                                <option value="">-- Select a meeting --</option>
+                                {meetings.filter(m => !m.finalized).map(meeting => (
+                                    <option key={meeting.id} value={meeting.id}>
+                                        {meeting.date} ({meeting.type})
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
 
-                <div className="space-y-2">
-                    {members.map(member => {
-                        const squadron = squadrons.find(s => s.id === member.squadronId);
-                        return (
-                            <div key={member.id} className="flex justify-between items-center p-3 bg-gray-50 rounded">
-                                <span>
-                                    {member.name} - <span className="text-gray-600">{squadron?.name}</span>
-                                </span>
+                        {selectedMeetingId && (
+                            <>
+                                <div className="mb-4">
+                                    <h4 className="text-sm font-medium text-[#9aa4bf] mb-2">Mark Attendance</h4>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        {members.map(member => {
+                                            const squadron = squadrons.find(s => s.id === member.squadronId);
+                                            return (
+                                                <label key={member.id} className="flex items-center text-[#e6e9f0] hover:text-[#38e8ff] transition-colors cursor-pointer">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={attendees.includes(member.id)}
+                                                        onChange={() => toggleAttendee(member.id)}
+                                                        className="mr-2 w-4 h-4 text-[#4f8cff] bg-[#1c2333] border-[#2a3245] rounded focus:ring-[#4f8cff]"
+                                                    />
+                                                    <span className="text-sm">
+                                                        {member.name} ({squadron?.name})
+                                                    </span>
+                                                </label>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+
+                                <div className="mb-4">
+                                    <h4 className="text-sm font-medium text-[#9aa4bf] mb-2">Mark Late Members</h4>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        {attendees.map(memberId => {
+                                            const member = members.find(m => m.id === memberId);
+                                            return (
+                                                <label key={memberId} className="flex items-center text-[#e6e9f0] hover:text-[#38e8ff] transition-colors cursor-pointer">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={lateMembers.includes(memberId)}
+                                                        onChange={() => toggleLateMember(memberId)}
+                                                        className="mr-2 w-4 h-4 text-[#4f8cff] bg-[#1c2333] border-[#2a3245] rounded focus:ring-[#4f8cff]"
+                                                    />
+                                                    <span className="text-sm">{member?.name}</span>
+                                                </label>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+
                                 <button
-                                    onClick={() => handleDeleteMember(member.id)}
-                                    className="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700"
+                                    onClick={handleScoreMeeting}
+                                    className="bg-[#4f8cff] text-white px-6 py-2 rounded-md hover:bg-[#3b7ae8] hover:shadow-[0_0_12px_rgba(79,140,255,0.5)] transition-all"
+                                >
+                                    Calculate & Save Scores
+                                </button>
+                            </>
+                        )}
+                    </div>
+
+                    <div className="border-t border-[#2a3245] pt-6 mt-6">
+                        <h3 className="text-lg font-medium text-[#e6e9f0] mb-3">Meetings List</h3>
+                        <div className="space-y-0">
+                            {meetings.map(meeting => (
+                                <div key={meeting.id} className="flex justify-between items-center p-3 border-b border-[#2a3245] hover:bg-[#1c2333] hover:shadow-[0_0_8px_rgba(79,140,255,0.2)] transition-all">
+                                    <span className="text-sm text-[#e6e9f0]">
+                                        {meeting.date} - {meeting.type}
+                                        {meeting.finalized && ' (Finalized)'}
+                                    </span>
+                                    {!meeting.finalized && (
+                                        <button
+                                            onClick={() => handleFinalizeMeeting(meeting.id)}
+                                            className="bg-[#4f8cff] text-white px-3 py-1 rounded text-sm hover:bg-[#3b7ae8] hover:shadow-[0_0_8px_rgba(79,140,255,0.4)] transition-all"
+                                        >
+                                            Finalize
+                                        </button>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                {/* Squadrons */}
+                <section className="mb-12 bg-[#151a23] border border-[#2a3245] rounded-lg p-6 shadow-lg">
+                    <h2 className="text-2xl font-semibold text-[#e6e9f0] mb-6">Squadrons</h2>
+
+                    <form onSubmit={handleCreateSquadron} className="mb-6">
+                        <div className="flex gap-4">
+                            <input
+                                type="text"
+                                value={newSquadronName}
+                                onChange={(e) => setNewSquadronName(e.target.value)}
+                                placeholder="Squadron name"
+                                className="flex-1 px-3 py-2 bg-[#1c2333] text-[#e6e9f0] border border-[#2a3245] rounded-md placeholder:text-[#6b7280] focus:outline-none focus:border-[#4f8cff] focus:shadow-[0_0_0_1px_rgba(79,140,255,0.4)]"
+                                required
+                            />
+                            <button
+                                type="submit"
+                                className="bg-[#4f8cff] text-white px-6 py-2 rounded-md hover:bg-[#3b7ae8] hover:shadow-[0_0_12px_rgba(79,140,255,0.5)] transition-all"
+                            >
+                                Create Squadron
+                            </button>
+                        </div>
+                    </form>
+
+                    <div className="space-y-0">
+                        {squadrons.map((squadron, index) => (
+                            <div key={squadron.id} className="flex justify-between items-center p-3 border-b border-[#2a3245] hover:bg-[#1c2333] hover:shadow-[0_0_8px_rgba(79,140,255,0.2)] transition-all">
+                                <span className="font-medium text-[#e6e9f0]">{squadron.name}</span>
+                                <button
+                                    onClick={() => handleDeleteSquadron(squadron.id)}
+                                    className="bg-[#ef4444] text-white px-3 py-1 rounded text-sm hover:bg-[#dc2626] hover:shadow-[0_0_8px_rgba(239,68,68,0.4)] transition-all"
                                 >
                                     Delete
                                 </button>
                             </div>
-                        );
-                    })}
-                </div>
-            </section>
+                        ))}
+                    </div>
+                </section>
 
-            {/* System Reset */}
-            <section className="bg-red-50 border border-red-200 rounded-lg p-6">
-                <h2 className="text-2xl font-semibold text-red-900 mb-4">Danger Zone</h2>
-                <p className="text-red-700 mb-4">
-                    This will delete ALL squadrons, members, meetings, and transactions.
-                    This cannot be undone!
-                </p>
-                <button
-                    onClick={handleResetSystem}
-                    className="bg-red-600 text-white px-6 py-2 rounded-md hover:bg-red-700"
-                >
-                    Reset Entire System
-                </button>
-            </section>
+                {/* Members */}
+                <section className="mb-12 bg-[#151a23] border border-[#2a3245] rounded-lg p-6 shadow-lg">
+                    <h2 className="text-2xl font-semibold text-[#e6e9f0] mb-6">Members</h2>
+
+                    <form onSubmit={handleCreateMember} className="mb-6">
+                        <div className="grid grid-cols-3 gap-4">
+                            <input
+                                type="text"
+                                value={newMemberName}
+                                onChange={(e) => setNewMemberName(e.target.value)}
+                                placeholder="Member name"
+                                className="px-3 py-2 bg-[#1c2333] text-[#e6e9f0] border border-[#2a3245] rounded-md placeholder:text-[#6b7280] focus:outline-none focus:border-[#4f8cff] focus:shadow-[0_0_0_1px_rgba(79,140,255,0.4)]"
+                                required
+                            />
+                            <select
+                                value={newMemberSquadronId}
+                                onChange={(e) => setNewMemberSquadronId(e.target.value)}
+                                className="px-3 py-2 bg-[#1c2333] text-[#e6e9f0] border border-[#2a3245] rounded-md focus:outline-none focus:border-[#4f8cff] focus:shadow-[0_0_0_1px_rgba(79,140,255,0.4)]"
+                                required
+                            >
+                                <option value="">Select squadron</option>
+                                {squadrons.map(squadron => (
+                                    <option key={squadron.id} value={squadron.id}>
+                                        {squadron.name}
+                                    </option>
+                                ))}
+                            </select>
+                            <button
+                                type="submit"
+                                className="bg-[#4f8cff] text-white px-6 py-2 rounded-md hover:bg-[#3b7ae8] hover:shadow-[0_0_12px_rgba(79,140,255,0.5)] transition-all"
+                            >
+                                Add Member
+                            </button>
+                        </div>
+                    </form>
+
+                    <div className="space-y-0">
+                        {members.map((member, index) => {
+                            const squadron = squadrons.find(s => s.id === member.squadronId);
+                            return (
+                                <div key={member.id} className="flex justify-between items-center p-3 border-b border-[#2a3245] hover:bg-[#1c2333] hover:shadow-[0_0_8px_rgba(79,140,255,0.2)] transition-all">
+                                    <span className="text-[#e6e9f0]">
+                                        {member.name} - <span className="text-[#9aa4bf]">{squadron?.name}</span>
+                                    </span>
+                                    <button
+                                        onClick={() => handleDeleteMember(member.id)}
+                                        className="bg-[#ef4444] text-white px-3 py-1 rounded text-sm hover:bg-[#dc2626] hover:shadow-[0_0_8px_rgba(239,68,68,0.4)] transition-all"
+                                    >
+                                        Delete
+                                    </button>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </section>
+
+                {/* System Reset */}
+                <section className="bg-[#151a23] border border-[#2a3245] rounded-lg p-6 shadow-lg">
+                    <h2 className="text-2xl font-semibold text-[#e6e9f0] mb-4">Danger Zone</h2>
+                    <p className="text-[#9aa4bf] mb-4">
+                        This will delete ALL squadrons, members, meetings, and transactions.
+                        This cannot be undone!
+                    </p>
+                    <button
+                        onClick={handleResetSystem}
+                        className="bg-[#ef4444] text-white px-6 py-2 rounded-md hover:bg-[#dc2626] hover:shadow-[0_0_12px_rgba(239,68,68,0.5)] transition-all"
+                    >
+                        Reset Entire System
+                    </button>
+                </section>
+            </div>
         </div>
     );
 }
