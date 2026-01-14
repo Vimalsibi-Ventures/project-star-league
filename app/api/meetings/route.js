@@ -25,3 +25,16 @@ export async function POST(request) {
     saveDb(db);
     return NextResponse.json(newMeeting);
 }
+
+export async function DELETE(request) {
+    const { id } = await request.json();
+    const db = getDb();
+    const idx = db.meetings.findIndex(m => m.id === id);
+    if (idx !== -1) {
+        // PATCH-H: Server Check
+        if (db.meetings[idx].status === 'closed') return NextResponse.json({ error: 'Cannot delete closed meeting' }, { status: 400 });
+        db.meetings.splice(idx, 1);
+        saveDb(db);
+    }
+    return NextResponse.json({ success: true });
+}

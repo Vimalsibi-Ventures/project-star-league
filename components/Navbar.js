@@ -19,10 +19,10 @@ export default function Navbar() {
                 {/* Navigation Links */}
                 <div className="flex items-center gap-8">
                     {/* Socials */}
-                    <a href="https://instagram.com" target="_blank" className="nav-link text-xs font-bold text-gray-400 hover:text-white uppercase tracking-wider transition-colors">
+                    <a href="https://www.instagram.com/oratio.tmi/" target="_blank" className="nav-link text-xs font-bold text-gray-400 hover:text-white uppercase tracking-wider transition-colors">
                         Instagram
                     </a>
-                    <a href="https://linkedin.com" target="_blank" className="nav-link text-xs font-bold text-gray-400 hover:text-white uppercase tracking-wider transition-colors">
+                    <a href="https://www.linkedin.com/company/oratio-vit/" target="_blank" className="nav-link text-xs font-bold text-gray-400 hover:text-white uppercase tracking-wider transition-colors">
                         LinkedIn
                     </a>
 

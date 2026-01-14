@@ -4,13 +4,33 @@ import { useState } from 'react';
 import LeaderboardTable from '@/components/LeaderboardTable';
 import IndividualLeaderboard from '@/components/IndividualLeaderboard';
 
-// Added new props: upcomingMeeting, auctionData
-export default function LandingClient({ leaderboardData, memberData, upcomingMeeting, auctionData }) {
+export default function LandingClient({ leaderboardData, memberData, upcomingMeeting, auctionData, meetingAssignments }) {
     const [activeTab, setActiveTab] = useState('squadron');
+
+    const getSlotDisplay = (item) => {
+        if (!upcomingMeeting) return { main: 'Unknown', sub: '' };
+
+        // 1. Check Assignments FIRST (Resolved Roles)
+        const assignment = (meetingAssignments || []).find(a => a.auctionItemId === item.id);
+
+        if (assignment) {
+            if (assignment.fulfilledExternally) {
+                return { main: 'Guest', sub: 'External Speaker' };
+            }
+            const member = memberData.find(m => m.id === assignment.memberId);
+            if (member) {
+                return { main: member.name, sub: member.squadronName };
+            }
+        }
+
+        // 2. Fallback: Auction Result (Ownership)
+        // If not assigned yet, we show who BOUGHT it.
+        return { main: item.winnerName, sub: 'Squadron Right' };
+    };
 
     return (
         <div className="min-h-screen pt-[80px] pb-20">
-            {/* HERO SECTION */}
+            {/* HERO & LEADERBOARD (Unchanged) */}
             <section className="w-full py-20 flex flex-col items-center justify-center text-center relative overflow-hidden">
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#fbbf24] opacity-5 blur-[120px] rounded-full pointer-events-none"></div>
                 <div className="relative z-10 px-6">
@@ -19,7 +39,7 @@ export default function LandingClient({ leaderboardData, memberData, upcomingMee
                         <span className="text-[#fbbf24] font-bold text-xs uppercase tracking-[0.2em]">Season Live</span>
                     </div>
                     <h1 className="text-6xl md:text-8xl font-black text-white mb-6 tracking-tighter uppercase drop-shadow-2xl">
-                        Oratio <span className="text-gradient-gold">Star League</span>
+                        Oratio's <span className="text-gradient-gold">Star League</span>
                     </h1>
                     <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto font-light leading-relaxed">
                         The ultimate competitive arena. Rise through the ranks, claim your stars, and dominate the leaderboard.
@@ -27,7 +47,6 @@ export default function LandingClient({ leaderboardData, memberData, upcomingMee
                 </div>
             </section>
 
-            {/* LEADERBOARD SECTION */}
             <section className="max-w-6xl mx-auto px-6 mb-24">
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
                     <div>
@@ -48,70 +67,52 @@ export default function LandingClient({ leaderboardData, memberData, upcomingMee
                 </div>
             </section>
 
-            {/* NEXT MEETING PREVIEW - DYNAMIC DATA */}
-            <section className="max-w-6xl mx-auto px-6">
-                <div className="mb-8">
-                    <h2 className="text-3xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
+            {/* NEXT MEETING PREVIEW - SIMPLIFIED */}
+            <section className="max-w-4xl mx-auto px-6">
+                <div className="mb-8 text-center md:text-left">
+                    <h2 className="text-3xl font-bold text-white uppercase tracking-wide flex items-center justify-center md:justify-start gap-3">
                         <span className="w-1.5 h-8 bg-gradient-to-b from-[#facc15] to-[#f59e0b] rounded-full"></span>
-                        Upcoming Encounter (Auction Results)
+                        Upcoming Encounter
                     </h2>
-                    <p className="text-gray-500 text-xs mt-2 max-w-2xl">
-                        Displayed roles represent auctioned squadron rights. Final member assignments will be published by the VPE before the meeting.
-                    </p>
                 </div>
 
                 {upcomingMeeting ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        {/* LEFT: Meeting Info */}
-                        <div className="glass-card rounded-2xl p-8 flex flex-col justify-center items-center text-center border-t-4 border-t-[#fbbf24]">
-                            <h3 className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-2">Upcoming Session</h3>
-                            <div className="text-4xl font-black text-white mb-2">
-                                {new Date(upcomingMeeting.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                            </div>
-                            <div className="px-3 py-1 bg-white/10 rounded text-xs font-bold uppercase text-[#fbbf24] mb-6">
-                                {upcomingMeeting.type} Arena
-                            </div>
+                    // PATCH-1: Changed grid to single centered column, removed Right Card
+                    <div className="glass-card rounded-2xl p-8 flex flex-col justify-center items-center text-center border-t-4 border-t-[#fbbf24]">
+                        <h3 className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-2">Upcoming Session</h3>
+                        <div className="text-4xl font-black text-white mb-2">
+                            {new Date(upcomingMeeting.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                        </div>
+                        <div className="px-3 py-1 bg-white/10 rounded text-xs font-bold uppercase text-[#fbbf24] mb-6">
+                            {upcomingMeeting.type} Arena
+                        </div>
 
-                            {/* Auction Teaser */}
-                            <div className="w-full border-t border-white/10 pt-6 mt-2">
-                                <h4 className="text-[#fbbf24] font-bold uppercase text-sm mb-4">Auction Results</h4>
-                                {auctionData && auctionData.items.filter(i => i.winningSquadronId).length > 0 ? (
-                                    <div className="space-y-3">
-                                        {auctionData.items.filter(i => i.winningSquadronId).map((item, i) => (
+                        <div className="w-full max-w-2xl border-t border-white/10 pt-6 mt-2">
+                            <h4 className="text-[#fbbf24] font-bold uppercase text-sm mb-4">
+                                {upcomingMeeting.status === 'auction_finalized' ? 'Auction Results (Rights)' : 'Official Role Call'}
+                            </h4>
+
+                            {auctionData && auctionData.items.filter(i => i.winningSquadronId).length > 0 ? (
+                                <div className="space-y-3">
+                                    {auctionData.items.filter(i => i.winningSquadronId).map((item, i) => {
+                                        const display = getSlotDisplay(item);
+                                        return (
                                             <div key={i} className="flex justify-between items-center p-3 bg-black/20 rounded border border-white/5">
-                                                <div>
+                                                <div className="text-left">
                                                     <span className="text-sm text-gray-300 font-medium block">{item.title}</span>
                                                     {item.slotLabel && <span className="text-[10px] text-gray-500 uppercase tracking-widest">{item.slotLabel}</span>}
                                                 </div>
                                                 <div className="text-right">
-                                                    <div className="text-xs font-bold text-[#fbbf24] uppercase">{item.winnerName}</div>
-                                                    <div className="text-[10px] text-gray-500">-{item.starsSpent} Stars</div>
+                                                    <div className="text-xs font-bold text-[#fbbf24] uppercase">{display.main}</div>
+                                                    <div className="text-[10px] text-gray-500">{display.sub}</div>
                                                 </div>
                                             </div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <p className="text-gray-500 text-xs italic">No auction data finalized yet.</p>
-                                )}
-                            </div>
-                        </div>
-
-                        {/* RIGHT: Standard Slots (Static for now, or could be dynamic later) */}
-                        <div className="glass-card rounded-2xl p-8 hover-glow">
-                            <div className="flex items-center gap-3 mb-6">
-                                <div className="p-3 rounded-lg bg-[#38bdf8]/10 text-[#38bdf8]">📝</div>
-                                <h3 className="text-xl font-bold text-white uppercase tracking-wide">Role Availability</h3>
-                            </div>
-                            <div className="space-y-3">
-                                {[1, 2, 3].map(slot => (
-                                    <div key={slot} className="flex justify-between items-center p-4 rounded-lg bg-black/20 border border-white/5">
-                                        <span className="text-gray-400 font-medium text-sm">Speaker Slot {slot}</span>
-                                        <span className="px-3 py-1 bg-[#38bdf8]/10 border border-[#38bdf8]/20 text-[#38bdf8] text-[10px] font-bold uppercase rounded-full tracking-wider">
-                                            Contact VPE
-                                        </span>
-                                    </div>
-                                ))}
-                            </div>
+                                        );
+                                    })}
+                                </div>
+                            ) : (
+                                <p className="text-gray-500 text-xs italic">No roles auctioned yet.</p>
+                            )}
                         </div>
                     </div>
                 ) : (

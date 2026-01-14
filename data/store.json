@@ -111,92 +111,108 @@
   "meetings": [],
   "transactions": [
     {
-      "id": "287ceb1c-e9bf-497e-ab68-32f72c737742",
-      "meetingId": "system-seed",
+      "id": "63250964-5eba-4ee2-bc63-6fee442ba203",
+      "meetingId": "system-seed-term-start",
       "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
       "category": "seed",
-      "description": "Initial Squadron Funding",
+      "description": "New Term Seed Allocation",
       "starsDelta": 100,
-      "timestamp": "2026-01-13T17:25:25.537Z"
+      "timestamp": "2026-01-14T18:44:27.916Z",
+      "locked": true
     },
     {
-      "id": "f57af6a9-93dc-45cf-9bed-e97e0ecbc328",
-      "meetingId": "system-seed",
+      "id": "697f16d6-02cf-49dc-a13c-7115dd372762",
+      "meetingId": "system-seed-term-start",
       "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
       "category": "seed",
-      "description": "Initial Squadron Funding",
+      "description": "New Term Seed Allocation",
       "starsDelta": 100,
-      "timestamp": "2026-01-13T17:25:29.500Z"
+      "timestamp": "2026-01-14T18:44:27.916Z",
+      "locked": true
     },
     {
-      "id": "fa4b38f8-41c8-403c-a340-4957b563cdb1",
-      "meetingId": "system-seed",
+      "id": "e8dd8c52-b5d0-4c13-8e67-5410be809492",
+      "meetingId": "system-seed-term-start",
       "squadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
       "category": "seed",
-      "description": "Initial Squadron Funding",
+      "description": "New Term Seed Allocation",
       "starsDelta": 100,
-      "timestamp": "2026-01-13T17:25:33.199Z"
-    },
-    {
-      "id": "1bcf796a-b818-4474-b0ef-04e90422c92a",
-      "meetingId": "4f7742ab-e644-46f2-93d9-7dad30045b72",
-      "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
-      "memberId": "f73466fe-0a67-4b63-bd7c-c6b1b01773b1",
-      "category": "attendance",
-      "description": "Attended online meeting",
-      "starsDelta": 5,
-      "timestamp": "2026-01-13T17:27:00.970Z"
-    },
-    {
-      "id": "78745f0a-bb0c-431e-8bf1-f6c518dda539",
-      "meetingId": "4f7742ab-e644-46f2-93d9-7dad30045b72",
-      "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
-      "memberId": "6c20ba70-5612-44cb-9042-3bd213a303be",
-      "category": "attendance",
-      "description": "Attended online meeting",
-      "starsDelta": 5,
-      "timestamp": "2026-01-13T17:27:00.970Z"
-    },
-    {
-      "id": "eab5597b-d94b-4b81-9001-9fe1f51405a3",
-      "meetingId": "4f7742ab-e644-46f2-93d9-7dad30045b72",
-      "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
-      "memberId": "d5d9d88d-44ef-447b-818b-1cc44b4067f4",
-      "category": "attendance",
-      "description": "Attended online meeting",
-      "starsDelta": 5,
-      "timestamp": "2026-01-13T17:27:00.970Z"
-    },
-    {
-      "id": "bf26694c-1dbe-4fa1-9271-03e4472f6923",
-      "meetingId": "4f7742ab-e644-46f2-93d9-7dad30045b72",
-      "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
-      "memberId": "69a53272-130b-488c-811d-436d4cf25805",
-      "category": "attendance",
-      "description": "Attended online meeting",
-      "starsDelta": 5,
-      "timestamp": "2026-01-13T17:27:00.971Z"
-    },
-    {
-      "id": "5aca42e3-4824-41ce-a508-790d6a0df173",
-      "meetingId": "4f7742ab-e644-46f2-93d9-7dad30045b72",
-      "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
-      "memberId": "998e1ec6-e2a8-405e-8797-34571ba4ceb9",
-      "category": "attendance",
-      "description": "Attended online meeting",
-      "starsDelta": 5,
-      "timestamp": "2026-01-13T17:27:00.971Z"
-    },
-    {
-      "id": "2e1defcb-1af1-4cc2-ba39-05eda689fc59",
-      "meetingId": "4f7742ab-e644-46f2-93d9-7dad30045b72",
-      "squadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
-      "memberId": "16b83ce7-45e7-41b5-921b-c3b369e4422b",
-      "category": "attendance",
-      "description": "Attended online meeting",
-      "starsDelta": 5,
-      "timestamp": "2026-01-13T17:27:00.971Z"
+      "timestamp": "2026-01-14T18:44:27.916Z",
+      "locked": true
     }
   ],
-  "auctions": []
+  "auctions": [
+    {
+      "id": "154a2f25-80f9-4e6c-b3d3-0b12958d4df9",
+      "meetingId": "7d7817d4-3d83-48cc-a9a0-71d39e310b65",
+      "status": "finalized",
+      "createdAt": "2026-01-14T18:46:07.959Z",
+      "items": [
+        {
+          "id": "182517a9-2e05-46aa-9ca7-0d1379cac2fd",
+          "title": "Speaker #1",
+          "roleTemplateId": "speaker",
+          "slotLabel": "Slot 1",
+          "winningSquadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+          "starsSpent": 0
+        },
+        {
+          "id": "62e9bc74-1e38-4b25-919a-4000d61ebe31",
+          "title": "Evaluator #1",
+          "roleTemplateId": "evaluator",
+          "slotLabel": "Slot 1",
+          "winningSquadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
+          "starsSpent": 0
+        },
+        {
+          "id": "80424201-6e4d-4b98-a9b8-84bc605f6494",
+          "title": "Toastmaster of the Day",
+          "roleTemplateId": "tmod",
+          "slotLabel": "Toastmaster of the Day",
+          "winningSquadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+          "starsSpent": 0
+        },
+        {
+          "id": "08cfe844-0015-4c4c-84c7-957cbce88171",
+          "title": "General Evaluator",
+          "roleTemplateId": "ge",
+          "slotLabel": "General Evaluator",
+          "winningSquadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+          "starsSpent": 0
+        },
+        {
+          "id": "a4665c8d-3a24-4d62-8c95-9f3fef131c51",
+          "title": "Table Topics Master",
+          "roleTemplateId": "ttm",
+          "slotLabel": "Table Topics Master",
+          "winningSquadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
+          "starsSpent": 0
+        },
+        {
+          "id": "2eb70dea-2f17-41c0-8510-7ca2e844a53d",
+          "title": "Timer",
+          "roleTemplateId": "timer",
+          "slotLabel": "Timer",
+          "winningSquadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+          "starsSpent": 0
+        },
+        {
+          "id": "de27c7d9-15c7-4600-a4f0-21f045214000",
+          "title": "Ah-Counter",
+          "roleTemplateId": "ah-counter",
+          "slotLabel": "Ah-Counter",
+          "winningSquadronId": "",
+          "starsSpent": 0
+        },
+        {
+          "id": "7f4e93fa-47bd-4be6-9de9-fe3e2b2a2b00",
+          "title": "Grammarian",
+          "roleTemplateId": "grammarian",
+          "slotLabel": "Grammarian",
+          "winningSquadronId": "",
+          "starsSpent": 0
+        }
+      ]
+    }
+  ]
 }
