@@ -27,7 +27,7 @@ export async function POST(request) {
     if (!auction) {
         auction = {
             id: uuidv4(),
-            meetingId: meetingId || null, // Support unlinked auctions
+            meetingId: meetingId || null,
             status: 'draft',
             createdAt: new Date().toISOString(),
             items: []
@@ -35,10 +35,12 @@ export async function POST(request) {
         db.auctions.push(auction);
     }
 
-    // Update items
+    // Update items - NOW SAVING TEMPLATE METADATA
     auction.items = items.map(item => ({
         id: item.id || uuidv4(),
         title: item.title,
+        roleTemplateId: item.roleTemplateId || 'custom', // Store template reference
+        slotLabel: item.slotLabel || '', // Store slot number
         winningSquadronId: item.winningSquadronId || '',
         starsSpent: parseInt(item.starsSpent) || 0
     }));

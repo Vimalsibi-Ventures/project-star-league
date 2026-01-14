@@ -19,7 +19,7 @@ export default function LandingClient({ leaderboardData, memberData, upcomingMee
                         <span className="text-[#fbbf24] font-bold text-xs uppercase tracking-[0.2em]">Season Live</span>
                     </div>
                     <h1 className="text-6xl md:text-8xl font-black text-white mb-6 tracking-tighter uppercase drop-shadow-2xl">
-                        Oratio's <span className="text-gradient-gold">Star League</span>
+                        Oratio <span className="text-gradient-gold">Star League</span>
                     </h1>
                     <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto font-light leading-relaxed">
                         The ultimate competitive arena. Rise through the ranks, claim your stars, and dominate the leaderboard.
@@ -79,7 +79,10 @@ export default function LandingClient({ leaderboardData, memberData, upcomingMee
                                     <div className="space-y-3">
                                         {auctionData.items.filter(i => i.winningSquadronId).map((item, i) => (
                                             <div key={i} className="flex justify-between items-center p-3 bg-black/20 rounded border border-white/5">
-                                                <span className="text-sm text-gray-300 font-medium">{item.title}</span>
+                                                <div>
+                                                    <span className="text-sm text-gray-300 font-medium block">{item.title}</span>
+                                                    {item.slotLabel && <span className="text-[10px] text-gray-500 uppercase tracking-widest">{item.slotLabel}</span>}
+                                                </div>
                                                 <div className="text-right">
                                                     <div className="text-xs font-bold text-[#fbbf24] uppercase">{item.winnerName}</div>
                                                     <div className="text-[10px] text-gray-500">-{item.starsSpent} Stars</div>

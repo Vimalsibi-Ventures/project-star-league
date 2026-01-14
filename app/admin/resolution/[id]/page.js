@@ -3,6 +3,10 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { ROLE_TEMPLATES } from '@/lib/roleTemplates';
+
+// CONSTANT FOR INTERNAL STATE MANAGEMENT
+const GUEST_EXTERNAL_KEY = 'GUEST_EXTERNAL_OVERRIDE';
 
 export default function RoleResolutionPage({ params }) {
     const router = useRouter();
@@ -26,19 +30,29 @@ export default function RoleResolutionPage({ params }) {
             setSquadrons(sRes);
             setMembers(memRes);
 
-            // Load Auction Items
             const auction = aRes.find(a => a.meetingId === params.id);
             if (auction) {
                 setAuctionItems(auction.items || []);
 
-                // Pre-fill with existing assignments if any, else init
+                // RESTORE STATE LOGIC
                 const savedAssignments = currentMeeting.roleAssignments || [];
                 const initial = {};
 
                 auction.items.forEach(item => {
                     const saved = savedAssignments.find(a => a.auctionItemId === item.id);
+
+                    // Logic: If saved record says fulfilledExternally, set UI to GUEST KEY
+                    let memberValue = '';
+                    if (saved) {
+                        if (saved.fulfilledExternally) {
+                            memberValue = GUEST_EXTERNAL_KEY;
+                        } else {
+                            memberValue = saved.memberId || '';
+                        }
+                    }
+
                     initial[item.id] = {
-                        memberId: saved ? saved.memberId : '',
+                        memberId: memberValue,
                         status: saved ? saved.status : 'completed'
                     };
                 });
@@ -55,21 +69,37 @@ export default function RoleResolutionPage({ params }) {
         }));
     };
 
+    // CONSTRUCT PAYLOAD - STRICT COMPLIANCE
     const getRolePayload = () => {
         return auctionItems.map(item => {
             const assignment = assignments[item.id];
+            const isGuest = assignment.memberId === GUEST_EXTERNAL_KEY;
+
+            if (isGuest) {
+                // GUEST PATH: Override and Nullify Associations
+                return {
+                    auctionItemId: item.id,
+                    roleName: item.title,
+                    squadronId: null, // Ignore team association
+                    memberId: null,   // Ignore member ID
+                    status: assignment.status,
+                    fulfilledExternally: true // AUDIT FLAG
+                };
+            }
+
+            // STANDARD MEMBER PATH
             return {
                 auctionItemId: item.id,
                 roleName: item.title,
-                squadronId: item.winningSquadronId,
+                squadronId: item.winningSquadronId, // Respect Auction Ownership
                 memberId: assignment.memberId,
-                status: assignment.status
+                status: assignment.status,
+                fulfilledExternally: false
             };
         });
     };
 
     const handleSaveAssignments = async () => {
-        // Saves metadata and sets status to MEETING_LIVE
         const res = await fetch('/api/meetings/roles/save', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -80,7 +110,7 @@ export default function RoleResolutionPage({ params }) {
     };
 
     const handleCloseMeeting = async () => {
-        if (!confirm('This will award stars and CLOSE the meeting permanently. Continue?')) return;
+        if (!confirm('This will award stars (for Members) and CLOSE the meeting. Guests generate no stars. Continue?')) return;
         const res = await fetch('/api/meetings/close', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -94,6 +124,12 @@ export default function RoleResolutionPage({ params }) {
 
     const isPreMeeting = ['auction_finalized', 'role_resolution'].includes(meeting.status);
     const isAttendanceDone = meeting.status === 'attendance_finalized';
+
+    const getGuestAllowed = (item) => {
+        const tmpl = ROLE_TEMPLATES.find(t => t.id === item.roleTemplateId);
+        if (tmpl) return tmpl.guestAllowed;
+        return !item.title.toLowerCase().includes('speaker');
+    };
 
     return (
         <div className="min-h-screen pt-[100px] pb-20 px-6">
@@ -114,7 +150,12 @@ export default function RoleResolutionPage({ params }) {
                     {auctionItems.map(item => {
                         const winningSquadron = squadrons.find(s => s.id === item.winningSquadronId);
                         const squadMembers = members.filter(m => m.squadronId === item.winningSquadronId);
-                        if (!winningSquadron) return null;
+
+                        const guestAllowed = getGuestAllowed(item);
+                        const isUnowned = !winningSquadron;
+
+                        // Constraint: If unowned and no guests allowed, skip (Must be bought in Secondary Market)
+                        if (isUnowned && !guestAllowed) return null;
 
                         return (
                             <div key={item.id} className="p-6 bg-white/5 rounded-xl border border-white/5 mb-4">
@@ -122,7 +163,7 @@ export default function RoleResolutionPage({ params }) {
                                     <div>
                                         <h3 className="text-[#fbbf24] font-bold text-lg">{item.title}</h3>
                                         <div className="text-gray-400 text-xs uppercase tracking-wider">
-                                            Owner: <span className="text-white">{winningSquadron.name}</span>
+                                            {winningSquadron ? `Owner: ${winningSquadron.name}` : 'UNSOLD (Open/Guest)'}
                                         </div>
                                     </div>
                                     <div className="flex gap-2">
@@ -143,7 +184,18 @@ export default function RoleResolutionPage({ params }) {
                                     className="w-full bg-black/40 border border-white/10 rounded px-4 py-3 text-white"
                                 >
                                     <option value="">-- Assign Member --</option>
-                                    {squadMembers.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
+
+                                    {/* MEMBER OPTIONS: Only if Squadron Owned */}
+                                    {winningSquadron && squadMembers.map(m => (
+                                        <option key={m.id} value={m.id}>{m.name}</option>
+                                    ))}
+
+                                    {/* GUEST OPTION: Only if Template allows */}
+                                    {guestAllowed && (
+                                        <option value={GUEST_EXTERNAL_KEY} className="text-orange-300">
+                                            Guest / Non-Member (No Stars)
+                                        </option>
+                                    )}
                                 </select>
                             </div>
                         );
