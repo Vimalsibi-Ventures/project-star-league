@@ -4,8 +4,10 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ROLE_TEMPLATES } from '@/lib/roleTemplates';
+import TableTopicsManager from '@/components/TableTopicsManager';
 
 const GUEST_EXTERNAL_KEY = 'GUEST_EXTERNAL_OVERRIDE';
+const COOLDOWN_DURATION = 2;
 
 export default function RoleResolutionPage({ params }) {
     const router = useRouter();
@@ -15,6 +17,11 @@ export default function RoleResolutionPage({ params }) {
     const [members, setMembers] = useState([]);
     const [assignments, setAssignments] = useState({});
     const [missingDetails, setMissingDetails] = useState([]);
+    const [currentMeetingIndex, setCurrentMeetingIndex] = useState(0);
+
+    // 1. TT State
+    const [ttParticipants, setTtParticipants] = useState([]);
+    const [ttLocked, setTtLocked] = useState(false); // PATCH 3: Locking State
 
     useEffect(() => {
         const loadData = async () => {
@@ -25,17 +32,25 @@ export default function RoleResolutionPage({ params }) {
                 fetch('/api/auctions').then(r => r.json())
             ]);
 
+            const closedCount = mRes.filter(m => m.status === 'closed').length;
+            setCurrentMeetingIndex(closedCount + 1);
+
             const currentMeeting = mRes.find(m => m.id === params.id);
             setMeeting(currentMeeting);
             setSquadrons(sRes);
             setMembers(memRes);
+
+            // 2. Load Saved TT Data & Lock State
+            if (currentMeeting && currentMeeting.tableTopics) {
+                setTtParticipants(currentMeeting.tableTopics.participants || []);
+                setTtLocked(!!currentMeeting.tableTopics.locked); // PATCH 3: Load Lock
+            }
 
             const auction = aRes.find(a => a.meetingId === params.id);
             if (auction) {
                 setAuctionItems(auction.items || []);
                 const savedAssignments = currentMeeting.roleAssignments || [];
                 const initial = {};
-
                 auction.items.forEach(item => {
                     const saved = savedAssignments.find(a => a.auctionItemId === item.id);
                     let memberValue = '';
@@ -47,7 +62,9 @@ export default function RoleResolutionPage({ params }) {
                         status: saved ? saved.status : 'completed',
                         pathways: saved && saved.pathwaysProgress ? saved.pathwaysProgress : {
                             pathwayName: '', level: '', projectName: '', speechTitle: ''
-                        }
+                        },
+                        // Restore Fee (Phase 3.3)
+                        substitutionFee: saved && saved.substitutionFee ? saved.substitutionFee : 0
                     };
                 });
                 setAssignments(initial);
@@ -62,10 +79,8 @@ export default function RoleResolutionPage({ params }) {
         auctionItems.forEach(item => {
             const assign = assignments[item.id];
             if (!assign) return;
-
             const isSpeaker = item.roleTemplateId === 'speaker' || item.title.toLowerCase().includes('speaker');
             const isMember = assign.memberId && assign.memberId !== GUEST_EXTERNAL_KEY;
-
             if (isSpeaker && isMember) {
                 const pw = assign.pathways || {};
                 const missingFields = [];
@@ -73,48 +88,55 @@ export default function RoleResolutionPage({ params }) {
                 if (!pw.level) missingFields.push('Level');
                 if (!pw.projectName) missingFields.push('Project');
                 if (!pw.speechTitle) missingFields.push('Title');
-
-                if (missingFields.length > 0) {
-                    errors.push(`${item.title}: Missing ${missingFields.join(', ')}`);
-                }
+                if (missingFields.length > 0) errors.push(`${item.title}: Missing ${missingFields.join(', ')}`);
             }
         });
         setMissingDetails(errors);
     }, [assignments, auctionItems]);
 
+    // Handlers
     const handleAssignmentChange = (itemId, field, value) => {
-        setAssignments(prev => ({
-            ...prev,
-            [itemId]: { ...prev[itemId], [field]: value }
-        }));
+        setAssignments(prev => ({ ...prev, [itemId]: { ...prev[itemId], [field]: value } }));
     };
 
     const handlePathwaysChange = (itemId, field, value) => {
         setAssignments(prev => ({
-            ...prev,
-            [itemId]: {
-                ...prev[itemId],
-                pathways: { ...prev[itemId].pathways, [field]: value }
-            }
+            ...prev, [itemId]: { ...prev[itemId], pathways: { ...prev[itemId].pathways, [field]: value } }
         }));
     };
 
-    // PATCH-C: Speaker Exclusivity Filter
+    const handleFeeChange = (itemId, value) => {
+        setAssignments(prev => ({
+            ...prev, [itemId]: { ...prev[itemId], substitutionFee: value }
+        }));
+    };
+
+    // PATCH 3: Handler for Locking TT
+    const handleLockTT = async () => {
+        if (!confirm('Lock Table Topics? This will freeze the participant list.')) return;
+
+        const res = await fetch('/api/meetings/roles/save', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                meetingId: params.id,
+                roleAssignments: getRolePayload(),
+                tableTopics: { participants: ttParticipants },
+                ttLocked: true // Signal to lock
+            })
+        });
+
+        if (res.ok) {
+            setTtLocked(true);
+        }
+    };
+
     const getAvailableMembers = (currentItemId, squadMembers) => {
-        // Find all members currently assigned to a SPEAKER role
         const speakerMemberIds = auctionItems
             .filter(i => (i.roleTemplateId === 'speaker' || i.title.toLowerCase().includes('speaker')) && i.id !== currentItemId)
             .map(i => assignments[i.id]?.memberId)
             .filter(id => id && id !== GUEST_EXTERNAL_KEY);
-
-        // If current item IS a speaker slot, we must exclude members who are already speakers elsewhere
-        const isCurrentSpeaker = auctionItems.find(i => i.id === currentItemId)?.roleTemplateId === 'speaker';
-
-        return squadMembers.filter(m => {
-            // If this member is already a speaker elsewhere, they cannot take ANY other role
-            if (speakerMemberIds.includes(m.id)) return false;
-            return true;
-        });
+        return squadMembers.filter(m => !speakerMemberIds.includes(m.id));
     };
 
     const getRolePayload = () => {
@@ -128,25 +150,30 @@ export default function RoleResolutionPage({ params }) {
                 pathwaysProgress = assignment.pathways;
             }
 
-            if (isGuest) {
-                return {
-                    auctionItemId: item.id,
-                    roleName: item.title,
-                    squadronId: null,
-                    memberId: null,
-                    status: assignment.status,
-                    fulfilledExternally: true
-                };
+            let assigneeSquadronId = null;
+            let assigneeSquadronName = '';
+            if (!isGuest && assignment.memberId) {
+                const m = members.find(x => x.id === assignment.memberId);
+                if (m) {
+                    assigneeSquadronId = m.squadronId;
+                    assigneeSquadronName = m.squadronName;
+                }
             }
-            return {
+
+            const base = {
                 auctionItemId: item.id,
                 roleName: item.title,
-                squadronId: item.winningSquadronId,
-                memberId: assignment.memberId,
+                winningSquadronId: item.winningSquadronId,
+                squadronId: assigneeSquadronId || item.winningSquadronId,
+                squadronName: assigneeSquadronName,
+                memberId: isGuest ? null : assignment.memberId,
                 status: assignment.status,
-                fulfilledExternally: false,
+                fulfilledExternally: isGuest,
+                substitutionFee: parseInt(assignment.substitutionFee || 0),
                 pathwaysProgress: pathwaysProgress
             };
+
+            return base;
         });
     };
 
@@ -154,7 +181,12 @@ export default function RoleResolutionPage({ params }) {
         const res = await fetch('/api/meetings/roles/save', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ meetingId: params.id, roleAssignments: getRolePayload() })
+            body: JSON.stringify({
+                meetingId: params.id,
+                roleAssignments: getRolePayload(),
+                tableTopics: { participants: ttParticipants },
+                ttLocked: ttLocked // Persist current lock state
+            })
         });
         if (res.ok) router.push('/admin/dashboard');
         else alert('Error saving assignments');
@@ -162,9 +194,19 @@ export default function RoleResolutionPage({ params }) {
 
     const handleCloseMeeting = async () => {
         if (missingDetails.length > 0) return alert('Cannot close: Missing Speaker details.');
-        // PATCH-E: Close button here is only for Attendance Finalized -> Awards flow? 
-        // Actually, this page is reused. If status is Awards Assigned, we can close.
         if (!confirm('Award stars, Log to Sheets, and CLOSE?')) return;
+
+        // Save latest state first
+        await fetch('/api/meetings/roles/save', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                meetingId: params.id,
+                roleAssignments: getRolePayload(),
+                tableTopics: { participants: ttParticipants },
+                ttLocked: ttLocked
+            })
+        });
 
         const res = await fetch('/api/meetings/close', {
             method: 'POST',
@@ -181,11 +223,25 @@ export default function RoleResolutionPage({ params }) {
         return !item.title.toLowerCase().includes('speaker');
     };
 
+    const getRotationWarning = (item, memberId) => {
+        const isSpeaker = item.roleTemplateId === 'speaker' || item.title.toLowerCase().includes('speaker');
+        if (!isSpeaker || !memberId || memberId === GUEST_EXTERNAL_KEY) return null;
+        const member = members.find(m => m.id === memberId);
+        const squadron = squadrons.find(s => s.id === item.winningSquadronId);
+        if (!member || !squadron) return null;
+        const lastIdx = member.lastSpeechMeetingIndex || -1;
+        const onCooldown = (currentMeetingIndex - lastIdx) <= COOLDOWN_DURATION;
+        if (onCooldown) return "⚠️ On Cooldown (No Bonus)";
+        if (squadron.rotationState && squadron.rotationState.activeOrder) {
+            const expectedId = squadron.rotationState.activeOrder[squadron.rotationState.currentIndex];
+            if (expectedId && expectedId !== memberId) return "⚠️ Out of Order (Breaks Streak)";
+        }
+        return null;
+    };
+
     if (!meeting) return <div className="p-10 text-white">Loading...</div>;
 
     const isPreMeeting = ['auction_finalized', 'role_resolution'].includes(meeting.status);
-    // PATCH-E: This page handles Role Assignment. Final Close happens in Dashboard or here depending on flow.
-    // Dashboard redirects here for final close.
     const isAwardsDone = meeting.status === 'awards_assigned';
 
     return (
@@ -201,7 +257,6 @@ export default function RoleResolutionPage({ params }) {
                     <Link href="/admin/dashboard" className="text-gray-400 text-xs font-bold uppercase hover:text-white">Cancel</Link>
                 </div>
 
-                {/* PATCH-G: Warning Banner */}
                 {missingDetails.length > 0 && (
                     <div className="bg-red-500/10 border border-red-500/50 rounded-xl p-6 mb-8">
                         <h3 className="text-red-500 font-bold uppercase tracking-widest text-sm mb-2">Required: Speaker Details</h3>
@@ -211,7 +266,27 @@ export default function RoleResolutionPage({ params }) {
                     </div>
                 )}
 
-                <div className="glass-card rounded-2xl p-8 mb-8">
+                {/* TT Manager Section with Lock Control */}
+                <div className="flex justify-between items-center mb-4 px-1">
+                    <h3 className="text-[#fbbf24] font-bold text-lg uppercase tracking-wide">Table Topics</h3>
+                    {!ttLocked ? (
+                        <button onClick={handleLockTT} className="px-3 py-1 bg-indigo-500 text-white text-xs font-bold uppercase rounded hover:bg-indigo-400">
+                            Lock / Finalize TT
+                        </button>
+                    ) : (
+                        <span className="text-xs text-green-400 font-bold uppercase border border-green-500 px-2 py-1 rounded">TT Finalized ✓</span>
+                    )}
+                </div>
+
+                {!ttLocked ? (
+                    <TableTopicsManager members={members} initialData={ttParticipants} onChange={setTtParticipants} />
+                ) : (
+                    <div className="opacity-50 pointer-events-none grayscale">
+                        <TableTopicsManager members={members} initialData={ttParticipants} onChange={setTtParticipants} />
+                    </div>
+                )}
+
+                <div className="glass-card rounded-2xl p-8 mb-8 mt-8">
                     <h2 className="text-xl font-bold text-white uppercase tracking-wide mb-6">Assignments & Pathways</h2>
 
                     {auctionItems.map(item => {
@@ -222,9 +297,11 @@ export default function RoleResolutionPage({ params }) {
                         const isSpeaker = item.roleTemplateId === 'speaker' || item.title.toLowerCase().includes('speaker');
                         const currentMemberId = assignments[item.id]?.memberId;
                         const isMemberSelected = currentMemberId && currentMemberId !== GUEST_EXTERNAL_KEY;
-
-                        // PATCH-C: Filter Members
                         const availableMembers = getAvailableMembers(item.id, squadMembers);
+                        const rotationWarning = getRotationWarning(item, currentMemberId);
+
+                        const assignedMember = members.find(m => m.id === currentMemberId);
+                        const isSubstitution = assignedMember && winningSquadron && assignedMember.squadronId !== winningSquadron.id;
 
                         if (isUnowned && !guestAllowed) return null;
 
@@ -244,13 +321,33 @@ export default function RoleResolutionPage({ params }) {
                                     </div>
                                 </div>
 
-                                <select value={assignments[item.id]?.memberId || ''} onChange={(e) => handleAssignmentChange(item.id, 'memberId', e.target.value)} className="w-full bg-black/40 border border-white/10 rounded px-4 py-3 text-white mb-4">
+                                <select value={assignments[item.id]?.memberId || ''} onChange={(e) => handleAssignmentChange(item.id, 'memberId', e.target.value)} className="w-full bg-black/40 border border-white/10 rounded px-4 py-3 text-white mb-2">
                                     <option value="">-- Assign Entity --</option>
                                     {winningSquadron && availableMembers.map(m => (
                                         <option key={m.id} value={m.id}>{m.name}</option>
                                     ))}
                                     {guestAllowed && <option value={GUEST_EXTERNAL_KEY} className="text-orange-300">Guest / Non-Member</option>}
                                 </select>
+
+                                {rotationWarning && (
+                                    <div className="text-orange-400 text-[10px] font-bold uppercase tracking-widest mb-4 bg-orange-500/10 p-2 rounded border border-orange-500/20">
+                                        {rotationWarning}
+                                    </div>
+                                )}
+
+                                {isSubstitution && !isSpeaker && (
+                                    <div className="mt-2 mb-4 p-3 bg-indigo-900/20 border border-indigo-500/30 rounded flex items-center gap-4">
+                                        <span className="text-indigo-300 text-xs font-bold uppercase tracking-wide">Mercenary Fee:</span>
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            value={assignments[item.id]?.substitutionFee || 0}
+                                            onChange={(e) => handleFeeChange(item.id, e.target.value)}
+                                            className="w-20 bg-black/50 border border-indigo-500/50 rounded px-2 py-1 text-white text-sm"
+                                        />
+                                        <span className="text-gray-500 text-xs">Stars (from {winningSquadron.name} to {assignedMember.squadronName})</span>
+                                    </div>
+                                )}
 
                                 {isSpeaker && isMemberSelected && (
                                     <div className="bg-black/20 p-4 rounded-lg border border-white/5 mt-2">

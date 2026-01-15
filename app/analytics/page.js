@@ -9,14 +9,32 @@ export default function AnalyticsPage() {
     const transactions = getTransactions();
     const meetings = getMeetings();
 
-    // 1. Calculate Apex Predator (Top Individual)
-    const apexPredator = rankedMembers[0];
+    // ---------------------------------------------------------
+    // 1. Apply Dense Ranking Logic (Consistent with Leaderboard)
+    // ---------------------------------------------------------
+    const sortedMembers = [...rankedMembers].sort((a, b) => b.totalStars - a.totalStars);
 
-    // 2. Simple Stats
+    let currentRank = 1;
+    const fullyRankedMembers = sortedMembers.map((member, index) => {
+        // Increment rank only if the current member has fewer stars than the previous one
+        if (index > 0 && member.totalStars < sortedMembers[index - 1].totalStars) {
+            currentRank++;
+        }
+        return { ...member, rank: currentRank };
+    });
+
+    // ---------------------------------------------------------
+    // 2. Stats Calculation
+    // ---------------------------------------------------------
+
+    // UPDATED: Identify ALL Apex Predators (Everyone at Rank 1)
+    const apexPredators = fullyRankedMembers.filter(m => m.rank === 1);
+
+    // Economy Stats
     const totalStarsDistributed = transactions.reduce((acc, t) => acc + t.starsDelta, 0);
     const totalAuctionsWon = transactions.filter(t => t.category === 'auction').length;
 
-    // 3. Squadron Win/Loss (Auction Spending)
+    // Squadron Win/Loss (Auction Spending)
     const squadronSpending = rankedSquadrons.map(sq => {
         const spent = transactions
             .filter(t => t.squadronId === sq.id && t.category === 'auction')
@@ -34,11 +52,21 @@ export default function AnalyticsPage() {
 
                 {/* KPI CARDS */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                    {/* APEX PREDATOR CARD (UPDATED FOR TIES) */}
                     <div className="glass-card p-6 rounded-2xl border-t-4 border-t-[#fbbf24]">
-                        <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">Apex Predator</h3>
-                        <div className="text-2xl font-black text-white mt-2">{apexPredator ? apexPredator.name : 'N/A'}</div>
-                        <div className="text-[#fbbf24] text-sm font-bold mt-1">{apexPredator ? `${apexPredator.totalStars} Stars` : ''}</div>
+                        <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">
+                            {apexPredators.length > 1 ? 'Apex Predators (Tied)' : 'Apex Predator'}
+                        </h3>
+                        <div className={`font-black text-white mt-2 ${apexPredators.length > 2 ? 'text-lg leading-snug' : 'text-2xl'}`}>
+                            {apexPredators.length > 0
+                                ? apexPredators.map(p => p.name).join(', ')
+                                : 'N/A'}
+                        </div>
+                        <div className="text-[#fbbf24] text-sm font-bold mt-1">
+                            {apexPredators.length > 0 ? `${apexPredators[0].totalStars} Stars` : ''}
+                        </div>
                     </div>
+
                     <div className="glass-card p-6 rounded-2xl border-t-4 border-t-blue-500">
                         <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">Economy Size</h3>
                         <div className="text-2xl font-black text-white mt-2">{totalStarsDistributed} ★</div>
@@ -70,7 +98,7 @@ export default function AnalyticsPage() {
                     </div>
                 </div>
 
-                {/* INDIVIDUAL TOP 10 */}
+                {/* INDIVIDUAL TOP 10 (Updated with Dense Ranking) */}
                 <div className="glass-card rounded-2xl overflow-hidden">
                     <div className="px-8 py-6 border-b border-white/5">
                         <h2 className="text-xl font-bold text-white uppercase tracking-wide">Top 10 Performers</h2>
@@ -85,9 +113,11 @@ export default function AnalyticsPage() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/5">
-                            {rankedMembers.slice(0, 10).map((m, idx) => (
-                                <tr key={m.id} className="hover:bg-white/5">
-                                    <td className="px-6 py-4 text-sm font-bold text-[#fbbf24]">#{idx + 1}</td>
+                            {fullyRankedMembers.slice(0, 10).map((m) => (
+                                <tr key={m.id} className="hover:bg-white/5 transition-colors">
+                                    <td className="px-6 py-4 text-sm font-bold text-[#fbbf24]">
+                                        #{m.rank}
+                                    </td>
                                     <td className="px-6 py-4 text-sm font-bold text-white">{m.name}</td>
                                     <td className="px-6 py-4 text-xs font-bold text-gray-400 uppercase">{m.squadronName}</td>
                                     <td className="px-6 py-4 text-right text-sm font-bold text-white">{m.totalStars}</td>

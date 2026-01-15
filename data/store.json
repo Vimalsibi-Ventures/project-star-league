@@ -9,7 +9,19 @@
         "d5d9d88d-44ef-447b-818b-1cc44b4067f4",
         "8f125611-6e65-418f-a0b3-001dda887e41"
       ],
-      "createdAt": "2026-01-13T17:25:25.537Z"
+      "createdAt": "2026-01-13T17:25:25.537Z",
+      "totalStars": 100,
+      "rotationState": {
+        "activeOrder": [
+          "f73466fe-0a67-4b63-bd7c-c6b1b01773b1",
+          "6c20ba70-5612-44cb-9042-3bd213a303be",
+          "d5d9d88d-44ef-447b-818b-1cc44b4067f4",
+          "8f125611-6e65-418f-a0b3-001dda887e41"
+        ],
+        "currentIndex": 1,
+        "streakCount": 1,
+        "brokenAtMeetingId": null
+      }
     },
     {
       "id": "e43cf522-5047-4dc9-93f0-b59180c26632",
@@ -20,7 +32,19 @@
         "998e1ec6-e2a8-405e-8797-34571ba4ceb9",
         "ff1e72cb-4d50-44f1-bce5-4be91a0d932c"
       ],
-      "createdAt": "2026-01-13T17:25:29.500Z"
+      "createdAt": "2026-01-13T17:25:29.500Z",
+      "totalStars": 100,
+      "rotationState": {
+        "activeOrder": [
+          "69a53272-130b-488c-811d-436d4cf25805",
+          "bfe602dc-5592-4dca-bb98-fa08ee713487",
+          "998e1ec6-e2a8-405e-8797-34571ba4ceb9",
+          "ff1e72cb-4d50-44f1-bce5-4be91a0d932c"
+        ],
+        "currentIndex": 1,
+        "streakCount": 1,
+        "brokenAtMeetingId": null
+      }
     },
     {
       "id": "38e54c14-03df-4f07-b225-675ac7feb4dd",
@@ -31,7 +55,19 @@
         "22b28603-c3d8-40a4-9532-315f45b732a3",
         "e664a70e-9f00-4cc0-82be-86cf4de97ec7"
       ],
-      "createdAt": "2026-01-13T17:25:33.199Z"
+      "createdAt": "2026-01-13T17:25:33.199Z",
+      "totalStars": 100,
+      "rotationState": {
+        "activeOrder": [
+          "16b83ce7-45e7-41b5-921b-c3b369e4422b",
+          "e2c1b428-578e-4a3a-8faa-372c8adb6535",
+          "22b28603-c3d8-40a4-9532-315f45b732a3",
+          "e664a70e-9f00-4cc0-82be-86cf4de97ec7"
+        ],
+        "currentIndex": 1,
+        "streakCount": 1,
+        "brokenAtMeetingId": null
+      }
     }
   ],
   "members": [
@@ -39,165 +75,1081 @@
       "id": "f73466fe-0a67-4b63-bd7c-c6b1b01773b1",
       "name": "A",
       "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
-      "joinedAt": "2026-01-13T17:25:42.028Z"
+      "joinedAt": "2026-01-13T17:25:42.028Z",
+      "totalStars": 0,
+      "lastSpeechMeetingIndex": 1,
+      "speechCooldownUntilMeetingIndex": 0
     },
     {
       "id": "6c20ba70-5612-44cb-9042-3bd213a303be",
       "name": "B",
       "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
-      "joinedAt": "2026-01-13T17:25:45.695Z"
+      "joinedAt": "2026-01-13T17:25:45.695Z",
+      "totalStars": 0,
+      "lastSpeechMeetingIndex": -10,
+      "speechCooldownUntilMeetingIndex": 0
     },
     {
       "id": "d5d9d88d-44ef-447b-818b-1cc44b4067f4",
       "name": "C",
       "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
-      "joinedAt": "2026-01-13T17:25:48.977Z"
+      "joinedAt": "2026-01-13T17:25:48.977Z",
+      "totalStars": 0,
+      "lastSpeechMeetingIndex": -10,
+      "speechCooldownUntilMeetingIndex": 0
     },
     {
       "id": "8f125611-6e65-418f-a0b3-001dda887e41",
       "name": "D",
       "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
-      "joinedAt": "2026-01-13T17:25:52.378Z"
+      "joinedAt": "2026-01-13T17:25:52.378Z",
+      "totalStars": 0,
+      "lastSpeechMeetingIndex": -10,
+      "speechCooldownUntilMeetingIndex": 0
     },
     {
       "id": "69a53272-130b-488c-811d-436d4cf25805",
       "name": "E",
       "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
-      "joinedAt": "2026-01-13T17:25:58.009Z"
+      "joinedAt": "2026-01-13T17:25:58.009Z",
+      "totalStars": 0,
+      "lastSpeechMeetingIndex": 1,
+      "speechCooldownUntilMeetingIndex": 0
     },
     {
       "id": "bfe602dc-5592-4dca-bb98-fa08ee713487",
       "name": "F",
       "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
-      "joinedAt": "2026-01-13T17:26:01.896Z"
+      "joinedAt": "2026-01-13T17:26:01.896Z",
+      "totalStars": 0,
+      "lastSpeechMeetingIndex": -10,
+      "speechCooldownUntilMeetingIndex": 0
     },
     {
       "id": "998e1ec6-e2a8-405e-8797-34571ba4ceb9",
       "name": "G",
       "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
-      "joinedAt": "2026-01-13T17:26:05.712Z"
+      "joinedAt": "2026-01-13T17:26:05.712Z",
+      "totalStars": 0,
+      "lastSpeechMeetingIndex": -10,
+      "speechCooldownUntilMeetingIndex": 0
     },
     {
       "id": "ff1e72cb-4d50-44f1-bce5-4be91a0d932c",
       "name": "H",
       "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
-      "joinedAt": "2026-01-13T17:26:12.622Z"
+      "joinedAt": "2026-01-13T17:26:12.622Z",
+      "totalStars": 0,
+      "lastSpeechMeetingIndex": -10,
+      "speechCooldownUntilMeetingIndex": 0
     },
     {
       "id": "16b83ce7-45e7-41b5-921b-c3b369e4422b",
       "name": "I",
       "squadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
-      "joinedAt": "2026-01-13T17:26:17.536Z"
+      "joinedAt": "2026-01-13T17:26:17.536Z",
+      "totalStars": 0,
+      "lastSpeechMeetingIndex": 1,
+      "speechCooldownUntilMeetingIndex": 0
     },
     {
       "id": "e2c1b428-578e-4a3a-8faa-372c8adb6535",
       "name": "J",
       "squadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
-      "joinedAt": "2026-01-13T17:26:20.966Z"
+      "joinedAt": "2026-01-13T17:26:20.966Z",
+      "totalStars": 0,
+      "lastSpeechMeetingIndex": -10,
+      "speechCooldownUntilMeetingIndex": 0
     },
     {
       "id": "22b28603-c3d8-40a4-9532-315f45b732a3",
       "name": "K",
       "squadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
-      "joinedAt": "2026-01-13T17:26:24.086Z"
+      "joinedAt": "2026-01-13T17:26:24.086Z",
+      "totalStars": 0,
+      "lastSpeechMeetingIndex": -10,
+      "speechCooldownUntilMeetingIndex": 0
     },
     {
       "id": "e664a70e-9f00-4cc0-82be-86cf4de97ec7",
       "name": "L",
       "squadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
-      "joinedAt": "2026-01-13T17:26:30.095Z"
+      "joinedAt": "2026-01-13T17:26:30.095Z",
+      "totalStars": 0,
+      "lastSpeechMeetingIndex": -10,
+      "speechCooldownUntilMeetingIndex": 0
     }
   ],
-  "meetings": [],
+  "meetings": [
+    {
+      "id": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "date": "2026-01-16",
+      "type": "online",
+      "status": "closed",
+      "roleAssignments": [
+        {
+          "auctionItemId": "e06a6db0-eb44-4c4d-8d7f-4fada8f55db4",
+          "roleName": "Speaker #1",
+          "winningSquadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+          "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+          "memberId": "f73466fe-0a67-4b63-bd7c-c6b1b01773b1",
+          "status": "completed",
+          "fulfilledExternally": false,
+          "substitutionFee": 0,
+          "pathwaysProgress": {
+            "pathwayName": "a",
+            "level": "a",
+            "projectName": "a",
+            "speechTitle": "a"
+          }
+        },
+        {
+          "auctionItemId": "90701de8-ab9c-405e-9a02-c3069c6eab64",
+          "roleName": "Speaker #2",
+          "winningSquadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
+          "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
+          "memberId": "69a53272-130b-488c-811d-436d4cf25805",
+          "status": "completed",
+          "fulfilledExternally": false,
+          "substitutionFee": 0,
+          "pathwaysProgress": {
+            "pathwayName": "e",
+            "level": "e",
+            "projectName": "e",
+            "speechTitle": "e"
+          }
+        },
+        {
+          "auctionItemId": "de5b380c-c39d-4e8f-b881-34ffdc423221",
+          "roleName": "Speaker #3",
+          "winningSquadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+          "squadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+          "memberId": "16b83ce7-45e7-41b5-921b-c3b369e4422b",
+          "status": "completed",
+          "fulfilledExternally": false,
+          "substitutionFee": 0,
+          "pathwaysProgress": {
+            "pathwayName": "i",
+            "level": "i",
+            "projectName": "i",
+            "speechTitle": "i"
+          }
+        },
+        {
+          "auctionItemId": "09d7996c-dcc9-41e1-8d50-8e57437ad0e4",
+          "roleName": "Evaluator #1",
+          "winningSquadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+          "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+          "memberId": "6c20ba70-5612-44cb-9042-3bd213a303be",
+          "status": "completed",
+          "fulfilledExternally": false,
+          "substitutionFee": 0,
+          "pathwaysProgress": null
+        },
+        {
+          "auctionItemId": "fb1d6101-2a1d-47b8-a437-3a106b12056a",
+          "roleName": "Evaluator #2",
+          "winningSquadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
+          "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
+          "memberId": "bfe602dc-5592-4dca-bb98-fa08ee713487",
+          "status": "completed",
+          "fulfilledExternally": false,
+          "substitutionFee": 0,
+          "pathwaysProgress": null
+        },
+        {
+          "auctionItemId": "79eb7279-1409-4f78-b94c-7899bdd510fb",
+          "roleName": "Evaluator #3",
+          "winningSquadronId": "",
+          "squadronId": "",
+          "squadronName": "",
+          "memberId": null,
+          "status": "completed",
+          "fulfilledExternally": true,
+          "substitutionFee": 0,
+          "pathwaysProgress": null
+        },
+        {
+          "auctionItemId": "5983ffb4-e85b-4d6d-9029-dacb4104b99e",
+          "roleName": "Toastmaster of the Day",
+          "winningSquadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+          "squadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+          "memberId": "e2c1b428-578e-4a3a-8faa-372c8adb6535",
+          "status": "completed",
+          "fulfilledExternally": false,
+          "substitutionFee": 0,
+          "pathwaysProgress": null
+        },
+        {
+          "auctionItemId": "a626bb2e-4547-430b-a75c-946cb5c0443c",
+          "roleName": "General Evaluator",
+          "winningSquadronId": "",
+          "squadronId": "",
+          "squadronName": "",
+          "memberId": null,
+          "status": "completed",
+          "fulfilledExternally": true,
+          "substitutionFee": 0,
+          "pathwaysProgress": null
+        },
+        {
+          "auctionItemId": "03c860b4-1f92-4424-9697-33394444c796",
+          "roleName": "Table Topics Master",
+          "winningSquadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+          "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+          "memberId": "d5d9d88d-44ef-447b-818b-1cc44b4067f4",
+          "status": "completed",
+          "fulfilledExternally": false,
+          "substitutionFee": 0,
+          "pathwaysProgress": null
+        },
+        {
+          "auctionItemId": "22b17d15-6b9c-4345-98ea-7967048f94b6",
+          "roleName": "Timer",
+          "winningSquadronId": "",
+          "squadronId": "",
+          "squadronName": "",
+          "memberId": null,
+          "status": "completed",
+          "fulfilledExternally": true,
+          "substitutionFee": 0,
+          "pathwaysProgress": null
+        },
+        {
+          "auctionItemId": "c380bd0e-8dc1-488c-9474-9a8d799feb7f",
+          "roleName": "Ah-Counter",
+          "winningSquadronId": "",
+          "squadronId": "",
+          "squadronName": "",
+          "memberId": null,
+          "status": "completed",
+          "fulfilledExternally": true,
+          "substitutionFee": 0,
+          "pathwaysProgress": null
+        },
+        {
+          "auctionItemId": "15c1d6c6-53dd-4fa1-8d17-c2a071964264",
+          "roleName": "Grammarian",
+          "winningSquadronId": "",
+          "squadronId": "",
+          "squadronName": "",
+          "memberId": null,
+          "status": "completed",
+          "fulfilledExternally": true,
+          "substitutionFee": 0,
+          "pathwaysProgress": null
+        }
+      ],
+      "createdAt": "2026-01-15T10:18:52.493Z",
+      "tableTopics": {
+        "participants": [
+          {
+            "orderIndex": 1,
+            "memberId": "6c20ba70-5612-44cb-9042-3bd213a303be",
+            "name": "B",
+            "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+            "isGuest": false
+          },
+          {
+            "orderIndex": 2,
+            "memberId": "bfe602dc-5592-4dca-bb98-fa08ee713487",
+            "name": "F",
+            "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
+            "isGuest": false
+          },
+          {
+            "orderIndex": 3,
+            "memberId": "d5d9d88d-44ef-447b-818b-1cc44b4067f4",
+            "name": "C",
+            "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+            "isGuest": false
+          },
+          {
+            "orderIndex": 4,
+            "memberId": "e2c1b428-578e-4a3a-8faa-372c8adb6535",
+            "name": "J",
+            "squadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+            "isGuest": false
+          },
+          {
+            "orderIndex": 5,
+            "memberId": "8f125611-6e65-418f-a0b3-001dda887e41",
+            "name": "D",
+            "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+            "isGuest": false
+          },
+          {
+            "orderIndex": 6,
+            "memberId": "998e1ec6-e2a8-405e-8797-34571ba4ceb9",
+            "name": "G",
+            "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
+            "isGuest": false
+          },
+          {
+            "orderIndex": 7,
+            "memberId": null,
+            "name": "X (Guest)",
+            "squadronId": null,
+            "isGuest": true
+          }
+        ],
+        "locked": true
+      },
+      "scoringData": {
+        "c8355df5-9ebc-4121-a602-6c75ffe19873": {
+          "attendedMemberIds": [
+            "f73466fe-0a67-4b63-bd7c-c6b1b01773b1",
+            "6c20ba70-5612-44cb-9042-3bd213a303be",
+            "d5d9d88d-44ef-447b-818b-1cc44b4067f4",
+            "8f125611-6e65-418f-a0b3-001dda887e41"
+          ],
+          "lateMemberIds": [],
+          "rolesCount": 0,
+          "speechesCount": 0,
+          "awardsCount": 0,
+          "manualAdjustment": 0
+        },
+        "e43cf522-5047-4dc9-93f0-b59180c26632": {
+          "attendedMemberIds": [
+            "69a53272-130b-488c-811d-436d4cf25805",
+            "bfe602dc-5592-4dca-bb98-fa08ee713487",
+            "998e1ec6-e2a8-405e-8797-34571ba4ceb9"
+          ],
+          "lateMemberIds": [],
+          "rolesCount": 0,
+          "speechesCount": 0,
+          "awardsCount": 0,
+          "manualAdjustment": 0
+        },
+        "38e54c14-03df-4f07-b225-675ac7feb4dd": {
+          "attendedMemberIds": [
+            "16b83ce7-45e7-41b5-921b-c3b369e4422b",
+            "e2c1b428-578e-4a3a-8faa-372c8adb6535",
+            "22b28603-c3d8-40a4-9532-315f45b732a3"
+          ],
+          "lateMemberIds": [],
+          "rolesCount": 0,
+          "speechesCount": 0,
+          "awardsCount": 0,
+          "manualAdjustment": 0
+        }
+      },
+      "awards": [
+        {
+          "title": "Best Speaker",
+          "memberId": "f73466fe-0a67-4b63-bd7c-c6b1b01773b1",
+          "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+          "isGuest": false
+        },
+        {
+          "title": "Best Evaluator",
+          "memberId": "bfe602dc-5592-4dca-bb98-fa08ee713487",
+          "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
+          "isGuest": false
+        },
+        {
+          "title": "Best Table Topics Speaker",
+          "memberId": "6c20ba70-5612-44cb-9042-3bd213a303be",
+          "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+          "isGuest": false
+        },
+        {
+          "title": "Best Role Player",
+          "memberId": "e2c1b428-578e-4a3a-8faa-372c8adb6535",
+          "squadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+          "isGuest": false
+        },
+        {
+          "title": "Best TAG Player",
+          "memberId": null,
+          "squadronId": null,
+          "isGuest": true
+        }
+      ]
+    }
+  ],
   "transactions": [
     {
-      "id": "63250964-5eba-4ee2-bc63-6fee442ba203",
+      "id": "e3fdae4b-dc71-4bf1-a558-2c5bf52fd317",
       "meetingId": "system-seed-term-start",
       "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
       "category": "seed",
       "description": "New Term Seed Allocation",
       "starsDelta": 100,
-      "timestamp": "2026-01-14T18:44:27.916Z",
+      "timestamp": "2026-01-15T10:18:12.239Z",
       "locked": true
     },
     {
-      "id": "697f16d6-02cf-49dc-a13c-7115dd372762",
+      "id": "d4b4ba1a-aeda-4f37-aeeb-3ba45852c6a8",
       "meetingId": "system-seed-term-start",
       "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
       "category": "seed",
       "description": "New Term Seed Allocation",
       "starsDelta": 100,
-      "timestamp": "2026-01-14T18:44:27.916Z",
+      "timestamp": "2026-01-15T10:18:12.239Z",
       "locked": true
     },
     {
-      "id": "e8dd8c52-b5d0-4c13-8e67-5410be809492",
+      "id": "f2beaee6-05e1-4ab9-8ce1-bdea0299942a",
       "meetingId": "system-seed-term-start",
       "squadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
       "category": "seed",
       "description": "New Term Seed Allocation",
       "starsDelta": 100,
-      "timestamp": "2026-01-14T18:44:27.916Z",
+      "timestamp": "2026-01-15T10:18:12.239Z",
+      "locked": true
+    },
+    {
+      "id": "811415ae-f599-4b83-aaa0-60daa0ce7597",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+      "memberId": null,
+      "category": "auction",
+      "description": "Won Auction: Speaker #1",
+      "starsDelta": -10,
+      "timestamp": "2026-01-15T10:20:31.476Z",
+      "locked": true
+    },
+    {
+      "id": "b9e08c77-c436-4f7a-8c19-56aa5cfa064f",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
+      "memberId": null,
+      "category": "auction",
+      "description": "Won Auction: Speaker #2",
+      "starsDelta": -10,
+      "timestamp": "2026-01-15T10:20:31.476Z",
+      "locked": true
+    },
+    {
+      "id": "8bc922fc-7367-469d-96c6-5f3f7cc12acf",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+      "memberId": null,
+      "category": "auction",
+      "description": "Won Auction: Speaker #3",
+      "starsDelta": -10,
+      "timestamp": "2026-01-15T10:20:31.476Z",
+      "locked": true
+    },
+    {
+      "id": "1b1b83e3-0893-4a14-9ca7-04de067dcd05",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+      "memberId": null,
+      "category": "auction",
+      "description": "Won Auction: Evaluator #1",
+      "starsDelta": -10,
+      "timestamp": "2026-01-15T10:20:31.476Z",
+      "locked": true
+    },
+    {
+      "id": "05754716-9685-4379-9d51-2ae7f686c6df",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
+      "memberId": null,
+      "category": "auction",
+      "description": "Won Auction: Evaluator #2",
+      "starsDelta": -10,
+      "timestamp": "2026-01-15T10:20:31.476Z",
+      "locked": true
+    },
+    {
+      "id": "d0c942dd-10cd-450a-9d12-9c60fc881cb1",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+      "memberId": null,
+      "category": "auction",
+      "description": "Won Auction: Toastmaster of the Day",
+      "starsDelta": -10,
+      "timestamp": "2026-01-15T10:20:31.476Z",
+      "locked": true
+    },
+    {
+      "id": "94755bd8-55fd-42e6-b29e-46caa500d06a",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+      "memberId": null,
+      "category": "auction",
+      "description": "Won Auction: Table Topics Master",
+      "starsDelta": -10,
+      "timestamp": "2026-01-15T10:20:31.476Z",
+      "locked": true
+    },
+    {
+      "id": "409622b7-8b7b-437b-8e31-8705b1bcf26a",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+      "memberId": "f73466fe-0a67-4b63-bd7c-c6b1b01773b1",
+      "category": "attendance",
+      "description": "Attended online meeting",
+      "starsDelta": 5,
+      "timestamp": "2026-01-15T10:22:29.547Z"
+    },
+    {
+      "id": "85a26f0b-51e1-4d6b-92f8-1ab3964d0ac7",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+      "memberId": "6c20ba70-5612-44cb-9042-3bd213a303be",
+      "category": "attendance",
+      "description": "Attended online meeting",
+      "starsDelta": 5,
+      "timestamp": "2026-01-15T10:22:29.547Z"
+    },
+    {
+      "id": "b643311e-5074-43d6-8aa9-6c9e1bba3eec",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+      "memberId": "d5d9d88d-44ef-447b-818b-1cc44b4067f4",
+      "category": "attendance",
+      "description": "Attended online meeting",
+      "starsDelta": 5,
+      "timestamp": "2026-01-15T10:22:29.547Z"
+    },
+    {
+      "id": "edbf7842-9c3c-4487-af73-5a557a471c00",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+      "memberId": "8f125611-6e65-418f-a0b3-001dda887e41",
+      "category": "attendance",
+      "description": "Attended online meeting",
+      "starsDelta": 5,
+      "timestamp": "2026-01-15T10:22:29.547Z"
+    },
+    {
+      "id": "d4e32400-b947-4d9a-80ed-9535d2660fcc",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+      "memberId": null,
+      "category": "bonus",
+      "description": "Perfect Attendance Bonus (4/4)",
+      "starsDelta": 20,
+      "timestamp": "2026-01-15T10:22:29.547Z"
+    },
+    {
+      "id": "f4f57a55-f3ed-4757-b254-00547b780936",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
+      "memberId": "69a53272-130b-488c-811d-436d4cf25805",
+      "category": "attendance",
+      "description": "Attended online meeting",
+      "starsDelta": 5,
+      "timestamp": "2026-01-15T10:22:29.548Z"
+    },
+    {
+      "id": "86c9acc6-9df9-464c-a54f-51232713fe46",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
+      "memberId": "bfe602dc-5592-4dca-bb98-fa08ee713487",
+      "category": "attendance",
+      "description": "Attended online meeting",
+      "starsDelta": 5,
+      "timestamp": "2026-01-15T10:22:29.548Z"
+    },
+    {
+      "id": "db2d2a02-2d25-4598-bd1e-ba73fc22ca9a",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
+      "memberId": "998e1ec6-e2a8-405e-8797-34571ba4ceb9",
+      "category": "attendance",
+      "description": "Attended online meeting",
+      "starsDelta": 5,
+      "timestamp": "2026-01-15T10:22:29.548Z"
+    },
+    {
+      "id": "535a6732-d452-4293-b355-4be804b860c3",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+      "memberId": "16b83ce7-45e7-41b5-921b-c3b369e4422b",
+      "category": "attendance",
+      "description": "Attended online meeting",
+      "starsDelta": 5,
+      "timestamp": "2026-01-15T10:22:29.548Z"
+    },
+    {
+      "id": "c1876443-70d1-4aa3-ac1e-3bcb3521ccfe",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+      "memberId": "e2c1b428-578e-4a3a-8faa-372c8adb6535",
+      "category": "attendance",
+      "description": "Attended online meeting",
+      "starsDelta": 5,
+      "timestamp": "2026-01-15T10:22:29.548Z"
+    },
+    {
+      "id": "c2da0e24-5cdd-48f0-8f0a-0458cbe980cd",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+      "memberId": "22b28603-c3d8-40a4-9532-315f45b732a3",
+      "category": "attendance",
+      "description": "Attended online meeting",
+      "starsDelta": 5,
+      "timestamp": "2026-01-15T10:22:29.548Z"
+    },
+    {
+      "id": "1293aa0e-b031-450e-b027-bdca57e6d828",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+      "memberId": "f73466fe-0a67-4b63-bd7c-c6b1b01773b1",
+      "category": "award",
+      "description": "Award Winner: Best Speaker",
+      "starsDelta": 5,
+      "timestamp": "2026-01-15T10:23:55.502Z",
+      "locked": true
+    },
+    {
+      "id": "e14c8411-fb18-4094-a28f-6c9e97e58b90",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
+      "memberId": "bfe602dc-5592-4dca-bb98-fa08ee713487",
+      "category": "award",
+      "description": "Award Winner: Best Evaluator",
+      "starsDelta": 5,
+      "timestamp": "2026-01-15T10:23:55.502Z",
+      "locked": true
+    },
+    {
+      "id": "aae9131e-8576-4545-9813-42f3be7003e6",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+      "memberId": "6c20ba70-5612-44cb-9042-3bd213a303be",
+      "category": "award",
+      "description": "Award Winner: Best Table Topics Speaker",
+      "starsDelta": 5,
+      "timestamp": "2026-01-15T10:23:55.502Z",
+      "locked": true
+    },
+    {
+      "id": "60893d65-9360-4554-9d77-f7c2b7946624",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+      "memberId": "e2c1b428-578e-4a3a-8faa-372c8adb6535",
+      "category": "award",
+      "description": "Award Winner: Best Role Player",
+      "starsDelta": 5,
+      "timestamp": "2026-01-15T10:23:55.502Z",
+      "locked": true
+    },
+    {
+      "id": "172d4807-cccc-4148-b6a5-9c88eb745be5",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+      "memberId": null,
+      "category": "synergy",
+      "description": "Synergy Bonus (3 Active Members)",
+      "starsDelta": 15,
+      "timestamp": "2026-01-15T10:23:55.502Z",
+      "locked": true
+    },
+    {
+      "id": "ef8d2a7c-cd23-4503-87b7-4b25763e207a",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
+      "memberId": null,
+      "category": "synergy",
+      "description": "Synergy Bonus (2 Active Members)",
+      "starsDelta": 10,
+      "timestamp": "2026-01-15T10:23:55.502Z",
+      "locked": true
+    },
+    {
+      "id": "b86902d4-0d47-4d46-a36d-80196a80027e",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+      "memberId": null,
+      "category": "synergy",
+      "description": "Synergy Bonus (2 Active Members)",
+      "starsDelta": 10,
+      "timestamp": "2026-01-15T10:23:55.502Z",
+      "locked": true
+    },
+    {
+      "id": "bbdbc64b-1450-4610-8811-33589b292caf",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+      "memberId": "f73466fe-0a67-4b63-bd7c-c6b1b01773b1",
+      "category": "role",
+      "description": "Role: Speaker #1",
+      "starsDelta": 10,
+      "timestamp": "2026-01-15T10:24:21.847Z",
+      "locked": true
+    },
+    {
+      "id": "429dd289-49f1-47f6-9b0e-970f71681ee1",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
+      "memberId": "69a53272-130b-488c-811d-436d4cf25805",
+      "category": "role",
+      "description": "Role: Speaker #2",
+      "starsDelta": 10,
+      "timestamp": "2026-01-15T10:24:21.847Z",
+      "locked": true
+    },
+    {
+      "id": "eee753b6-faa2-4aa7-9dbf-246e2370c1c1",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+      "memberId": "16b83ce7-45e7-41b5-921b-c3b369e4422b",
+      "category": "role",
+      "description": "Role: Speaker #3",
+      "starsDelta": 10,
+      "timestamp": "2026-01-15T10:24:21.847Z",
+      "locked": true
+    },
+    {
+      "id": "358b1998-d743-42fd-9060-370bf93f038b",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+      "memberId": "6c20ba70-5612-44cb-9042-3bd213a303be",
+      "category": "role",
+      "description": "Role: Evaluator #1",
+      "starsDelta": 5,
+      "timestamp": "2026-01-15T10:24:21.847Z",
+      "locked": true
+    },
+    {
+      "id": "e8084d4e-cc67-45cf-a29f-e8ad879e9dc7",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
+      "memberId": "bfe602dc-5592-4dca-bb98-fa08ee713487",
+      "category": "role",
+      "description": "Role: Evaluator #2",
+      "starsDelta": 5,
+      "timestamp": "2026-01-15T10:24:21.847Z",
+      "locked": true
+    },
+    {
+      "id": "521a1fef-3cb9-4d7f-9167-249a98fce426",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+      "memberId": "e2c1b428-578e-4a3a-8faa-372c8adb6535",
+      "category": "role",
+      "description": "Role: Toastmaster of the Day",
+      "starsDelta": 5,
+      "timestamp": "2026-01-15T10:24:21.847Z",
+      "locked": true
+    },
+    {
+      "id": "65b667c6-0b53-4170-b491-a9df5e66c9db",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+      "memberId": "d5d9d88d-44ef-447b-818b-1cc44b4067f4",
+      "category": "role",
+      "description": "Role: Table Topics Master",
+      "starsDelta": 5,
+      "timestamp": "2026-01-15T10:24:21.847Z",
+      "locked": true
+    },
+    {
+      "id": "27517048-b80d-4bbf-adde-e46546d36d21",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+      "memberId": "6c20ba70-5612-44cb-9042-3bd213a303be",
+      "category": "tt_individual",
+      "description": "TT/Activity Leader (+15)",
+      "starsDelta": 15,
+      "timestamp": "2026-01-15T10:24:21.847Z",
+      "locked": true
+    },
+    {
+      "id": "240d07e7-7fcd-4202-aa1e-0bdd586145d8",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+      "memberId": "d5d9d88d-44ef-447b-818b-1cc44b4067f4",
+      "category": "tt_individual",
+      "description": "TT/Activity Participant (+10)",
+      "starsDelta": 10,
+      "timestamp": "2026-01-15T10:24:21.847Z",
+      "locked": true
+    },
+    {
+      "id": "14332afd-efe4-452a-83e1-e2f93f2e35be",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+      "memberId": "8f125611-6e65-418f-a0b3-001dda887e41",
+      "category": "tt_individual",
+      "description": "TT/Activity Participant (+10)",
+      "starsDelta": 10,
+      "timestamp": "2026-01-15T10:24:21.847Z",
+      "locked": true
+    },
+    {
+      "id": "7958c563-f5cc-4971-a92d-48dabb728151",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+      "memberId": null,
+      "category": "tt_squadron_synergy",
+      "description": "TT/Activity Synergy (3 members)",
+      "starsDelta": 15,
+      "timestamp": "2026-01-15T10:24:21.847Z",
+      "locked": true
+    },
+    {
+      "id": "0e31ffd2-8ab1-4398-8b3e-5c779b361318",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
+      "memberId": "bfe602dc-5592-4dca-bb98-fa08ee713487",
+      "category": "tt_individual",
+      "description": "TT/Activity Leader (+15)",
+      "starsDelta": 15,
+      "timestamp": "2026-01-15T10:24:21.847Z",
+      "locked": true
+    },
+    {
+      "id": "602ad66c-7cc7-4221-8965-d8596c042943",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
+      "memberId": "998e1ec6-e2a8-405e-8797-34571ba4ceb9",
+      "category": "tt_individual",
+      "description": "TT/Activity Participant (+10)",
+      "starsDelta": 10,
+      "timestamp": "2026-01-15T10:24:21.847Z",
+      "locked": true
+    },
+    {
+      "id": "9cb14be8-ee89-4e11-ac0b-7e4a55c34729",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
+      "memberId": null,
+      "category": "tt_squadron_synergy",
+      "description": "TT/Activity Synergy (2 members)",
+      "starsDelta": 10,
+      "timestamp": "2026-01-15T10:24:21.847Z",
+      "locked": true
+    },
+    {
+      "id": "08b93297-4a6a-43f3-81fc-b22aff96b5cd",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+      "memberId": "e2c1b428-578e-4a3a-8faa-372c8adb6535",
+      "category": "tt_individual",
+      "description": "TT/Activity Leader (+15)",
+      "starsDelta": 15,
+      "timestamp": "2026-01-15T10:24:21.847Z",
+      "locked": true
+    },
+    {
+      "id": "5feffcd4-09b1-4c3b-b07c-cc0141cb6191",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+      "memberId": null,
+      "category": "tt_squadron_synergy",
+      "description": "TT/Activity Synergy (1 members)",
+      "starsDelta": 5,
+      "timestamp": "2026-01-15T10:24:21.847Z",
+      "locked": true
+    },
+    {
+      "id": "bb83f145-ef66-4167-8d72-04f1e4db07de",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+      "memberId": "f73466fe-0a67-4b63-bd7c-c6b1b01773b1",
+      "category": "rotation_bonus",
+      "description": "Fair Play Rotation Bonus",
+      "starsDelta": 5,
+      "timestamp": "2026-01-15T10:24:21.848Z",
+      "locked": true
+    },
+    {
+      "id": "e5662e3c-ea32-41b4-a1cb-ed50e8f29f02",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
+      "memberId": "69a53272-130b-488c-811d-436d4cf25805",
+      "category": "rotation_bonus",
+      "description": "Fair Play Rotation Bonus",
+      "starsDelta": 5,
+      "timestamp": "2026-01-15T10:24:21.848Z",
+      "locked": true
+    },
+    {
+      "id": "6d11f76f-02bc-40ad-8937-cafc1d8361a8",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
+      "squadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+      "memberId": "16b83ce7-45e7-41b5-921b-c3b369e4422b",
+      "category": "rotation_bonus",
+      "description": "Fair Play Rotation Bonus",
+      "starsDelta": 5,
+      "timestamp": "2026-01-15T10:24:21.848Z",
+      "locked": true
+    },
+    {
+      "id": "8bd0c24a-37ca-450d-bc5c-bb79ece748f3",
+      "meetingId": "e4b8a1b1-f9e3-42b1-a5d0-50d8716322e7",
+      "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
+      "memberId": null,
+      "category": "auction",
+      "description": "Won Auction: Speaker #1",
+      "starsDelta": -10,
+      "timestamp": "2026-01-15T10:35:33.442Z",
+      "locked": true
+    },
+    {
+      "id": "1f69555a-8257-4073-8a32-bed057555662",
+      "meetingId": "e4b8a1b1-f9e3-42b1-a5d0-50d8716322e7",
+      "squadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+      "memberId": null,
+      "category": "auction",
+      "description": "Won Auction: Evaluator #1",
+      "starsDelta": -10,
+      "timestamp": "2026-01-15T10:35:33.442Z",
+      "locked": true
+    },
+    {
+      "id": "4f15b22c-cf39-4eea-ae56-c37d20a55e5f",
+      "meetingId": "e4b8a1b1-f9e3-42b1-a5d0-50d8716322e7",
+      "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+      "memberId": null,
+      "category": "auction",
+      "description": "Won Auction: Toastmaster of the Day",
+      "starsDelta": -10,
+      "timestamp": "2026-01-15T10:35:33.442Z",
+      "locked": true
+    },
+    {
+      "id": "cf1de832-1c32-4839-af72-05422dddd8a4",
+      "meetingId": "e4b8a1b1-f9e3-42b1-a5d0-50d8716322e7",
+      "squadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+      "memberId": null,
+      "category": "auction",
+      "description": "Won Auction: General Evaluator",
+      "starsDelta": -10,
+      "timestamp": "2026-01-15T10:35:33.442Z",
+      "locked": true
+    },
+    {
+      "id": "e6c80370-0630-42d9-9c8c-8bb452ef6dd6",
+      "meetingId": "e4b8a1b1-f9e3-42b1-a5d0-50d8716322e7",
+      "squadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
+      "memberId": null,
+      "category": "auction_refund",
+      "description": "Refund: Cancelled Meeting (Won Auction: Speaker #1)",
+      "starsDelta": 10,
+      "timestamp": "2026-01-15T10:35:44.615Z",
+      "locked": true
+    },
+    {
+      "id": "01f1e969-cf09-47c7-b296-76180ab65a01",
+      "meetingId": "e4b8a1b1-f9e3-42b1-a5d0-50d8716322e7",
+      "squadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+      "memberId": null,
+      "category": "auction_refund",
+      "description": "Refund: Cancelled Meeting (Won Auction: Evaluator #1)",
+      "starsDelta": 10,
+      "timestamp": "2026-01-15T10:35:44.615Z",
+      "locked": true
+    },
+    {
+      "id": "3cbb8dda-e10a-43fc-ab1a-28d484d94cef",
+      "meetingId": "e4b8a1b1-f9e3-42b1-a5d0-50d8716322e7",
+      "squadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+      "memberId": null,
+      "category": "auction_refund",
+      "description": "Refund: Cancelled Meeting (Won Auction: Toastmaster of the Day)",
+      "starsDelta": 10,
+      "timestamp": "2026-01-15T10:35:44.615Z",
+      "locked": true
+    },
+    {
+      "id": "1bb53c9f-35b6-4cbc-aacf-9dad741158ad",
+      "meetingId": "e4b8a1b1-f9e3-42b1-a5d0-50d8716322e7",
+      "squadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+      "memberId": null,
+      "category": "auction_refund",
+      "description": "Refund: Cancelled Meeting (Won Auction: General Evaluator)",
+      "starsDelta": 10,
+      "timestamp": "2026-01-15T10:35:44.615Z",
       "locked": true
     }
   ],
   "auctions": [
     {
-      "id": "154a2f25-80f9-4e6c-b3d3-0b12958d4df9",
-      "meetingId": "7d7817d4-3d83-48cc-a9a0-71d39e310b65",
+      "id": "682f1683-8873-4e0d-8418-f52610966e7a",
+      "meetingId": "321d0e09-53cc-4808-ae98-f1364b29638f",
       "status": "finalized",
-      "createdAt": "2026-01-14T18:46:07.959Z",
+      "createdAt": "2026-01-15T10:20:15.002Z",
       "items": [
         {
-          "id": "182517a9-2e05-46aa-9ca7-0d1379cac2fd",
+          "id": "e06a6db0-eb44-4c4d-8d7f-4fada8f55db4",
           "title": "Speaker #1",
           "roleTemplateId": "speaker",
           "slotLabel": "Slot 1",
           "winningSquadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
-          "starsSpent": 0
+          "starsSpent": 10
         },
         {
-          "id": "62e9bc74-1e38-4b25-919a-4000d61ebe31",
+          "id": "90701de8-ab9c-405e-9a02-c3069c6eab64",
+          "title": "Speaker #2",
+          "roleTemplateId": "speaker",
+          "slotLabel": "Slot 2",
+          "winningSquadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
+          "starsSpent": 10
+        },
+        {
+          "id": "de5b380c-c39d-4e8f-b881-34ffdc423221",
+          "title": "Speaker #3",
+          "roleTemplateId": "speaker",
+          "slotLabel": "Slot 3",
+          "winningSquadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+          "starsSpent": 10
+        },
+        {
+          "id": "09d7996c-dcc9-41e1-8d50-8e57437ad0e4",
           "title": "Evaluator #1",
           "roleTemplateId": "evaluator",
           "slotLabel": "Slot 1",
+          "winningSquadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+          "starsSpent": 10
+        },
+        {
+          "id": "fb1d6101-2a1d-47b8-a437-3a106b12056a",
+          "title": "Evaluator #2",
+          "roleTemplateId": "evaluator",
+          "slotLabel": "Slot 2",
           "winningSquadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
+          "starsSpent": 10
+        },
+        {
+          "id": "79eb7279-1409-4f78-b94c-7899bdd510fb",
+          "title": "Evaluator #3",
+          "roleTemplateId": "evaluator",
+          "slotLabel": "Slot 3",
+          "winningSquadronId": "",
           "starsSpent": 0
         },
         {
-          "id": "80424201-6e4d-4b98-a9b8-84bc605f6494",
+          "id": "5983ffb4-e85b-4d6d-9029-dacb4104b99e",
           "title": "Toastmaster of the Day",
           "roleTemplateId": "tmod",
           "slotLabel": "Toastmaster of the Day",
           "winningSquadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
-          "starsSpent": 0
+          "starsSpent": 10
         },
         {
-          "id": "08cfe844-0015-4c4c-84c7-957cbce88171",
+          "id": "a626bb2e-4547-430b-a75c-946cb5c0443c",
           "title": "General Evaluator",
           "roleTemplateId": "ge",
           "slotLabel": "General Evaluator",
-          "winningSquadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+          "winningSquadronId": "",
           "starsSpent": 0
         },
         {
-          "id": "a4665c8d-3a24-4d62-8c95-9f3fef131c51",
+          "id": "03c860b4-1f92-4424-9697-33394444c796",
           "title": "Table Topics Master",
           "roleTemplateId": "ttm",
           "slotLabel": "Table Topics Master",
-          "winningSquadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
-          "starsSpent": 0
+          "winningSquadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+          "starsSpent": 10
         },
         {
-          "id": "2eb70dea-2f17-41c0-8510-7ca2e844a53d",
+          "id": "22b17d15-6b9c-4345-98ea-7967048f94b6",
           "title": "Timer",
           "roleTemplateId": "timer",
           "slotLabel": "Timer",
-          "winningSquadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+          "winningSquadronId": "",
           "starsSpent": 0
         },
         {
-          "id": "de27c7d9-15c7-4600-a4f0-21f045214000",
+          "id": "c380bd0e-8dc1-488c-9474-9a8d799feb7f",
           "title": "Ah-Counter",
           "roleTemplateId": "ah-counter",
           "slotLabel": "Ah-Counter",
@@ -205,7 +1157,7 @@
           "starsSpent": 0
         },
         {
-          "id": "7f4e93fa-47bd-4be6-9de9-fe3e2b2a2b00",
+          "id": "15c1d6c6-53dd-4fa1-8d17-c2a071964264",
           "title": "Grammarian",
           "roleTemplateId": "grammarian",
           "slotLabel": "Grammarian",
@@ -213,6 +1165,102 @@
           "starsSpent": 0
         }
       ]
+    },
+    {
+      "id": "5c8c78a6-cf61-40db-8e90-1e822299c9d9",
+      "meetingId": "e4b8a1b1-f9e3-42b1-a5d0-50d8716322e7",
+      "status": "finalized",
+      "createdAt": "2026-01-15T10:35:27.192Z",
+      "items": [
+        {
+          "id": "8c85abc6-1b1b-411c-b344-f2592aa69188",
+          "title": "Speaker #1",
+          "roleTemplateId": "speaker",
+          "slotLabel": "Slot 1",
+          "winningSquadronId": "e43cf522-5047-4dc9-93f0-b59180c26632",
+          "starsSpent": 10
+        },
+        {
+          "id": "4ebd67f3-b465-4761-9278-912ed88711b2",
+          "title": "Evaluator #1",
+          "roleTemplateId": "evaluator",
+          "slotLabel": "Slot 1",
+          "winningSquadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+          "starsSpent": 10
+        },
+        {
+          "id": "5bcb3b50-7d57-4cc9-9e39-42357f098620",
+          "title": "Toastmaster of the Day",
+          "roleTemplateId": "tmod",
+          "slotLabel": "Toastmaster of the Day",
+          "winningSquadronId": "c8355df5-9ebc-4121-a602-6c75ffe19873",
+          "starsSpent": 10
+        },
+        {
+          "id": "6fe3f744-8741-466a-afd5-95b85a77540c",
+          "title": "General Evaluator",
+          "roleTemplateId": "ge",
+          "slotLabel": "General Evaluator",
+          "winningSquadronId": "38e54c14-03df-4f07-b225-675ac7feb4dd",
+          "starsSpent": 10
+        },
+        {
+          "id": "0bc4e3a4-d4eb-4e53-8172-36b946f2cc45",
+          "title": "Table Topics Master",
+          "roleTemplateId": "ttm",
+          "slotLabel": "Table Topics Master",
+          "winningSquadronId": "",
+          "starsSpent": 0
+        },
+        {
+          "id": "0d83387e-7049-4edf-87cf-c88dc9e39417",
+          "title": "Timer",
+          "roleTemplateId": "timer",
+          "slotLabel": "Timer",
+          "winningSquadronId": "",
+          "starsSpent": 0
+        },
+        {
+          "id": "7625cf46-ce94-4191-9460-e7ec8352e99d",
+          "title": "Ah-Counter",
+          "roleTemplateId": "ah-counter",
+          "slotLabel": "Ah-Counter",
+          "winningSquadronId": "",
+          "starsSpent": 0
+        },
+        {
+          "id": "c502426d-735d-42ae-88cd-f7e9b8feb8e2",
+          "title": "Grammarian",
+          "roleTemplateId": "grammarian",
+          "slotLabel": "Grammarian",
+          "winningSquadronId": "",
+          "starsSpent": 0
+        }
+      ]
+    }
+  ],
+  "hallOfFame": [
+    {
+      "id": "0207e0cd-c0bd-414a-96e8-003d7e982594",
+      "termDate": "2026-01-15T10:06:42.261Z",
+      "winningSquadron": {
+        "name": "Gamma"
+      },
+      "apexPredator": {
+        "name": "L"
+      }
+    },
+    {
+      "id": "14939253-cae3-4a24-8336-e8d85f84fa9c",
+      "termDate": "2026-01-15T10:18:12.239Z",
+      "winningSquadron": {
+        "name": "Gamma",
+        "stars": 100
+      },
+      "apexPredator": {
+        "name": "L",
+        "stars": 0
+      }
     }
   ]
 }

@@ -17,7 +17,7 @@ export default function AwardsPage({ params }) {
     const [meeting, setMeeting] = useState(null);
     const [assignments, setAssignments] = useState([]);
     const [members, setMembers] = useState([]);
-    const [attendance, setAttendance] = useState([]);
+    // Removed attendance state dependency for TT
     const [selections, setSelections] = useState({});
 
     useEffect(() => {
@@ -28,17 +28,8 @@ export default function AwardsPage({ params }) {
             ]);
             const current = mRes.find(m => m.id === params.id);
             setMeeting(current);
-            // SOURCE OF TRUTH: Finalized Role Assignments
             setAssignments(current?.roleAssignments || []);
             setMembers(memRes);
-
-            if (current && current.scoringData) {
-                const presentIds = [];
-                Object.values(current.scoringData).forEach(sqData => {
-                    if (sqData.attendedMemberIds) presentIds.push(...sqData.attendedMemberIds);
-                });
-                setAttendance(presentIds);
-            }
         };
         loadData();
     }, [params.id]);
@@ -47,53 +38,53 @@ export default function AwardsPage({ params }) {
         setSelections(prev => ({ ...prev, [awardId]: value }));
     };
 
-    // PATCH-3: Enhanced Display Labels & Strict Filtering
+    // PATCH-3.2.1: TT Source Update
     const getCandidates = (filterType) => {
-        // 1. Table Topics: Attendance + Guest (Special Case)
+        // 1. Table Topics: Source from meeting.tableTopics.participants (Strict)
         if (filterType === 'tt_all') {
-            const presentMembers = members
-                .filter(m => attendance.includes(m.id))
-                .map(m => ({ id: m.id, name: `${m.name} — Attendance`, isGuest: false }));
-            // Always append Guest option for TT
-            return [...presentMembers, { id: 'guest', name: 'Guest — External Speaker', isGuest: true }];
+            const ttParticipants = meeting?.tableTopics?.participants || [];
+
+            return ttParticipants.map(p => {
+                if (p.isGuest) {
+                    return { id: 'guest', name: `${p.name} — External`, isGuest: true };
+                }
+                const mem = members.find(m => m.id === p.memberId);
+                return {
+                    id: p.memberId,
+                    name: mem ? `${mem.name} — TT Speaker` : `${p.name} — TT Speaker`,
+                    isGuest: false
+                };
+            });
         }
 
-        // 2. Standard Awards: Source ONLY from Finalized Assignments
+        // 2. Standard Awards (Unchanged)
         return assignments
             .filter(a => {
-                // Must be completed to be eligible
                 if (a.status !== 'completed') return false;
-
                 const title = a.roleName.toLowerCase();
 
-                // Explicit Filters
                 if (filterType === 'speaker') return title.includes('speaker');
-                // Exclude 'general evaluator' from Best Evaluator pool
                 if (filterType === 'evaluator') return title.includes('evaluator') && !title.includes('general');
-                // Best Role Player: Only TMOD and TTM
                 if (filterType === 'role_player') return ['toastmaster', 'topics master'].some(t => title.includes(t));
-                // Best TAG: Timer, Ah-Counter, Grammarian
                 if (filterType === 'tag') return ['timer', 'ah-counter', 'grammarian'].some(t => title.includes(t));
 
                 return false;
             })
             .map(a => {
-                // Handle Guests (fulfilledExternally)
                 if (a.fulfilledExternally) {
                     return { id: 'guest', name: `Guest — ${a.roleName}`, isGuest: true };
                 }
-
-                // Handle Members
                 const mem = members.find(m => m.id === a.memberId);
                 return {
                     id: a.memberId,
-                    // PATCH-3 FORMAT: Name — Role
                     name: mem ? `${mem.name} — ${a.roleName}` : `Unknown — ${a.roleName}`,
                     isGuest: false
                 };
             });
     };
 
+    // ... (Rest of file: isFormComplete, handleSubmit, JSX matches previous) ...
+    // Copy/paste previous logic for submit/render, unchanged except for getCandidates
     const isFormComplete = () => {
         return AWARD_CATEGORIES.every(cat => selections[cat.id] && selections[cat.id] !== '');
     };

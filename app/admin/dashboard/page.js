@@ -13,8 +13,12 @@ export default function AdminDashboard() {
     const [newSquadronName, setNewSquadronName] = useState('');
     const [newMemberName, setNewMemberName] = useState('');
     const [newMemberSquadronId, setNewMemberSquadronId] = useState('');
+
+    // PATCH 1: Add Time State
     const [meetingDate, setMeetingDate] = useState('');
+    const [meetingTime, setMeetingTime] = useState('18:00'); // Default 6 PM
     const [meetingType, setMeetingType] = useState('offline');
+
     const [selectedMeetingId, setSelectedMeetingId] = useState('');
     const [attendees, setAttendees] = useState([]);
     const [lateMembers, setLateMembers] = useState([]);
@@ -34,11 +38,21 @@ export default function AdminDashboard() {
     // ... (Keep CRUD Handlers exactly as is)
     const handleCreateSquadron = async (e) => { e.preventDefault(); await fetch('/api/squadrons', { method: 'POST', body: JSON.stringify({ name: newSquadronName }) }); fetchData(); };
     const handleCreateMember = async (e) => { e.preventDefault(); await fetch('/api/members', { method: 'POST', body: JSON.stringify({ name: newMemberName, squadronId: newMemberSquadronId }) }); fetchData(); };
-    const handleCreateMeeting = async (e) => { e.preventDefault(); await fetch('/api/meetings', { method: 'POST', body: JSON.stringify({ date: meetingDate, type: meetingType }) }); fetchData(); };
+
+    // PATCH 1: Update Create Meeting to send time
+    const handleCreateMeeting = async (e) => {
+        e.preventDefault();
+        await fetch('/api/meetings', {
+            method: 'POST',
+            body: JSON.stringify({ date: meetingDate, time: meetingTime, type: meetingType })
+        });
+        fetchData();
+    };
+
     const handleDeleteSquadron = async (id) => { if (confirm('Delete?')) { await fetch('/api/squadrons', { method: 'DELETE', body: JSON.stringify({ id }) }); fetchData(); } };
     const handleDeleteMember = async (id) => { if (confirm('Delete?')) { await fetch('/api/members', { method: 'DELETE', body: JSON.stringify({ id }) }); fetchData(); } };
 
-    // ... (Keep handleScoreMeeting, handleResetSystem, toggles)
+    // PATCH 2: Synchronization Fix (Preserved)
     const handleScoreMeeting = async () => {
         if (!selectedMeetingId) return alert('Select a meeting');
         const scoringData = {};
@@ -52,15 +66,21 @@ export default function AdminDashboard() {
                 manualAdjustment: parseInt(manualAdjustments[sq.id] || 0)
             };
         });
+
         const res = await fetch('/api/meetings/finalize', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ meetingId: selectedMeetingId, scoringData })
         });
+
         if (res.ok) {
-            alert('Attendance Scored! Now finalize roles.');
-            setAttendees([]); setLateMembers([]); setSelectedMeetingId('');
-            fetchData();
+            alert('Attendance Scored! Leaderboard Updating...');
+            setAttendees([]);
+            setLateMembers([]);
+            setSelectedMeetingId('');
+
+            // FORCE REFRESH: Pull fresh ledger sums immediately
+            await fetchData();
         } else {
             const err = await res.json();
             alert('Error: ' + err.error);
@@ -123,6 +143,8 @@ export default function AdminDashboard() {
                             <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">Initialize Session</h3>
                             <form onSubmit={handleCreateMeeting} className="flex gap-3">
                                 <input type="date" value={meetingDate} onChange={(e) => setMeetingDate(e.target.value)} className="bg-black/40 border-white/10 rounded px-3 py-2 text-white w-full" required />
+                                {/* PATCH 1: Time Input */}
+                                <input type="time" value={meetingTime} onChange={(e) => setMeetingTime(e.target.value)} className="bg-black/40 border-white/10 rounded px-3 py-2 text-white w-1/3" required />
                                 <select value={meetingType} onChange={(e) => setMeetingType(e.target.value)} className="bg-black/40 border-white/10 rounded px-3 py-2 text-white w-full">
                                     <option value="offline">Offline</option>
                                     <option value="online">Online</option>
@@ -195,7 +217,10 @@ export default function AdminDashboard() {
                                     <div key={meeting.id} className="flex justify-between items-center p-4 bg-white/5 border border-white/5 rounded hover:border-[#fbbf24]/30">
                                         <div className="flex items-center gap-3">
                                             <span className="text-white font-mono text-sm">
-                                                {meeting.date} <span className="text-gray-500">|</span>
+                                                {meeting.date}
+                                                {/* PATCH 1: Display Time */}
+                                                {meeting.time && <span className="text-gray-500 text-xs ml-1">@{meeting.time}</span>}
+                                                <span className="text-gray-500 mx-2">|</span>
                                                 <span className="uppercase text-xs font-bold tracking-wider ml-2">{meeting.status}</span>
                                             </span>
                                             {/* PATCH-H: Delete Button */}

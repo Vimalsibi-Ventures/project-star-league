@@ -25,7 +25,13 @@ export default function LandingClient({ leaderboardData, memberData, upcomingMee
 
         // 2. Fallback: Auction Result (Ownership)
         // If not assigned yet, we show who BOUGHT it.
-        return { main: item.winnerName, sub: 'Squadron Right' };
+        if (item.winningSquadronId) {
+            return { main: item.winnerName, sub: 'Squadron Right (Pending)' };
+        }
+
+        // 3. PATCH 4: Unsold / Open State
+        // Instead of hiding or generic text, clearly indicate availability
+        return { main: 'Open Slot', sub: 'To Be Assigned' };
     };
 
     return (
@@ -77,12 +83,15 @@ export default function LandingClient({ leaderboardData, memberData, upcomingMee
                 </div>
 
                 {upcomingMeeting ? (
-                    // PATCH-1: Changed grid to single centered column, removed Right Card
                     <div className="glass-card rounded-2xl p-8 flex flex-col justify-center items-center text-center border-t-4 border-t-[#fbbf24]">
                         <h3 className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-2">Upcoming Session</h3>
+
+                        {/* PATCH 1: Time Display */}
                         <div className="text-4xl font-black text-white mb-2">
                             {new Date(upcomingMeeting.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                            {upcomingMeeting.time && <span className="block text-xl text-gray-400 mt-1">@ {upcomingMeeting.time}</span>}
                         </div>
+
                         <div className="px-3 py-1 bg-white/10 rounded text-xs font-bold uppercase text-[#fbbf24] mb-6">
                             {upcomingMeeting.type} Arena
                         </div>
@@ -92,9 +101,10 @@ export default function LandingClient({ leaderboardData, memberData, upcomingMee
                                 {upcomingMeeting.status === 'auction_finalized' ? 'Auction Results (Rights)' : 'Official Role Call'}
                             </h4>
 
-                            {auctionData && auctionData.items.filter(i => i.winningSquadronId).length > 0 ? (
+                            {/* PATCH 4: Iterate ALL items, do not filter by winner */}
+                            {auctionData && auctionData.items.length > 0 ? (
                                 <div className="space-y-3">
-                                    {auctionData.items.filter(i => i.winningSquadronId).map((item, i) => {
+                                    {auctionData.items.map((item, i) => {
                                         const display = getSlotDisplay(item);
                                         return (
                                             <div key={i} className="flex justify-between items-center p-3 bg-black/20 rounded border border-white/5">
@@ -111,7 +121,7 @@ export default function LandingClient({ leaderboardData, memberData, upcomingMee
                                     })}
                                 </div>
                             ) : (
-                                <p className="text-gray-500 text-xs italic">No roles auctioned yet.</p>
+                                <p className="text-gray-500 text-xs italic">No roles configured for this meeting.</p>
                             )}
                         </div>
                     </div>

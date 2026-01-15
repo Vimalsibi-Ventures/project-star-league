@@ -2,23 +2,45 @@ import { NextResponse } from 'next/server';
 import { getDb, saveDb } from '@/lib/db';
 import { v4 as uuidv4 } from 'uuid';
 import { TRANSACTION_CATEGORY } from '@/lib/constants';
+import { generateHallOfFameRecord } from '@/lib/hallOfFame';
 
 export async function POST(request) {
     const { type } = await request.json();
     const db = getDb();
 
     if (type === 'hard') {
-        saveDb({ squadrons: [], members: [], meetings: [], auctions: [], transactions: [] });
+        saveDb({ squadrons: [], members: [], meetings: [], auctions: [], transactions: [], hallOfFame: [] });
         return NextResponse.json({ success: true, message: 'System Wiped' });
     }
 
     if (type === 'soft') {
-        // 1. Clear Operational Data
+        // 1. Archive to Hall of Fame
+        if (!db.hallOfFame) db.hallOfFame = [];
+        const record = generateHallOfFameRecord(db.squadrons, db.members);
+        db.hallOfFame.push(record);
+
+        // 2. Clear Operational Data
         db.meetings = [];
         db.auctions = [];
-        db.transactions = []; // Clear Ledger (Reset Balance to 0)
+        db.transactions = [];
 
-        // 2. Re-seed Squadrons with 100 Stars
+        // 3. PATCH 1: Reset Member States SAFE for Cooldowns
+        // Setting lastSpeechMeetingIndex to -10 ensures (1 - (-10)) > 2, making them eligible immediately.
+        db.members = db.members.map(m => ({
+            ...m,
+            totalStars: 0,
+            lastSpeechMeetingIndex: -10, // SAFE VALUE
+            speechCooldownUntilMeetingIndex: 0
+        }));
+
+        // 4. PATCH 1: Reset Squadron States (Rotation History)
+        db.squadrons = db.squadrons.map(sq => ({
+            ...sq,
+            totalStars: 100,
+            rotationState: null
+        }));
+
+        // 5. Generate Seed Transactions
         db.squadrons.forEach(sq => {
             db.transactions.push({
                 id: uuidv4(),
@@ -33,7 +55,7 @@ export async function POST(request) {
         });
 
         saveDb(db);
-        return NextResponse.json({ success: true, message: 'Term Reset Complete (100★ per Squadron)' });
+        return NextResponse.json({ success: true, message: 'Term Reset: HoF Archived, 100★ Seeded, Cooldowns Cleared.' });
     }
 
     return NextResponse.json({ error: 'Invalid reset type' }, { status: 400 });
