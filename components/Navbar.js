@@ -19,14 +19,21 @@ export default function Navbar() {
                 {/* Navigation Links */}
                 <div className="flex items-center gap-8">
                     {/* Socials */}
-                    <a href="https://www.instagram.com/oratio.tmi/" target="_blank" className="nav-link text-xs font-bold text-gray-400 hover:text-white uppercase tracking-wider transition-colors">
+                    <a href="https://www.instagram.com/oratio.tmi/" target="_blank" className="hidden lg:block nav-link text-xs font-bold text-gray-400 hover:text-white uppercase tracking-wider transition-colors">
                         Instagram
                     </a>
-                    <a href="https://www.linkedin.com/company/oratio-vit/" target="_blank" className="nav-link text-xs font-bold text-gray-400 hover:text-white uppercase tracking-wider transition-colors">
+                    <a href="https://www.linkedin.com/company/oratio-vit/" target="_blank" className="hidden lg:block nav-link text-xs font-bold text-gray-400 hover:text-white uppercase tracking-wider transition-colors">
                         LinkedIn
                     </a>
 
                     {/* Operational Links */}
+                    <Link
+                        href="/guide"
+                        className="text-xs font-bold text-green-400 hover:text-green-300 uppercase tracking-wider transition-colors"
+                    >
+                        Guide
+                    </Link>
+
                     <Link
                         href="/analytics"
                         className="text-xs font-bold text-cyan-400 hover:text-cyan-300 uppercase tracking-wider transition-colors"
@@ -34,7 +41,6 @@ export default function Navbar() {
                         Analytics
                     </Link>
 
-                    {/* NEW LINK: Hall of Fame */}
                     <Link
                         href="/hall-of-fame"
                         className="text-xs font-bold text-[#fbbf24] hover:text-yellow-300 uppercase tracking-wider transition-colors"
@@ -49,6 +55,8 @@ export default function Navbar() {
                     >
                         Role Signup
                     </a>
+
+                    {/* Restored Feedback Link */}
                     <a
                         href="https://oratiofb.netlify.app/"
                         target="_blank"
