@@ -1,4 +1,5 @@
 import { getSquadrons, getMembers, getMeetings, getAuctionByMeeting } from '@/lib/data';
+import { getDb } from '@/lib/db'; // Import DB access for Season info
 import LandingClient from '@/components/LandingClient';
 import { MEETING_STATUS } from '@/lib/constants';
 
@@ -8,9 +9,13 @@ export default function HomePage() {
     const leaderboardData = getSquadrons();
     const memberData = getMembers();
     const allMeetings = getMeetings();
+    const db = getDb(); // Fetch DB for Season state
     const today = new Date();
 
-    // PATCH-A & PATCH-F: STRICT VISIBILITY LOGIC
+    // 1. Get Active Season Number
+    const currentSeason = db.season ? db.season.seasonNumber : 1;
+
+    // PATCH-A & PATCH-F: STRICT VISIBILITY LOGIC (Preserved)
     const upcomingMeeting = allMeetings
         .sort((a, b) => new Date(a.date) - new Date(b.date))
         .find(m => {
@@ -63,6 +68,7 @@ export default function HomePage() {
             upcomingMeeting={upcomingMeeting}
             auctionData={auctionData}
             meetingAssignments={meetingAssignments}
+            seasonNumber={currentSeason} // Pass Season Number to Client
         />
     );
 }

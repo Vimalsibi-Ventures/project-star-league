@@ -1,0 +1,13 @@
+{
+  "squadrons": [],
+  "members": [],
+  "meetings": [],
+  "auctions": [],
+  "transactions": [],
+  "hallOfFame": [],
+  "season": {
+    "seasonNumber": 1,
+    "status": "ACTIVE",
+    "startedAt": "2026-01-15T11:35:08.907Z"
+  }
+}

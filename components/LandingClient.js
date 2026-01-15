@@ -4,7 +4,8 @@ import { useState } from 'react';
 import LeaderboardTable from '@/components/LeaderboardTable';
 import IndividualLeaderboard from '@/components/IndividualLeaderboard';
 
-export default function LandingClient({ leaderboardData, memberData, upcomingMeeting, auctionData, meetingAssignments }) {
+// Accept seasonNumber prop
+export default function LandingClient({ leaderboardData, memberData, upcomingMeeting, auctionData, meetingAssignments, seasonNumber }) {
     const [activeTab, setActiveTab] = useState('squadron');
 
     const getSlotDisplay = (item) => {
@@ -42,7 +43,10 @@ export default function LandingClient({ leaderboardData, memberData, upcomingMee
                 <div className="relative z-10 px-6">
                     <div className="inline-flex items-center px-4 py-1.5 bg-[#fbbf24]/10 border border-[#fbbf24]/20 rounded-full mb-6 backdrop-blur-md">
                         <span className="w-2 h-2 bg-[#fbbf24] rounded-full mr-2 animate-pulse shadow-[0_0_10px_#fbbf24]"></span>
-                        <span className="text-[#fbbf24] font-bold text-xs uppercase tracking-[0.2em]">Season Live</span>
+                        {/* UPDATE DISPLAY: Dynamic Season Number */}
+                        <span className="text-[#fbbf24] font-bold text-xs uppercase tracking-[0.2em]">
+                            Season {seasonNumber} Live
+                        </span>
                     </div>
                     <h1 className="text-6xl md:text-8xl font-black text-white mb-6 tracking-tighter uppercase drop-shadow-2xl">
                         Oratio's <span className="text-gradient-gold">Star League</span>

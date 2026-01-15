@@ -34,6 +34,14 @@ export default function Navbar() {
                         Analytics
                     </Link>
 
+                    {/* NEW LINK: Hall of Fame */}
+                    <Link
+                        href="/hall-of-fame"
+                        className="text-xs font-bold text-[#fbbf24] hover:text-yellow-300 uppercase tracking-wider transition-colors"
+                    >
+                        Hall of Fame
+                    </Link>
+
                     <a
                         href="https://tmoratio.netlify.app/tmforms.html"
                         target="_blank"
