@@ -51,7 +51,7 @@ export default function Navbar() {
                     <a
                         href="https://tmoratio.netlify.app/tmforms.html"
                         target="_blank"
-                        className="text-xs font-bold text-[#fbbf24] hover:text-[#fcd34d] uppercase tracking-wider transition-colors shadow-glow-sm"
+                        className="text-xs font-bold text-gray-400 hover:text-white uppercase tracking-wider transition-colors shadow-glow-sm"
                     >
                         Role Signup
                     </a>
