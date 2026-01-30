@@ -1,172 +1,271 @@
-# Project Star League
+# ⭐ Project Star League
 
-A gamified scoring system for Toastmasters clubs, built with Next.js 14 App Router. This application manages squadron-based competitions using a closed economy of Stars (★) for tracking member participation and achievements.
+Project Star League is a **squadron-based competitive scoring system** designed for Toastmasters clubs. It transforms regular meetings into a structured, fair, and transparent league where **teams (Squadrons) compete using Stars (★)** earned through participation, discipline, and teamwork.
 
-## Overview
+This document is the **authoritative explanation** of how Star League works for members. If a rule, reward, or penalty is not written here, it does not exist.
 
-Project Star League provides an internal scoring and leaderboard system for Toastmasters clubs. Members are organized into **Squadrons** (teams of up to 4 members) that compete for Stars through meeting attendance, role completion, and other activities. All scoring is admin-controlled with no public sign-up or self-service mutations.
+---
 
-## Features
+## 1️⃣ What Star League Is (And Is Not)
 
-### Public Views
-- **Squadron Leaderboard**: Ranked display of all squadrons by total Stars
-- **Individual Leaderboard**: Cross-squadron ranking of individual members
-- **Squadron Detail Pages**: Transaction history and member roster per squadron
-- **Meetings Page**: Historical meeting records with role assignments and auction results
+### Star League is NOT:
 
-### Admin Dashboard
-- **Meeting Management**: Create meetings (offline/online), mark attendance, track lateness
-- **Automated Scoring**: Calculate Stars based on attendance (10★ offline, 5★ online) with perfect attendance bonuses (+20★)
-- **Squadron Management**: Create, view, and delete squadrons
-- **Member Management**: Add members to squadrons, remove members
-- **Meeting Finalization**: Lock meetings to prevent further edits
-- **System Reset**: Complete data wipe capability (use with caution)
+* An individual XP or points system
+* A per-role farming system
+* A quantity-over-quality reward model
 
-### Scoring System
-- **Attendance Rewards**: 10 Stars for offline meetings, 5 Stars for online meetings
-- **Perfect Attendance Bonus**: +20 Stars when all 4 squadron members attend
-- **Lateness Penalties**: -5 Stars per late member
-- **Transaction History**: Complete audit trail of all Star transactions
+### Star League IS:
 
-## Architecture
+* A **Squadron-owned economy**
+* **Evaluated per meeting**, not per role
+* Designed to reward:
 
-### Server vs Client Components
+  * Fair role rotation
+  * Consistent attendance
+  * Team presence
+  * Disciplined participation
 
-This project uses Next.js 14's App Router with a hybrid architecture:
+> **Individuals perform. Squadrons earn. Seasons remember.**
 
-**Server Components** (default):
-- Public pages (`app/page.js`, `app/members/page.js`, `app/squadrons/[id]/page.js`)
-- Data fetching and computation
-- SEO-friendly static content
+---
 
-**Client Components** (`'use client'`):
-- `components/LeaderboardTable.js` - Interactive table with row click navigation
-- `app/admin/dashboard/page.js` - Admin dashboard with forms and state management
-- `app/admin/page.js` - Login page with form handling
+## 2️⃣ Ownership of Stars (Critical Rule)
 
-### Data Layer
+* ⭐ **Only Squadrons own stars**
+* Individuals never have a personal star balance
+* Every star earned by a member is credited directly to their Squadron
 
-**Current Implementation (v1)**:
-- In-memory data store (`lib/data.js`)
-- Data persists only during server runtime
-- All data is lost on server restart
+### Individuals are tracked only for:
 
-**API Routes**:
-- `/api/squadrons` - CRUD operations for squadrons
-- `/api/members` - CRUD operations for members
-- `/api/meetings` - Meeting creation and finalization
-- `/api/transactions` - Star transaction recording
-- `/api/login` - Admin authentication
+* Awards
+* Hall of Fame recognition
+* Historical performance records
 
-## Getting Started
+Leaderboards always rank **Squadrons**, never individuals.
 
-### Prerequisites
+---
 
-- Node.js 18+ 
-- npm or yarn
+## 3️⃣ When Stars Are Calculated
 
-### Installation
+Stars are evaluated **once per meeting per squadron**.
 
-```bash
-# Install dependencies
-npm install
+They are **NOT** calculated:
 
-# Run development server
-npm run dev
-```
+* Per role
+* Per speech
+* Per task
 
-The application will be available at `http://localhost:3000`.
+Even if a squadron performs multiple roles or dominates a meeting, bonuses are applied only where explicitly defined.
 
-### Build for Production
+This prevents:
 
-```bash
-npm run build
-npm start
-```
+* Role hoarding
+* Score inflation
+* System exploitation
 
-## Admin Access
+---
 
-Admin functionality is protected by authentication. To access the admin dashboard:
+## 4️⃣ Role-Based Star Earnings
 
-1. Navigate to `/admin`
-2. Login credentials:
-   - **Username**: `treasurer`
-   - **Password**: `treasurer@oratio`
+When a member performs a role successfully, stars are added to the **Squadron Star Pool**.
 
-After successful login, you'll be redirected to `/admin/dashboard` where you can manage squadrons, members, meetings, and scoring.
+### 🎤 Speaking Role
 
-## Project Structure
+* **Speaker** → **+10★**
 
-```
-project-star-league/
-├── app/
-│   ├── admin/              # Admin pages (login, dashboard)
-│   ├── api/                # API route handlers
-│   ├── meetings/           # Public meetings view
-│   ├── members/            # Individual leaderboard
-│   ├── squadrons/[id]/     # Squadron detail pages
-│   ├── globals.css         # Global styles
-│   ├── layout.js           # Root layout
-│   └── page.js             # Home (squadron leaderboard)
-├── components/
-│   ├── LeaderboardTable.js # Reusable leaderboard component
-│   └── Navbar.js           # Navigation component
-├── lib/
-│   ├── auth.js             # Authentication logic
-│   └── data.js             # In-memory data store
-└── package.json
-```
+Speaker cooldown applies:
 
-## Known Limitations
+* After speaking, a member enters a **2-meeting cooldown**
+* Speaking during cooldown:
 
-### Data Persistence
-- **No persistent database**: All data is stored in memory and lost on server restart
-- This is a v1 limitation; database integration is planned for future versions
+  * Still earns +10★
+  * **Breaks rotation**
+  * Removes rotation bonus for that meeting
 
-### Feature Status
-- **Auction System**: Infrastructure exists (meeting records support auction data), but full auction interface is not yet implemented
-- **Analytics & Trends**: Transaction history is available, but dedicated analytics dashboards are not yet built
+---
 
-## Future Roadmap
+### 📝 Evaluation Role
 
-### v2 Planned Features
-- [ ] Database integration (PostgreSQL or SQLite)
-- [ ] Full auction system for role slot allocation
-- [ ] Analytics dashboard with Star trends and charts
-- [ ] Meeting role assignment interface
-- [ ] Export functionality (CSV/PDF reports)
-- [ ] Enhanced authentication (session management, multiple admin accounts)
-- [ ] Audit logging for admin actions
+* **Evaluator** → **+5★**
 
-### Technical Improvements
-- [ ] TypeScript migration
-- [ ] Unit and integration tests
-- [ ] API rate limiting
-- [ ] Input validation and sanitization
-- [ ] Error boundary components
-- [ ] Loading states and error handling improvements
+---
 
-## Tech Stack
+### 🎯 Functionary Roles
 
-- **Framework**: Next.js 14 (App Router)
-- **Styling**: Tailwind CSS
-- **Runtime**: Node.js
-- **Data Store**: In-memory (v1)
+Each of the following earns **+5★**:
 
-## Development Notes
+* Toastmaster of the Day (TMOD)
+* Table Topics Master (TTM)
+* General Evaluator (GE)
+* Any other approved functionary role
 
-### CSS Configuration
-The project uses Tailwind CSS. If your editor shows warnings for `@tailwind` directives, ensure `.vscode/settings.json` includes:
+Notes:
 
-```json
-{
-    "css.lint.unknownAtRules": "ignore"
-}
-```
+* GE **does earn stars**
+* GE **cannot win Best Performer awards**
 
-### Client Component Pattern
-Components using event handlers (`onClick`, `onChange`, etc.) must include `'use client'` directive at the top of the file. This is a Next.js 14 App Router requirement.
+---
 
-## License
+## 5️⃣ Attendance-Based Stars
 
-Private project for internal Toastmasters club use.
+### 👥 Individual Attendance
+
+* Each squadron member attending → **+5★**
+* Guests:
+
+  * May participate
+  * Generate **0★**
+
+### 🟢 Perfect Attendance Bonus
+
+* If **all members of a squadron attend**:
+
+  * **+20★**
+  * Applied once per meeting
+
+---
+
+## 6️⃣ Rotation & Discipline Bonuses
+
+### 🔁 Speaker Rotation Bonus
+
+* If the **correct next member** in the squadron’s speaking order speaks:
+
+  * **+5★** (once per meeting)
+
+Breaking rotation:
+
+* No rotation bonus
+* Rotation streak resets to zero
+
+---
+
+## 7️⃣ Table Topics & Activity Star System
+
+Table Topics, games, and activity sessions are treated as **Activity Sessions**.
+
+### 🧑 Individual Participation (Per Squadron)
+
+Order matters **within the same squadron**:
+
+* First participating member → **+15★**
+* Each additional participating member → **+10★**
+
+Guests:
+
+* Can participate
+* Earn **0★**
+
+---
+
+### 🤝 Activity Synergy Bonus
+
+If **N members from the same squadron** participate in the activity:
+
+* **+5★ × N**
+
+This bonus is **in addition to** individual activity stars.
+
+---
+
+## 8️⃣ Awards (Recognition Layer)
+
+Awards are **recognition tools**, not farming tools.
+
+### 🏅 Available Awards
+
+* Best Speaker
+* Best Evaluator
+* Best Table Topics Speaker
+* Best Role Player
+
+Rules:
+
+* Candidates must be finalized participants
+* Each award gives **+5★** to the winner’s squadron
+* GE is excluded from Best Performer awards
+
+---
+
+## 9️⃣ Squadron Synergy Bonus (Meeting-Level)
+
+If a squadron has **multiple active members** in a meeting:
+
+* Additional **synergy stars** are awarded
+* Calculated **once per meeting**
+
+This encourages:
+
+* Team presence
+* Distributed effort
+* Active participation beyond a single member
+
+---
+
+## 🔟 Penalties (Star Deductions)
+
+Penalties are applied at **meeting closure** and are permanent.
+
+* Late arrival → **−5★**
+* Speaker no-show → **−20★**
+
+---
+
+## 1️⃣1️⃣ Seasons & Hall of Fame
+
+### 🏁 Seasons
+
+* Star League runs in seasons
+* Seasons are closed by admins
+* New seasons reseed squadrons
+
+### 🏆 Hall of Fame
+
+Preserves:
+
+* Winning Squadrons
+* Top-performing individuals
+* Season champions
+
+Hall of Fame data:
+
+* Persists across resets
+* Is viewable by all members
+
+---
+
+## 1️⃣2️⃣ Leaderboards & Rankings
+
+* Leaderboards are **squadron-based only**
+* Equal stars = shared rank
+* No artificial tie-breakers
+
+---
+
+## 1️⃣3️⃣ What Members Can Do on the Site
+
+Members can:
+
+* View the squadron leaderboard
+* See season number and standings
+* Explore Hall of Fame records
+* Review past meetings
+* Understand how and why stars were earned
+
+Members cannot:
+
+* Edit meetings
+* Change scores
+* Modify rules or lifecycle flow
+
+---
+
+## 📌 Final Principle
+
+Star League rewards **team discipline over individual dominance**.
+
+Play fair.
+Rotate roles.
+Show up as a squadron.
+
+That is how championships are built.
