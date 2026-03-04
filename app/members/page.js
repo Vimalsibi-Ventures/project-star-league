@@ -1,20 +1,25 @@
 import { getMembers, getSquadron, getMemberStars } from '@/lib/data';
 import Link from 'next/link';
 
-export default function MembersPage() {
-    const members = getMembers();
+// ADDED: async
+export default async function MembersPage() {
+    // ADDED: await
+    const members = await getMembers();
 
-    // Compute member stars and sort
-    const memberData = members.map(member => {
-        const squadron = getSquadron(member.squadronId);
-        const totalStars = getMemberStars(member.id);
+    // UPDATED: Used Promise.all to await the squadron and stars for every single member before mapping
+    const memberDataPromises = members.map(async (member) => {
+        const squadron = await getSquadron(member.squadronId);
+        const totalStars = await getMemberStars(member.id);
 
         return {
             ...member,
             squadronName: squadron ? squadron.name : 'Unknown',
             totalStars
         };
-    }).sort((a, b) => b.totalStars - a.totalStars);
+    });
+
+    const unsortedMemberData = await Promise.all(memberDataPromises);
+    const memberData = unsortedMemberData.sort((a, b) => b.totalStars - a.totalStars);
 
     return (
         <div className="min-h-screen bg-[#0d0f14] pt-[72px]">

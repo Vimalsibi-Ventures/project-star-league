@@ -4,13 +4,15 @@ import { v4 as uuidv4 } from 'uuid';
 import { MEETING_STATUS } from '@/lib/constants';
 
 export async function GET() {
-    const db = getDb();
+    // Added await for cloud database
+    const db = await getDb();
     return NextResponse.json(db.auctions || []);
 }
 
 export async function POST(request) {
     const { meetingId, items } = await request.json();
-    const db = getDb();
+    // Added await for cloud database
+    const db = await getDb();
 
     if (!db.auctions) db.auctions = [];
 
@@ -53,6 +55,7 @@ export async function POST(request) {
         }
     }
 
-    saveDb(db);
+    // Added await for cloud database
+    await saveDb(db);
     return NextResponse.json({ success: true, auction });
 }

@@ -4,8 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { MEETING_STATUS, TRANSACTION_CATEGORY } from '@/lib/constants';
 
 export async function POST(request) {
-    const { meetingId, awards } = await request.json(); // awards = [{ title, memberId, squadronId, isGuest }]
-    const db = getDb();
+    const { meetingId, awards } = await request.json(); 
+    const db = await getDb(); // Added await
 
     const meeting = db.meetings.find(m => m.id === meetingId);
     if (!meeting) return NextResponse.json({ error: 'Meeting not found' }, { status: 404 });
@@ -19,7 +19,6 @@ export async function POST(request) {
 
     // 1. Process Awards
     awards.forEach(award => {
-        // PATCH-2 FIX: Guest Safety - Only award stars if squadronId exists and not guest
         if (award.squadronId && !award.isGuest) {
             transactions.push({
                 id: uuidv4(),
@@ -33,10 +32,9 @@ export async function POST(request) {
                 locked: true
             });
         }
-        // Guests: No transaction, just saved in meeting.awards metadata below
     });
 
-    // 2. Process Synergy (Existing Logic Preserved)
+    // 2. Process Synergy
     const activeMembersBySquadron = {};
 
     if (meeting.roleAssignments) {
@@ -70,8 +68,8 @@ export async function POST(request) {
     // 3. Update State & Save
     db.transactions.push(...transactions);
     meeting.status = MEETING_STATUS.AWARDS_ASSIGNED;
-    meeting.awards = awards; // Persist award history (includes guests for audit)
+    meeting.awards = awards; 
 
-    saveDb(db);
+    await saveDb(db); // Added await
     return NextResponse.json({ success: true, count: transactions.length });
 }

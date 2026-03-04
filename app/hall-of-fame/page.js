@@ -3,8 +3,10 @@ import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
-export default function HallOfFamePage() {
-    const db = getDb();
+// ADDED: async
+export default async function HallOfFamePage() {
+    // ADDED: await
+    const db = await getDb();
     const history = db.hallOfFame || [];
 
     return (

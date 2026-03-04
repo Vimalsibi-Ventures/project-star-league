@@ -4,14 +4,14 @@ import { v4 as uuidv4 } from 'uuid';
 import { MEETING_STATUS, TRANSACTION_CATEGORY } from '@/lib/constants';
 
 export async function GET() {
-    const db = getDb();
+    const db = await getDb();
     return NextResponse.json(db.meetings);
 }
 
 export async function POST(request) {
     // PATCH 1: Accept 'time'
     const { date, time, type } = await request.json();
-    const db = getDb();
+    const db = await getDb();
 
     const newMeeting = {
         id: uuidv4(),
@@ -24,14 +24,14 @@ export async function POST(request) {
     };
 
     db.meetings.push(newMeeting);
-    saveDb(db);
+    await saveDb(db);
     return NextResponse.json(newMeeting);
 }
 
 // ... (DELETE handler from Phase 3.4 Patch 5 remains unchanged) ...
 export async function DELETE(request) {
     const { id } = await request.json();
-    const db = getDb();
+    const db = await getDb();
 
     const meetingIdx = db.meetings.findIndex(m => m.id === id);
     if (meetingIdx === -1) return NextResponse.json({ error: 'Meeting not found' }, { status: 404 });
@@ -65,6 +65,6 @@ export async function DELETE(request) {
 
     db.meetings.splice(meetingIdx, 1);
 
-    saveDb(db);
+    await saveDb(db);
     return NextResponse.json({ success: true, refundedCount: refunds.length });
 }

@@ -1,8 +1,10 @@
 import { getMeetings, getSquadron } from '@/lib/data';
 import Link from 'next/link';
 
-export default function MeetingsPage() {
-    const meetings = getMeetings();
+// ADDED: async
+export default async function MeetingsPage() {
+    // ADDED: await
+    const meetings = await getMeetings();
 
     // Sort meetings by date (newest first)
     const sortedMeetings = [...meetings].sort((a, b) =>

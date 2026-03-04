@@ -6,7 +6,7 @@ import { getLeaderboards } from '@/lib/leaderboard';
 
 export async function POST(request) {
     const { meetingId, auctionItemId, squadronId } = await request.json();
-    const db = getDb();
+    const db = await getDb(); // Added await
 
     // 1. Validations
     const auction = db.auctions.find(a => a.meetingId === meetingId);
@@ -20,7 +20,7 @@ export async function POST(request) {
 
     // 2. Financial Check (10 Star Flat Rate)
     const FLAT_COST = 10;
-    const { rankedSquadrons } = getLeaderboards();
+    const { rankedSquadrons } = await getLeaderboards(); // Added await
     const squadron = rankedSquadrons.find(s => s.id === squadronId);
 
     if (!squadron) return NextResponse.json({ error: 'Squadron not found' }, { status: 404 });
@@ -45,7 +45,7 @@ export async function POST(request) {
     };
 
     db.transactions.push(transaction);
-    saveDb(db);
+    await saveDb(db); // Added await
 
     return NextResponse.json({ success: true });
 }

@@ -1,14 +1,14 @@
 import { NextResponse } from 'next/server';
 import { getDb, saveDb } from '@/lib/db';
 import { computeRoleTransactions, computeTableTopicsTransactions, computePenaltyTransactions } from '@/lib/scoringEngine';
-import { computeSubstitutionTransactions } from '@/lib/substitutionEngine'; // NEW
+import { computeSubstitutionTransactions } from '@/lib/substitutionEngine'; 
 import { evaluateSpeech, getRotationState } from '@/lib/rotationEngine';
 import { MEETING_STATUS } from '@/lib/constants';
 import { logRoleCallToSheets } from '@/lib/googleSheetsLogger';
 
 export async function POST(request) {
     const { meetingId, roleAssignments } = await request.json();
-    const db = getDb();
+    const db = await getDb(); // Added await
 
     const meeting = db.meetings.find(m => m.id === meetingId);
     if (!meeting) return NextResponse.json({ error: 'Meeting not found' }, { status: 404 });
@@ -26,10 +26,10 @@ export async function POST(request) {
     // 2. Table Topics / Activity Rewards
     const ttTransactions = computeTableTopicsTransactions(meeting);
 
-    // 3. Governance: Substitution Fees (Phase 3.3)
+    // 3. Governance: Substitution Fees
     const subTransactions = computeSubstitutionTransactions(meeting, roleAssignments, db.members);
 
-    // 4. Governance: Penalties (Phase 3.3)
+    // 4. Governance: Penalties
     const penaltyTransactions = computePenaltyTransactions(meeting, roleAssignments);
 
     // 5. Rotation & Cooldowns
@@ -84,15 +84,16 @@ export async function POST(request) {
         ...roleTransactions,
         ...ttTransactions,
         ...rotationTransactions,
-        ...subTransactions, // Add Subs
-        ...penaltyTransactions // Add Penalties
+        ...subTransactions, 
+        ...penaltyTransactions 
     );
 
     meeting.status = MEETING_STATUS.CLOSED;
     meeting.roleAssignments = roleAssignments;
 
-    saveDb(db);
+    await saveDb(db); // Added await
 
+    // (If your sheets logger is active, it handles await internally as it already did)
     await logRoleCallToSheets(meeting, roleAssignments, db.squadrons, db.members);
 
     return NextResponse.json({

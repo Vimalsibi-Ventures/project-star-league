@@ -6,13 +6,13 @@ import { MEETING_STATUS } from '@/lib/constants';
 
 export async function POST(request) {
     const { meetingId } = await request.json();
-    const db = getDb();
+    const db = await getDb(); // Added await
 
     const auction = db.auctions.find(a => a.meetingId === meetingId);
     if (!auction) return NextResponse.json({ error: 'Auction not found' }, { status: 404 });
     if (auction.status === 'finalized') return NextResponse.json({ error: 'Already finalized' }, { status: 400 });
 
-    const { rankedSquadrons } = getLeaderboards();
+    const { rankedSquadrons } = await getLeaderboards(); // Added await
     const balanceMap = {};
     rankedSquadrons.forEach(sq => {
         balanceMap[sq.id] = sq.totalStars;
@@ -36,6 +36,6 @@ export async function POST(request) {
         }
     }
 
-    saveDb(db);
+    await saveDb(db); // Added await
     return NextResponse.json({ success: true, count: result.transactions.length });
 }

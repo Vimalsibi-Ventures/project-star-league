@@ -3,13 +3,13 @@ import { getDb, saveDb } from '@/lib/db';
 import { v4 as uuidv4 } from 'uuid';
 
 export async function GET() {
-    const db = getDb();
+    const db = await getDb();
     return NextResponse.json(db.squadrons);
 }
 
 export async function POST(request) {
     const { name } = await request.json();
-    const db = getDb();
+    const db = await getDb();
 
     const newSquadron = {
         id: uuidv4(),
@@ -32,7 +32,7 @@ export async function POST(request) {
     db.squadrons.push(newSquadron);
     db.transactions.push(seedTransaction);
 
-    saveDb(db);
+    await saveDb(db);
     return NextResponse.json(newSquadron);
 }
 
@@ -41,16 +41,16 @@ export async function DELETE(request) {
 
     if (resetAll) {
         // Reset to empty state
-        saveDb({ squadrons: [], members: [], meetings: [], transactions: [] });
+        await saveDb({ squadrons: [], members: [], meetings: [], transactions: [] });
         return NextResponse.json({ success: true });
     }
 
-    const db = getDb();
+    const db = await getDb();
     db.squadrons = db.squadrons.filter(s => s.id !== id);
     // Also remove members of this squadron
     db.members = db.members.filter(m => m.squadronId !== id);
     // Note: We keep transactions for audit logs, or you can delete them if preferred
 
-    saveDb(db);
+    await saveDb(db);
     return NextResponse.json({ success: true });
 }

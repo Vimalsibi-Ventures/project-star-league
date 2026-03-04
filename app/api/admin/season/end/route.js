@@ -5,11 +5,10 @@ import { TRANSACTION_CATEGORY } from '@/lib/constants';
 
 export async function POST(request) {
     const { nextSeasonNumber } = await request.json();
-    const db = getDb();
+    const db = await getDb(); // Added await
 
-    // 1. Calculate Final Standings (Snapshot)
+    // 1. Calculate Final Standings
     const squadronStats = db.squadrons.map(sq => {
-        // Calculate live balance from transactions
         const balance = db.transactions
             .filter(t => t.squadronId === sq.id)
             .reduce((acc, t) => acc + t.starsDelta, 0);
@@ -39,30 +38,29 @@ export async function POST(request) {
             name: apexPredator ? apexPredator.name : 'No Winner',
             stars: apexPredator ? apexPredator.totalStars : 0
         },
-        // Store Top 3 for display
         topSquadrons: squadronStats.slice(0, 3).map(s => ({ name: s.name, stars: s.totalStars })),
         topMembers: memberStats.slice(0, 3).map(m => ({ name: m.name, stars: m.totalStars }))
     };
 
-    db.hallOfFame.unshift(hofEntry); // Add to top
+    db.hallOfFame.unshift(hofEntry);
 
-    // 3. Operational Reset (Clear Data)
+    // 3. Operational Reset
     db.meetings = [];
     db.auctions = [];
-    db.transactions = []; // Clear Ledger
+    db.transactions = []; 
 
     // 4. Reseed Squadrons to 100 Stars
     db.squadrons = db.squadrons.map(sq => ({
         ...sq,
         totalStars: 100,
-        rotationState: null // Clear rotation history
+        rotationState: null 
     }));
 
     // 5. Reset Member States
     db.members = db.members.map(m => ({
         ...m,
         totalStars: 0,
-        lastSpeechMeetingIndex: -10, // Safe Reset
+        lastSpeechMeetingIndex: -10, 
         speechCooldownUntilMeetingIndex: 0
     }));
 
@@ -87,7 +85,7 @@ export async function POST(request) {
         });
     });
 
-    saveDb(db);
+    await saveDb(db); // Added await
 
     return NextResponse.json({ success: true, season: db.season.seasonNumber });
 }

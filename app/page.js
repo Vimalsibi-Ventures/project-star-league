@@ -5,11 +5,13 @@ import { MEETING_STATUS } from '@/lib/constants';
 
 export const dynamic = 'force-dynamic';
 
-export default function HomePage() {
-    const leaderboardData = getSquadrons();
-    const memberData = getMembers();
-    const allMeetings = getMeetings();
-    const db = getDb(); // Fetch DB for Season state
+// ADDED: 'async' to the function
+export default async function HomePage() {
+    // ADDED: 'await' to let the cloud database respond
+    const leaderboardData = await getSquadrons();
+    const memberData = await getMembers();
+    const allMeetings = await getMeetings();
+    const db = await getDb(); 
     const today = new Date();
 
     // 1. Get Active Season Number
@@ -48,7 +50,8 @@ export default function HomePage() {
     let meetingAssignments = [];
 
     if (upcomingMeeting) {
-        const auction = getAuctionByMeeting(upcomingMeeting.id);
+        // ADDED: 'await' here as well
+        const auction = await getAuctionByMeeting(upcomingMeeting.id);
         if (auction && auction.items) {
             auctionData = {
                 ...auction,

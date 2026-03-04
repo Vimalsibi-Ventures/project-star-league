@@ -4,10 +4,12 @@ import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
-export default function AnalyticsPage() {
-    const { rankedSquadrons, rankedMembers } = getLeaderboards();
-    const transactions = getTransactions();
-    const meetings = getMeetings();
+// ADDED: async
+export default async function AnalyticsPage() {
+    // ADDED: await to the three data fetches
+    const { rankedSquadrons, rankedMembers } = await getLeaderboards();
+    const transactions = await getTransactions();
+    const meetings = await getMeetings();
 
     // ---------------------------------------------------------
     // 1. Apply Dense Ranking Logic (Consistent with Leaderboard)

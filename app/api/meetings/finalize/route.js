@@ -5,7 +5,8 @@ import { MEETING_STATUS } from '@/lib/constants';
 
 export async function POST(request) {
     const { meetingId, scoringData } = await request.json();
-    const db = getDb();
+    // Added await for cloud database
+    const db = await getDb();
 
     const meeting = db.meetings.find(m => m.id === meetingId);
 
@@ -31,7 +32,8 @@ export async function POST(request) {
     meeting.status = MEETING_STATUS.ATTENDANCE_FINALIZED;
     meeting.scoringData = scoringData;
 
-    saveDb(db);
+    // Added await for cloud database
+    await saveDb(db);
 
     return NextResponse.json({ success: true, count: newTransactions.length });
 }

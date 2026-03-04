@@ -1,9 +1,11 @@
 import { getSquadron, getMembersBySquadron, getTransactionsBySquadron, getSquadronStars, getMeetings } from '@/lib/data';
 import Link from 'next/link';
-import SquadronHistory from '@/components/SquadronHistory'; // Import the new component
+import SquadronHistory from '@/components/SquadronHistory';
 
-export default function SquadronDetailPage({ params }) {
-    const squadron = getSquadron(params.id);
+// ADDED: async
+export default async function SquadronDetailPage({ params }) {
+    // ADDED: await for the primary fetch
+    const squadron = await getSquadron(params.id);
 
     if (!squadron) {
         return (
@@ -13,10 +15,11 @@ export default function SquadronDetailPage({ params }) {
         );
     }
 
-    const members = getMembersBySquadron(params.id);
-    const transactions = getTransactionsBySquadron(params.id);
-    const totalStars = getSquadronStars(params.id);
-    const meetings = getMeetings();
+    // ADDED: await for the rest of the fetches
+    const members = await getMembersBySquadron(params.id);
+    const transactions = await getTransactionsBySquadron(params.id);
+    const totalStars = await getSquadronStars(params.id);
+    const meetings = await getMeetings();
 
     return (
         <div className="min-h-screen pt-[100px] pb-20 px-6">
@@ -51,7 +54,7 @@ export default function SquadronDetailPage({ params }) {
                     </div>
                 </div>
 
-                {/* TRANSACTION HISTORY (New Component) */}
+                {/* TRANSACTION HISTORY */}
                 <SquadronHistory transactions={transactions} meetings={meetings} />
             </div>
         </div>

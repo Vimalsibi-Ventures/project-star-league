@@ -5,7 +5,8 @@ import { MEETING_STATUS } from '@/lib/constants';
 export async function POST(request) {
     // 1. Accept tableTopics and ttLocked in payload
     const { meetingId, roleAssignments, tableTopics, ttLocked } = await request.json();
-    const db = getDb();
+    // Added await for cloud database
+    const db = await getDb();
 
     const meeting = db.meetings.find(m => m.id === meetingId);
     if (!meeting) return NextResponse.json({ error: 'Meeting not found' }, { status: 404 });
@@ -52,6 +53,7 @@ export async function POST(request) {
         meeting.status = MEETING_STATUS.MEETING_LIVE;
     }
 
-    saveDb(db);
+    // Added await for cloud database
+    await saveDb(db);
     return NextResponse.json({ success: true, status: meeting.status });
 }
