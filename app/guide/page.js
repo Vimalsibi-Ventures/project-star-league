@@ -110,38 +110,54 @@ export default function GuidePage() {
                             </table>
                         </div>
                         <p className="text-xs text-gray-500 mt-2 ml-1">
-                            * Note: GE earns stars but cannot win "Best Performer" awards.
+                            * Note: Guests and non-members can perform roles, but they do not generate stars.
                         </p>
                     </section>
 
-                    {/* 5. Auction Costs */}
+                    {/* 5. The Market */}
                     <section className="bg-red-900/10 p-6 rounded-xl border border-red-500/20">
-                        <h2 className="text-xl font-bold text-red-400 uppercase mb-4">5. Auction Costs (Spending)</h2>
+                        <h2 className="text-xl font-bold text-red-400 uppercase mb-4">5. The Market (Auctions & Mercenaries)</h2>
                         <p className="text-sm text-gray-300 mb-4">
-                            Before a meeting, Squadrons spend stars to acquire rights to roles.
+                            Roles are not handed out; they are acquired through live bidding or post-auction buyouts.
                         </p>
-                        <div className="flex justify-between items-center bg-black/20 p-4 rounded-lg">
-                            <span className="text-white font-bold text-sm">Standard Deduction</span>
-                            <span className="font-mono text-red-400 font-bold">-10★ per role purchased</span>
+                        <div className="space-y-2">
+                            <div className="flex justify-between items-center bg-black/20 p-3 rounded-lg">
+                                <span className="text-white text-sm">Live Auction Win</span>
+                                <span className="font-mono text-red-400 font-bold">Dynamic Cost</span>
+                            </div>
+                            <div className="flex justify-between items-center bg-black/20 p-3 rounded-lg">
+                                <span className="text-white text-sm">Premium Fallback (Manual Buy)</span>
+                                <span className="font-mono text-red-400 font-bold">-25★ Flat Rate</span>
+                            </div>
+                            <div className="flex justify-between items-center bg-black/20 p-3 rounded-lg">
+                                <span className="text-white text-sm">Mercenary Substitution Fee</span>
+                                <span className="font-mono text-red-400 font-bold">Negotiated</span>
+                            </div>
                         </div>
-                        <p className="text-xs text-gray-500 mt-2">
-                            Deductions are permanent once the meeting closes. If a meeting is cancelled, stars are refunded.
+                        <p className="text-xs text-gray-500 mt-3">
+                            * Speaker roles cannot be substituted. If a meeting is cancelled, auction stars are fully refunded.
                         </p>
                     </section>
 
                     {/* 6. Attendance */}
                     <section className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div className="bg-white/5 p-6 rounded-xl border border-white/5">
-                            <h2 className="text-lg font-bold text-white uppercase mb-2">6. Attendance</h2>
-                            <div className="flex justify-between items-center mb-2">
-                                <span className="text-gray-400 text-sm">Per Member</span>
-                                <span className="text-[#fbbf24] font-bold font-mono">+5★</span>
+                            <h2 className="text-lg font-bold text-white uppercase mb-4">6. Attendance</h2>
+                            <div className="space-y-3">
+                                <div className="flex justify-between items-center">
+                                    <span className="text-gray-400 text-sm">Offline Meeting</span>
+                                    <span className="text-[#fbbf24] font-bold font-mono">+10★</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="text-gray-400 text-sm">Online Meeting</span>
+                                    <span className="text-[#fbbf24] font-bold font-mono">+5★</span>
+                                </div>
+                                <div className="flex justify-between items-center pt-3 border-t border-white/10">
+                                    <span className="text-green-400 font-bold text-sm">Perfect Bonus</span>
+                                    <span className="text-green-400 font-bold font-mono">+20★</span>
+                                </div>
                             </div>
-                            <div className="flex justify-between items-center pt-2 border-t border-white/10">
-                                <span className="text-green-400 font-bold text-sm">Perfect Bonus</span>
-                                <span className="text-green-400 font-bold font-mono">+20★</span>
-                            </div>
-                            <p className="text-xs text-gray-500 mt-2">Perfect Bonus applies only if 100% of the squadron attends.</p>
+                            <p className="text-xs text-gray-500 mt-3">Perfect Bonus applies only if 4 or more members of a squadron attend.</p>
                         </div>
 
                         {/* 7. Rotation */}
@@ -149,8 +165,8 @@ export default function GuidePage() {
                             <h2 className="text-lg font-bold text-white uppercase mb-2">7. Rotation (Anti-Farming)</h2>
                             <ul className="text-sm text-gray-300 space-y-2">
                                 <li><strong>Cooldown:</strong> Speakers enter a 2-meeting cooldown.</li>
-                                <li><strong>Breaking Rotation:</strong> Speaking during cooldown is allowed, but resets the streak.</li>
-                                <li><strong>Rotation Bonus:</strong> <span className="text-[#fbbf24] font-bold">+5★</span> if fair order is respected.</li>
+                                <li><strong>Breaking Rotation:</strong> Speaking during cooldown or out-of-order is allowed, but resets your team's streak.</li>
+                                <li><strong>Rotation Bonus:</strong> <span className="text-[#fbbf24] font-bold">+5★</span> if the fair alphabetical order is respected.</li>
                             </ul>
                         </div>
                     </section>
@@ -183,7 +199,7 @@ export default function GuidePage() {
                                 <h4 className="text-pink-400 font-bold uppercase text-xs tracking-widest mb-2">Synergy Bonus</h4>
                                 <p className="text-white font-bold text-sm mb-1">Multiplier Active</p>
                                 <p className="text-gray-400 text-xs">
-                                    Squadron earns <strong>5★ × (Member Count)</strong> on top of individual earnings.
+                                    Squadron earns <strong>5★ × (Participating Members)</strong> on top of individual earnings.
                                 </p>
                             </div>
                         </div>
@@ -199,6 +215,7 @@ export default function GuidePage() {
                                 <li>🏅 Best Evaluator</li>
                                 <li>🏅 Best TT Speaker</li>
                                 <li>🏅 Best Role Player</li>
+                                <li>🏅 Best TAG Player</li>
                             </ul>
                             <div className="bg-white/5 p-3 rounded text-sm flex justify-between">
                                 <span>Star Reward</span>
@@ -206,23 +223,27 @@ export default function GuidePage() {
                             </div>
                         </div>
                         <div>
-                            <h2 className="text-xl font-bold text-white uppercase mb-4">10. Synergy Bonus</h2>
+                            <h2 className="text-xl font-bold text-white uppercase mb-4">10. Active Synergy</h2>
                             <p className="text-sm text-gray-400 mb-3">
-                                Awarded for active team presence.
+                                Awarded for active team presence across the meeting.
                             </p>
                             <p className="text-sm text-gray-300 mb-4">
-                                If a squadron has multiple active members performing roles in a meeting, an additional <strong>Synergy Bonus</strong> is calculated once per meeting.
+                                If a squadron has multiple members successfully completing roles, an additional <strong>Synergy Bonus</strong> is calculated once at the end of the meeting (5★ per active member).
                             </p>
-                            <p className="text-xs text-gray-500 italic">Encourages distributed effort.</p>
+                            <p className="text-xs text-gray-500 italic">Encourages distributed effort rather than one person doing everything.</p>
                         </div>
                     </section>
 
                     {/* 11. Penalties */}
                     <section className="bg-red-950/30 p-6 rounded-xl border border-red-500/30">
                         <h2 className="text-xl font-bold text-red-500 uppercase mb-4">11. Penalties</h2>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div className="bg-black/40 p-4 rounded flex justify-between items-center">
                                 <span className="text-white text-sm font-bold">Late Arrival</span>
+                                <span className="text-red-500 font-mono font-bold">-5★</span>
+                            </div>
+                            <div className="bg-black/40 p-4 rounded flex justify-between items-center">
+                                <span className="text-white text-sm font-bold">Role Lateness</span>
                                 <span className="text-red-500 font-mono font-bold">-5★</span>
                             </div>
                             <div className="bg-black/40 p-4 rounded flex justify-between items-center">
@@ -230,7 +251,7 @@ export default function GuidePage() {
                                 <span className="text-red-500 font-mono font-bold">-20★</span>
                             </div>
                         </div>
-                        <p className="text-xs text-red-400/60 mt-4">Penalties are locked permanently upon meeting closure.</p>
+                        <p className="text-xs text-red-400/60 mt-4">Penalties are locked permanently upon meeting closure. "Role Lateness" is an additional fine applied if you are marked late while holding a role.</p>
                     </section>
 
                     {/* 12, 13, 14. Lifecycle & Meta */}
@@ -238,7 +259,7 @@ export default function GuidePage() {
                         <div className="bg-white/5 p-6 rounded-xl">
                             <h3 className="text-[#fbbf24] font-bold uppercase text-xs tracking-widest mb-2">12. Seasons</h3>
                             <p className="text-xs text-gray-400 leading-relaxed">
-                                Seasons conclude periodically. Winners are archived in the <strong>Hall of Fame</strong>, and star counts reset to 100★ for the next season. History is preserved forever.
+                                A season lasts for exactly <strong>10 meetings</strong>. At the end, champions are archived in the Hall of Fame, new Captains are chosen, the Snake Draft rebuilds the teams, and star counts reset to 100★.
                             </p>
                         </div>
                         <div className="bg-white/5 p-6 rounded-xl">

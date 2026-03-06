@@ -19,7 +19,7 @@ export async function POST(request) {
     if (item.winningSquadronId) return NextResponse.json({ error: 'Item already sold' }, { status: 400 });
 
     // 2. Financial Check (10 Star Flat Rate)
-    const FLAT_COST = 10;
+    const FLAT_COST = 25;
     const { rankedSquadrons } = await getLeaderboards(); // Added await
     const squadron = rankedSquadrons.find(s => s.id === squadronId);
 
