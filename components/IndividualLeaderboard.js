@@ -1,11 +1,13 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+
 export default function IndividualLeaderboard({ members }) {
+    const router = useRouter();
+
     // PATCH 2: Dense Ranking Logic
-    // 1. Sort by Stars (Descending)
     const sorted = [...members].sort((a, b) => b.totalStars - a.totalStars);
 
-    // 2. Calculate Rank (Increment only if stars decrease)
     let currentRank = 1;
     const rankedMembers = sorted.map((member, index) => {
         if (index > 0 && member.totalStars < sorted[index - 1].totalStars) {
@@ -27,15 +29,16 @@ export default function IndividualLeaderboard({ members }) {
                 </thead>
                 <tbody className="divide-y divide-white/5">
                     {rankedMembers.map((member) => {
-                        // Determine styling based on Rank (handles ties correctly)
                         const isRankOne = member.rank === 1;
                         const isTopThree = member.rank <= 3;
 
                         return (
                             <tr
                                 key={member.id}
+                                // PATCH: Added router.push to make the ENTIRE ROW clickable!
+                                onClick={() => router.push(`/members/${member.id}`)}
                                 className={`
-                                    group transition-all duration-300
+                                    group cursor-pointer transition-all duration-300
                                     ${isRankOne ? 'bg-gradient-to-r from-[#fbbf24]/10 to-transparent' : 'hover:bg-white/[0.02]'}
                                 `}
                             >

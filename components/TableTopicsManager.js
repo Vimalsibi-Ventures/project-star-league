@@ -5,6 +5,21 @@ import { useState, useEffect } from 'react';
 export default function TableTopicsManager({ members, initialData, onChange }) {
     const [participants, setParticipants] = useState(initialData || []);
     const [selectedMemberId, setSelectedMemberId] = useState('');
+    const [squadrons, setSquadrons] = useState([]); // PATCH: Added state for Squadrons
+
+    // PATCH: Fetch squadrons in the background so we can lookup the actual names!
+    useEffect(() => {
+        const fetchSquadrons = async () => {
+            try {
+                const res = await fetch('/api/squadrons');
+                const data = await res.json();
+                setSquadrons(data);
+            } catch (err) {
+                console.error('Failed to fetch squadrons:', err);
+            }
+        };
+        fetchSquadrons();
+    }, []);
 
     // Propagate changes to parent
     useEffect(() => {
@@ -19,7 +34,7 @@ export default function TableTopicsManager({ members, initialData, onChange }) {
             orderIndex: participants.length + 1,
             memberId: member.id,
             name: member.name,
-            squadronId: member.squadronId,
+            squadronId: member.squadronId, // We store the ID
             isGuest: false
         };
 
@@ -97,27 +112,32 @@ export default function TableTopicsManager({ members, initialData, onChange }) {
                     </div>
                 )}
 
-                {participants.map((p, idx) => (
-                    <div key={idx} className="flex items-center justify-between p-3 bg-white/5 rounded border border-white/5">
-                        <div className="flex items-center gap-4">
-                            <span className="text-gray-500 font-mono text-xs font-bold w-6">#{p.orderIndex}</span>
-                            <div>
-                                <span className={`block font-bold text-sm ${p.isGuest ? 'text-indigo-300' : 'text-white'}`}>
-                                    {p.name}
-                                </span>
-                                {!p.isGuest && (
-                                    <span className="text-[10px] text-gray-500 uppercase tracking-wider">
-                                        {members.find(m => m.id === p.memberId)?.squadronName || 'Unknown Squad'}
+                {participants.map((p, idx) => {
+                    // PATCH: Lookup squadron name dynamically using the ID
+                    const sqName = squadrons.find(s => s.id === p.squadronId)?.name || 'Unknown Squad';
+                    
+                    return (
+                        <div key={idx} className="flex items-center justify-between p-3 bg-white/5 rounded border border-white/5">
+                            <div className="flex items-center gap-4">
+                                <span className="text-gray-500 font-mono text-xs font-bold w-6">#{p.orderIndex}</span>
+                                <div>
+                                    <span className={`block font-bold text-sm ${p.isGuest ? 'text-indigo-300' : 'text-white'}`}>
+                                        {p.name}
                                     </span>
-                                )}
+                                    {!p.isGuest && (
+                                        <span className="text-[10px] text-gray-500 uppercase tracking-wider">
+                                            {sqName}
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <button onClick={() => moveUp(idx)} disabled={idx === 0} className="p-1 text-gray-400 hover:text-white disabled:opacity-30">↑</button>
+                                <button onClick={() => handleRemove(idx)} className="p-1 text-red-400 hover:text-red-300 text-xs uppercase font-bold">✕</button>
                             </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                            <button onClick={() => moveUp(idx)} disabled={idx === 0} className="p-1 text-gray-400 hover:text-white disabled:opacity-30">↑</button>
-                            <button onClick={() => handleRemove(idx)} className="p-1 text-red-400 hover:text-red-300 text-xs uppercase font-bold">✕</button>
-                        </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
         </div>
     );

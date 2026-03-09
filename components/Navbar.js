@@ -1,13 +1,26 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 export default function Navbar() {
+    const pathname = usePathname();
+
+    // PATCH: Intercept clicks if we are leaving the admin area
+    const handleHomeClick = async (e) => {
+        // Only trigger logout if we are currently inside the protected admin area
+        if (pathname && pathname.startsWith('/admin')) {
+            e.preventDefault();
+            await fetch('/api/logout', { method: 'POST' });
+            window.location.href = '/'; // Hard redirect wipes the router cache
+        }
+    };
+
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#0a0c10]/80 backdrop-blur-md">
             <div className="max-w-7xl mx-auto px-6 h-[80px] flex justify-between items-center">
-                {/* Logo */}
-                <Link href="/" className="flex items-center gap-3 group">
+                {/* Logo - PATCHED with onClick handler */}
+                <Link href="/" onClick={handleHomeClick} className="flex items-center gap-3 group">
                     <div className="w-9 h-9 bg-[#fbbf24] rounded-lg flex items-center justify-center font-black text-black text-xl shadow-[0_0_15px_rgba(251,191,36,0.4)] group-hover:scale-110 transition-transform">
                         O
                     </div>
@@ -27,49 +40,28 @@ export default function Navbar() {
                     </a>
 
                     {/* Operational Links */}
-                    <Link
-                        href="/guide"
-                        className="text-xs font-bold text-green-400 hover:text-green-300 uppercase tracking-wider transition-colors"
-                    >
+                    <Link href="/guide" className="text-xs font-bold text-green-400 hover:text-green-300 uppercase tracking-wider transition-colors">
                         Guide
                     </Link>
 
-                    <Link
-                        href="/analytics"
-                        className="text-xs font-bold text-cyan-400 hover:text-cyan-300 uppercase tracking-wider transition-colors"
-                    >
+                    <Link href="/analytics" className="text-xs font-bold text-cyan-400 hover:text-cyan-300 uppercase tracking-wider transition-colors">
                         Analytics
                     </Link>
 
-                    <Link
-                        href="/hall-of-fame"
-                        className="text-xs font-bold text-[#fbbf24] hover:text-yellow-300 uppercase tracking-wider transition-colors"
-                    >
+                    <Link href="/hall-of-fame" className="text-xs font-bold text-[#fbbf24] hover:text-yellow-300 uppercase tracking-wider transition-colors">
                         Hall of Fame
                     </Link>
 
-                    <a
-                        href="https://tmoratio.netlify.app/tmforms.html"
-                        target="_blank"
-                        className="text-xs font-bold text-gray-400 hover:text-white uppercase tracking-wider transition-colors shadow-glow-sm"
-                    >
+                    <a href="https://tmoratio.netlify.app/tmforms.html" target="_blank" className="text-xs font-bold text-gray-400 hover:text-white uppercase tracking-wider transition-colors shadow-glow-sm">
                         Role Signup
                     </a>
 
-                    {/* Restored Feedback Link */}
-                    <a
-                        href="https://oratiofb.netlify.app/"
-                        target="_blank"
-                        className="text-xs font-bold text-gray-400 hover:text-white uppercase tracking-wider transition-colors"
-                    >
+                    <a href="https://oratiofb.netlify.app/" target="_blank" className="text-xs font-bold text-gray-400 hover:text-white uppercase tracking-wider transition-colors">
                         Feedback
                     </a>
 
                     {/* Admin Button */}
-                    <Link
-                        href="/admin"
-                        className="px-5 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-bold uppercase rounded-md transition-all hover:border-[#fbbf24]/50 hover:shadow-[0_0_15px_rgba(251,191,36,0.2)]"
-                    >
+                    <Link href="/admin" className="px-5 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-bold uppercase rounded-md transition-all hover:border-[#fbbf24]/50 hover:shadow-[0_0_15px_rgba(251,191,36,0.2)]">
                         Admin
                     </Link>
                 </div>

@@ -19,9 +19,8 @@ export default function RoleResolutionPage({ params }) {
     const [missingDetails, setMissingDetails] = useState([]);
     const [currentMeetingIndex, setCurrentMeetingIndex] = useState(0);
 
-    // 1. TT State
     const [ttParticipants, setTtParticipants] = useState([]);
-    const [ttLocked, setTtLocked] = useState(false); // PATCH 3: Locking State
+    const [ttLocked, setTtLocked] = useState(false); 
 
     useEffect(() => {
         const loadData = async () => {
@@ -40,10 +39,9 @@ export default function RoleResolutionPage({ params }) {
             setSquadrons(sRes);
             setMembers(memRes);
 
-            // 2. Load Saved TT Data & Lock State
             if (currentMeeting && currentMeeting.tableTopics) {
                 setTtParticipants(currentMeeting.tableTopics.participants || []);
-                setTtLocked(!!currentMeeting.tableTopics.locked); // PATCH 3: Load Lock
+                setTtLocked(!!currentMeeting.tableTopics.locked);
             }
 
             const auction = aRes.find(a => a.meetingId === params.id);
@@ -63,7 +61,6 @@ export default function RoleResolutionPage({ params }) {
                         pathways: saved && saved.pathwaysProgress ? saved.pathwaysProgress : {
                             pathwayName: '', level: '', projectName: '', speechTitle: ''
                         },
-                        // Restore Fee (Phase 3.3)
                         substitutionFee: saved && saved.substitutionFee ? saved.substitutionFee : 0
                     };
                 });
@@ -73,7 +70,6 @@ export default function RoleResolutionPage({ params }) {
         loadData();
     }, [params.id]);
 
-    // Validation Effect
     useEffect(() => {
         const errors = [];
         auctionItems.forEach(item => {
@@ -94,7 +90,6 @@ export default function RoleResolutionPage({ params }) {
         setMissingDetails(errors);
     }, [assignments, auctionItems]);
 
-    // Handlers
     const handleAssignmentChange = (itemId, field, value) => {
         setAssignments(prev => ({ ...prev, [itemId]: { ...prev[itemId], [field]: value } }));
     };
@@ -111,7 +106,6 @@ export default function RoleResolutionPage({ params }) {
         }));
     };
 
-    // PATCH 3: Handler for Locking TT
     const handleLockTT = async () => {
         if (!confirm('Lock Table Topics? This will freeze the participant list.')) return;
 
@@ -122,7 +116,7 @@ export default function RoleResolutionPage({ params }) {
                 meetingId: params.id,
                 roleAssignments: getRolePayload(),
                 tableTopics: { participants: ttParticipants },
-                ttLocked: true // Signal to lock
+                ttLocked: true 
             })
         });
 
@@ -185,7 +179,7 @@ export default function RoleResolutionPage({ params }) {
                 meetingId: params.id,
                 roleAssignments: getRolePayload(),
                 tableTopics: { participants: ttParticipants },
-                ttLocked: ttLocked // Persist current lock state
+                ttLocked: ttLocked 
             })
         });
         if (res.ok) router.push('/admin/dashboard');
@@ -196,7 +190,6 @@ export default function RoleResolutionPage({ params }) {
         if (missingDetails.length > 0) return alert('Cannot close: Missing Speaker details.');
         if (!confirm('Award stars, Log to Sheets, and CLOSE?')) return;
 
-        // Save latest state first
         await fetch('/api/meetings/roles/save', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -223,20 +216,24 @@ export default function RoleResolutionPage({ params }) {
         return !item.title.toLowerCase().includes('speaker');
     };
 
+    // PATCH: Updated Rotation Warning Logic (Cooldown Only)
     const getRotationWarning = (item, memberId) => {
         const isSpeaker = item.roleTemplateId === 'speaker' || item.title.toLowerCase().includes('speaker');
         if (!isSpeaker || !memberId || memberId === GUEST_EXTERNAL_KEY) return null;
+        
         const member = members.find(m => m.id === memberId);
-        const squadron = squadrons.find(s => s.id === item.winningSquadronId);
-        if (!member || !squadron) return null;
-        const lastIdx = member.lastSpeechMeetingIndex || -1;
-        const onCooldown = (currentMeetingIndex - lastIdx) <= COOLDOWN_DURATION;
-        if (onCooldown) return "⚠️ On Cooldown (No Bonus)";
-        if (squadron.rotationState && squadron.rotationState.activeOrder) {
-            const expectedId = squadron.rotationState.activeOrder[squadron.rotationState.currentIndex];
-            if (expectedId && expectedId !== memberId) return "⚠️ Out of Order (Breaks Streak)";
+        if (!member) return null;
+        
+        const lastIdx = member.lastSpeechMeetingIndex || -10;
+        const meetingsSinceSpeech = currentMeetingIndex - lastIdx;
+        const onCooldown = meetingsSinceSpeech <= COOLDOWN_DURATION;
+        
+        if (onCooldown) {
+            const meetsRemaining = (COOLDOWN_DURATION - meetingsSinceSpeech) + 1;
+            return `⚠️ Cooldown Warning: Member must sit out for ${meetsRemaining} more meeting(s). The +5★ Rotation Bonus will be forfeited!`;
         }
-        return null;
+        
+        return `✅ Valid Speaker: Cooldown cleared! Will earn the +5★ Rotation Bonus.`;
     };
 
     if (!meeting) return <div className="p-10 text-white">Loading...</div>;
@@ -266,7 +263,6 @@ export default function RoleResolutionPage({ params }) {
                     </div>
                 )}
 
-                {/* TT Manager Section with Lock Control */}
                 <div className="flex justify-between items-center mb-4 px-1">
                     <h3 className="text-[#fbbf24] font-bold text-lg uppercase tracking-wide">Table Topics</h3>
                     {!ttLocked ? (
@@ -330,7 +326,7 @@ export default function RoleResolutionPage({ params }) {
                                 </select>
 
                                 {rotationWarning && (
-                                    <div className="text-orange-400 text-[10px] font-bold uppercase tracking-widest mb-4 bg-orange-500/10 p-2 rounded border border-orange-500/20">
+                                    <div className={`text-[10px] font-bold uppercase tracking-widest mb-4 p-2 rounded border ${rotationWarning.includes('Warning') ? 'text-red-400 bg-red-500/10 border-red-500/20' : 'text-green-400 bg-green-500/10 border-green-500/20'}`}>
                                         {rotationWarning}
                                     </div>
                                 )}

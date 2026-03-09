@@ -1,12 +1,9 @@
 import { getMembers, getSquadron, getMemberStars } from '@/lib/data';
 import Link from 'next/link';
 
-// ADDED: async
 export default async function MembersPage() {
-    // ADDED: await
     const members = await getMembers();
 
-    // UPDATED: Used Promise.all to await the squadron and stars for every single member before mapping
     const memberDataPromises = members.map(async (member) => {
         const squadron = await getSquadron(member.squadronId);
         const totalStars = await getMemberStars(member.id);
@@ -41,34 +38,23 @@ export default async function MembersPage() {
                     <table className="min-w-full divide-y divide-[#2a2f3a]">
                         <thead className="bg-[#0d0f14]">
                             <tr>
-                                <th className="px-8 py-5 text-left text-xs font-bold text-[#7a8194] uppercase tracking-widest">
-                                    Rank
-                                </th>
-                                <th className="px-8 py-5 text-left text-xs font-bold text-[#7a8194] uppercase tracking-widest">
-                                    Member Name
-                                </th>
-                                <th className="px-8 py-5 text-left text-xs font-bold text-[#7a8194] uppercase tracking-widest">
-                                    Squadron
-                                </th>
-                                <th className="px-8 py-5 text-left text-xs font-bold text-[#7a8194] uppercase tracking-widest">
-                                    Total Stars
-                                </th>
+                                <th className="px-8 py-5 text-left text-xs font-bold text-[#7a8194] uppercase tracking-widest">Rank</th>
+                                <th className="px-8 py-5 text-left text-xs font-bold text-[#7a8194] uppercase tracking-widest">Member Name</th>
+                                <th className="px-8 py-5 text-left text-xs font-bold text-[#7a8194] uppercase tracking-widest">Squadron</th>
+                                <th className="px-8 py-5 text-left text-xs font-bold text-[#7a8194] uppercase tracking-widest">Total Stars</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-[#2a2f3a]">
                             {memberData.map((member, index) => (
-                                <tr
-                                    key={member.id}
-                                    className={`transition-all duration-200 ${index % 2 === 0 ? 'bg-[#161a22]' : 'bg-[#1a1e26]'
-                                        } hover:bg-[#1f2430] hover:shadow-[inset_4px_0_0_#f5c518]`}
-                                >
-                                    <td className={`px-8 py-6 whitespace-nowrap text-xl font-bold ${index === 0 ? 'text-[#d4af37] drop-shadow-[0_0_8px_rgba(212,175,55,0.5)]' : 'text-[#f5f7fa]'
-                                        }`}>
+                                <tr key={member.id} className={`transition-all duration-200 ${index % 2 === 0 ? 'bg-[#161a22]' : 'bg-[#1a1e26]'} hover:bg-[#1f2430] hover:shadow-[inset_4px_0_0_#f5c518]`}>
+                                    <td className={`px-8 py-6 whitespace-nowrap text-xl font-bold ${index === 0 ? 'text-[#d4af37] drop-shadow-[0_0_8px_rgba(212,175,55,0.5)]' : 'text-[#f5f7fa]'}`}>
                                         {index === 0 ? '🥇' : index + 1}
                                     </td>
-                                    <td className={`px-8 py-6 whitespace-nowrap text-base font-bold ${index === 0 ? 'text-[#d4af37]' : 'text-[#f5f7fa]'
-                                        }`}>
-                                        {member.name}
+                                    <td className={`px-8 py-6 whitespace-nowrap text-base font-bold ${index === 0 ? 'text-[#d4af37]' : 'text-[#f5f7fa]'}`}>
+                                        {/* PATCH: Wrapped Name in a Link */}
+                                        <Link href={`/members/${member.id}`} className="hover:underline hover:text-[#f5c518]">
+                                            {member.name}
+                                        </Link>
                                     </td>
                                     <td className="px-8 py-6 whitespace-nowrap text-sm text-[#b3b8c5]">
                                         {member.squadronName}

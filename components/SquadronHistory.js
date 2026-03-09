@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-export default function SquadronHistory({ transactions, meetings }) {
+export default function SquadronHistory({ transactions, meetings, members = [] }) {
     const [filter, setFilter] = useState('all');
 
     const filteredTransactions = transactions.filter(t => {
@@ -34,39 +34,51 @@ export default function SquadronHistory({ transactions, meetings }) {
                 <table className="min-w-full divide-y divide-[#2a2f3a]">
                     <thead className="bg-[#0a0c10]/60">
                         <tr>
-                            <th className="px-8 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Date</th>
-                            <th className="px-8 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Event</th>
-                            <th className="px-8 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Category</th>
-                            <th className="px-8 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Impact</th>
-                            <th className="px-8 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Details</th>
+                            <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Date</th>
+                            <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Event</th>
+                            <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Category</th>
+                            <th className="px-6 py-4 text-left text-xs font-bold text-[#fbbf24] uppercase tracking-wider">Agent</th>
+                            <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Impact</th>
+                            <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Details</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-[#2a2f3a]">
                         {filteredTransactions.length === 0 ? (
                             <tr>
-                                <td colSpan="5" className="px-8 py-8 text-center text-gray-500">No records found</td>
+                                <td colSpan="6" className="px-8 py-8 text-center text-gray-500">No records found</td>
                             </tr>
                         ) : (
                             filteredTransactions.map((transaction, index) => {
                                 const meeting = meetings.find(m => m.id === transaction.meetingId);
+                                const member = members.find(m => m.id === transaction.memberId);
+                                const agentName = member ? member.name : (transaction.memberId ? 'Unknown Agent' : 'Squadron Level');
+
                                 return (
                                     <tr key={transaction.id} className={`hover:bg-[#1f2430]/80 transition-colors ${index % 2 === 0 ? 'bg-transparent' : 'bg-[#1a1e26]/30'
                                         }`}>
-                                        <td className="px-8 py-5 text-sm text-[#f5f7fa] font-mono">
-                                            {new Date(transaction.timestamp).toLocaleDateString()}
+                                        <td className="px-6 py-5 text-sm text-[#f5f7fa] font-mono">
+                                            {/* PATCH: Forces exact DD/MM/YYYY matching on both Server and Client */}
+                                            {new Date(transaction.timestamp).toLocaleDateString('en-GB', {
+                                                day: '2-digit',
+                                                month: '2-digit',
+                                                year: 'numeric'
+                                            })}
                                         </td>
-                                        <td className="px-8 py-5 text-sm text-[#b3b8c5]">
+                                        <td className="px-6 py-5 text-sm text-[#b3b8c5]">
                                             {meeting ? `Meeting ${meeting.date}` : 'System'}
                                         </td>
-                                        <td className="px-8 py-5 text-sm">
+                                        <td className="px-6 py-5 text-sm">
                                             <span className="px-2 py-1 rounded bg-[#1f2430]/80 border border-[#2a2f3a] text-xs font-bold uppercase text-[#b3b8c5]">
                                                 {transaction.category}
                                             </span>
                                         </td>
-                                        <td className={`px-8 py-5 text-base font-bold ${transaction.starsDelta >= 0 ? 'text-[#f5c518]' : 'text-[#ef4444]'}`}>
+                                        <td className="px-6 py-5 text-sm font-bold text-white">
+                                            {agentName}
+                                        </td>
+                                        <td className={`px-6 py-5 text-base font-bold ${transaction.starsDelta >= 0 ? 'text-[#f5c518]' : 'text-[#ef4444]'}`}>
                                             {transaction.starsDelta >= 0 ? '+' : ''}{transaction.starsDelta}★
                                         </td>
-                                        <td className="px-8 py-5 text-sm text-[#b3b8c5]">
+                                        <td className="px-6 py-5 text-sm text-[#b3b8c5]">
                                             {transaction.description}
                                         </td>
                                     </tr>

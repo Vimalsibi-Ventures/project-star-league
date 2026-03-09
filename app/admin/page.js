@@ -1,13 +1,24 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
 
 export default function AdminLoginPage() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const router = useRouter();
+
+    // PATCH: The Ultimate BFCache Buster
+    // If the browser tries to load this page from the "Back" button history,
+    // this forces a hard refresh, triggering the middleware to delete the session.
+    useEffect(() => {
+        const handlePageShow = (event) => {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        };
+        window.addEventListener('pageshow', handlePageShow);
+        return () => window.removeEventListener('pageshow', handlePageShow);
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -20,7 +31,9 @@ export default function AdminLoginPage() {
         });
 
         if (response.ok) {
-            router.push('/admin/dashboard');
+            // PATCH: Hard Redirect instead of router.push
+            // This completely flushes the Next.js internal router cache!
+            window.location.href = '/admin/dashboard';
         } else {
             setError('Invalid credentials');
         }

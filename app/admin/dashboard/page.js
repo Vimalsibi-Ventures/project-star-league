@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 
 export default function AdminDashboard() {
     const router = useRouter();
-    // ... (Keep state vars: squadrons, members, meetings, forms, etc.)
+    
     const [squadrons, setSquadrons] = useState([]);
     const [members, setMembers] = useState([]);
     const [meetings, setMeetings] = useState([]);
@@ -14,9 +14,8 @@ export default function AdminDashboard() {
     const [newMemberName, setNewMemberName] = useState('');
     const [newMemberSquadronId, setNewMemberSquadronId] = useState('');
 
-    // PATCH 1: Add Time State
     const [meetingDate, setMeetingDate] = useState('');
-    const [meetingTime, setMeetingTime] = useState('18:00'); // Default 6 PM
+    const [meetingTime, setMeetingTime] = useState('18:00'); 
     const [meetingType, setMeetingType] = useState('offline');
 
     const [selectedMeetingId, setSelectedMeetingId] = useState('');
@@ -35,11 +34,15 @@ export default function AdminDashboard() {
         setMeetings(await mtg.json());
     };
 
-    // ... (Keep CRUD Handlers exactly as is)
+    // PATCH: True Logout Handler for the Dashboard
+    const handleLogout = async () => {
+        await fetch('/api/logout', { method: 'POST' });
+        window.location.href = '/'; // Hard redirect to wipe cache
+    };
+
     const handleCreateSquadron = async (e) => { e.preventDefault(); await fetch('/api/squadrons', { method: 'POST', body: JSON.stringify({ name: newSquadronName }) }); fetchData(); };
     const handleCreateMember = async (e) => { e.preventDefault(); await fetch('/api/members', { method: 'POST', body: JSON.stringify({ name: newMemberName, squadronId: newMemberSquadronId }) }); fetchData(); };
 
-    // PATCH 1: Update Create Meeting to send time
     const handleCreateMeeting = async (e) => {
         e.preventDefault();
         await fetch('/api/meetings', {
@@ -52,10 +55,10 @@ export default function AdminDashboard() {
     const handleDeleteSquadron = async (id) => { if (confirm('Delete?')) { await fetch('/api/squadrons', { method: 'DELETE', body: JSON.stringify({ id }) }); fetchData(); } };
     const handleDeleteMember = async (id) => { if (confirm('Delete?')) { await fetch('/api/members', { method: 'DELETE', body: JSON.stringify({ id }) }); fetchData(); } };
 
-    // PATCH 2: Synchronization Fix (Preserved)
     const handleScoreMeeting = async () => {
         if (!selectedMeetingId) return alert('Select a meeting');
         const scoringData = {};
+        
         squadrons.forEach(sq => {
             const sqMembers = members.filter(m => m.squadronId === sq.id);
             const sqMemberIds = sqMembers.map(m => m.id);
@@ -63,7 +66,8 @@ export default function AdminDashboard() {
                 attendedMemberIds: attendees.filter(id => sqMemberIds.includes(id)),
                 lateMemberIds: lateMembers.filter(id => sqMemberIds.includes(id)),
                 rolesCount: 0, speechesCount: 0, awardsCount: 0,
-                manualAdjustment: parseInt(manualAdjustments[sq.id] || 0)
+                manualAdjustment: parseInt(manualAdjustments[sq.id] || 0),
+                totalMembersCount: sqMembers.length // PATCH: Sending the exact squad size!
             };
         });
 
@@ -78,8 +82,6 @@ export default function AdminDashboard() {
             setAttendees([]);
             setLateMembers([]);
             setSelectedMeetingId('');
-
-            // FORCE REFRESH: Pull fresh ledger sums immediately
             await fetchData();
         } else {
             const err = await res.json();
@@ -98,7 +100,6 @@ export default function AdminDashboard() {
     const toggleLateMember = (id) => setLateMembers(p => p.includes(id) ? p.filter(x => x !== id) : [...p, id]);
     const updateManual = (sqId, val) => setManualAdjustments(p => ({ ...p, [sqId]: val }));
 
-    // PATCH-B: Helper to check for missing speaker details
     const hasMissingDetails = (meeting) => {
         if (!meeting.roleAssignments) return false;
         return meeting.roleAssignments.some(assign => {
@@ -115,7 +116,7 @@ export default function AdminDashboard() {
     return (
         <div className="min-h-screen pt-[100px] pb-20 px-6">
             <div className="max-w-7xl mx-auto">
-                {/* ... (Keep Header & Nav) ... */}
+                
                 <div className="flex justify-between items-center mb-10">
                     <div>
                         <h1 className="text-4xl font-black text-white uppercase">Mission Control</h1>
@@ -124,13 +125,17 @@ export default function AdminDashboard() {
                     <div className="flex gap-4">
                         <Link href="/admin/auction" className="px-6 py-2 bg-white/10 text-white font-bold uppercase rounded-md hover:bg-white/20">Auction House</Link>
                         <Link href="/admin/settings" className="px-6 py-2 bg-white/10 text-white font-bold uppercase rounded-md hover:bg-white/20">Settings</Link>
-                        <Link href="/" className="px-6 py-2 bg-[#fbbf24] text-black font-bold uppercase rounded-md shadow-[0_0_15px_rgba(251,191,36,0.4)] hover:scale-105 transition-transform">
-                            View Arena
-                        </Link>
+                        
+                        {/* PATCH: Changed Link to Button with handleLogout */}
+                        <button 
+                            onClick={handleLogout}
+                            className="px-6 py-2 bg-[#fbbf24] text-black font-bold uppercase rounded-md shadow-[0_0_15px_rgba(251,191,36,0.4)] hover:scale-105 transition-transform"
+                        >
+                            View Arena (Exit)
+                        </button>
                     </div>
                 </div>
 
-                {/* ... (Keep Scorecard Section) ... */}
                 <div className="glass-card rounded-2xl p-8 mb-8 border-l-4 border-l-[#fbbf24]">
                     <h2 className="text-xl font-bold text-white uppercase tracking-wide mb-6 flex items-center gap-2">
                         <span className="w-3 h-3 bg-[#fbbf24] rounded-full animate-pulse"></span>
@@ -138,12 +143,10 @@ export default function AdminDashboard() {
                     </h2>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        {/* CREATE MEETING */}
                         <div className="bg-white/5 p-6 rounded-xl border border-white/5">
                             <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">Initialize Session</h3>
                             <form onSubmit={handleCreateMeeting} className="flex gap-3">
                                 <input type="date" value={meetingDate} onChange={(e) => setMeetingDate(e.target.value)} className="bg-black/40 border-white/10 rounded px-3 py-2 text-white w-full" required />
-                                {/* PATCH 1: Time Input */}
                                 <input type="time" value={meetingTime} onChange={(e) => setMeetingTime(e.target.value)} className="bg-black/40 border-white/10 rounded px-3 py-2 text-white w-1/3" required />
                                 <select value={meetingType} onChange={(e) => setMeetingType(e.target.value)} className="bg-black/40 border-white/10 rounded px-3 py-2 text-white w-full">
                                     <option value="offline">Offline</option>
@@ -153,12 +156,10 @@ export default function AdminDashboard() {
                             </form>
                         </div>
 
-                        {/* SCORECARD */}
                         <div className="bg-white/5 p-6 rounded-xl border border-white/5">
                             <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">Attendance Scorecard</h3>
                             <select value={selectedMeetingId} onChange={(e) => setSelectedMeetingId(e.target.value)} className="w-full bg-black/40 border-white/10 rounded px-4 py-3 text-white mb-4">
                                 <option value="">Select LIVE Session...</option>
-                                {/* Hardening: Only show MEETING_LIVE sessions for attendance scoring */}
                                 {meetings.filter(m => m.status === 'meeting_live').map(m => <option key={m.id} value={m.id}>{m.date} ({m.type})</option>)}
                             </select>
 
@@ -207,7 +208,6 @@ export default function AdminDashboard() {
                         </div>
                     </div>
 
-                    {/* SESSION LOGS - PATCHED BUTTONS & DELETE */}
                     <div className="mt-8 pt-8 border-t border-white/10">
                         <h3 className="text-sm font-bold text-gray-500 uppercase mb-4">Session Lifecycle</h3>
                         <div className="space-y-2">
@@ -218,18 +218,23 @@ export default function AdminDashboard() {
                                         <div className="flex items-center gap-3">
                                             <span className="text-white font-mono text-sm">
                                                 {meeting.date}
-                                                {/* PATCH 1: Display Time */}
                                                 {meeting.time && <span className="text-gray-500 text-xs ml-1">@{meeting.time}</span>}
                                                 <span className="text-gray-500 mx-2">|</span>
                                                 <span className="uppercase text-xs font-bold tracking-wider ml-2">{meeting.status}</span>
                                             </span>
-                                            {/* PATCH-H: Delete Button */}
+                                            
                                             {meeting.status !== 'closed' && (
                                                 <button
                                                     onClick={async () => {
-                                                        if (confirm('Delete meeting?')) {
-                                                            await fetch('/api/meetings', { method: 'DELETE', body: JSON.stringify({ id: meeting.id }) });
-                                                            fetchData();
+                                                        if (confirm('Are you sure you want to delete this meeting? This will automatically reverse all auction fees, penalties, and stars earned for this session.')) {
+                                                            const res = await fetch('/api/meetings', { method: 'DELETE', body: JSON.stringify({ id: meeting.id }) });
+                                                            const data = await res.json();
+                                                            if (res.ok) {
+                                                                alert(`Meeting deleted successfully! ${data.refundedCount} transactions reversed.`);
+                                                                fetchData();
+                                                            } else {
+                                                                alert(`Error: ${data.error}`);
+                                                            }
                                                         }
                                                     }}
                                                     className="text-red-500 text-[10px] font-bold uppercase hover:text-red-400"
@@ -276,9 +281,7 @@ export default function AdminDashboard() {
                     </div>
                 </div>
 
-                {/* ... (Keep Squadrons/Members/Danger Zone sections) ... */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                    {/* SQUADRONS */}
                     <div className="glass-card rounded-2xl p-8">
                         <h2 className="text-lg font-bold text-white uppercase tracking-wide mb-6">Squadrons</h2>
                         <form onSubmit={handleCreateSquadron} className="flex gap-2 mb-6">
@@ -295,7 +298,6 @@ export default function AdminDashboard() {
                         </div>
                     </div>
 
-                    {/* MEMBERS */}
                     <div className="glass-card rounded-2xl p-8">
                         <h2 className="text-lg font-bold text-white uppercase tracking-wide mb-6">Agents</h2>
                         <form onSubmit={handleCreateMember} className="flex gap-2 mb-6">
@@ -317,7 +319,6 @@ export default function AdminDashboard() {
                     </div>
                 </div>
 
-                {/* DANGER ZONE */}
                 <div className="border border-red-500/30 bg-red-500/5 rounded-xl p-6 flex justify-between items-center">
                     <div>
                         <h3 className="text-red-500 font-bold uppercase tracking-widest text-sm">Nuclear Option</h3>

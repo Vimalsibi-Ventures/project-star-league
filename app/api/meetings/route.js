@@ -9,7 +9,6 @@ export async function GET() {
 }
 
 export async function POST(request) {
-    // PATCH 1: Accept 'time'
     const { date, time, type } = await request.json();
     const db = await getDb();
 
@@ -28,7 +27,6 @@ export async function POST(request) {
     return NextResponse.json(newMeeting);
 }
 
-// ... (DELETE handler from Phase 3.4 Patch 5 remains unchanged) ...
 export async function DELETE(request) {
     const { id } = await request.json();
     const db = await getDb();
@@ -38,31 +36,35 @@ export async function DELETE(request) {
 
     const meeting = db.meetings[meetingIdx];
 
-    if ([MEETING_STATUS.MEETING_LIVE, MEETING_STATUS.CLOSED, MEETING_STATUS.AWARDS_ASSIGNED].includes(meeting.status)) {
-        return NextResponse.json({ error: 'Cannot cancel a Live or Closed meeting.' }, { status: 403 });
+    // Only prevent deletion if the meeting is completely archived/closed
+    if (meeting.status === MEETING_STATUS.CLOSED) {
+        return NextResponse.json({ error: 'Cannot delete a completely closed/archived meeting.' }, { status: 403 });
     }
 
-    const auctionTxns = db.transactions.filter(t =>
-        t.meetingId === id &&
-        t.category === TRANSACTION_CATEGORY.AUCTION
-    );
+    // Find ALL transactions associated with this meeting ID
+    const meetingTxns = db.transactions.filter(t => t.meetingId === id);
 
-    const refunds = auctionTxns.map(t => ({
-        id: uuidv4(),
-        meetingId: id,
-        squadronId: t.squadronId,
-        memberId: null,
-        category: 'auction_refund',
-        description: `Refund: Cancelled Meeting (${t.description})`,
-        starsDelta: Math.abs(t.starsDelta),
-        timestamp: new Date().toISOString(),
-        locked: true
-    }));
+    // Create an exact opposite transaction for every charge/reward to balance the ledger
+    const refunds = meetingTxns
+        .filter(t => !t.category.includes('refund')) // Don't refund a refund
+        .map(t => ({
+            id: uuidv4(),
+            meetingId: id,
+            squadronId: t.squadronId,
+            memberId: t.memberId,
+            category: `${t.category}_refund`,
+            description: `Reversal (Meeting Deleted): ${t.description}`,
+            starsDelta: -(t.starsDelta), // Flips the sign (+ becomes -, - becomes +)
+            timestamp: new Date().toISOString(),
+            locked: true
+        }));
 
+    // Add all reversing transactions to the ledger
     if (refunds.length > 0) {
         db.transactions.push(...refunds);
     }
 
+    // Remove the meeting itself
     db.meetings.splice(meetingIdx, 1);
 
     await saveDb(db);

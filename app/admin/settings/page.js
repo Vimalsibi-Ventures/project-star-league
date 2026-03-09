@@ -8,6 +8,14 @@ export default function SettingsPage() {
     const router = useRouter();
     const [confirmText, setConfirmText] = useState('');
 
+    // PATCH: The True Logout Handler
+    const handleLogout = async () => {
+        // Destroy the session cookie
+        await fetch('/api/logout', { method: 'POST' });
+        // Hard redirect to the public arena
+        window.location.href = '/';
+    };
+
     // Existing Reset Handlers
     const handleReset = async (type) => {
         if (confirmText !== 'RESET STAR LEAGUE') {
@@ -29,7 +37,6 @@ export default function SettingsPage() {
         }
     };
 
-    // NEW: End Season Handler
     const handleEndSeason = async () => {
         if (!confirm("⚠️ FINAL WARNING ⚠️\n\nThis will:\n1. Archive current rankings to Hall of Fame\n2. Wipe all meetings and auctions\n3. Reset everyone to 100 Stars\n4. Start the next Season\n\nThis cannot be undone.")) return;
 
@@ -45,7 +52,7 @@ export default function SettingsPage() {
 
             if (res.ok) {
                 alert("Season Concluded. Welcome to the new era.");
-                router.push('/hall-of-fame'); // Redirect to show the result
+                router.push('/hall-of-fame'); 
             } else {
                 alert("Error ending season.");
             }
@@ -60,7 +67,18 @@ export default function SettingsPage() {
             <div className="max-w-3xl mx-auto">
                 <div className="flex justify-between items-center mb-10">
                     <h1 className="text-4xl font-black text-white uppercase tracking-tight">System Settings</h1>
-                    <Link href="/admin/dashboard" className="text-gray-400 text-sm font-bold uppercase hover:text-white">← Back</Link>
+                    <div className="flex gap-4">
+                        <Link href="/admin/dashboard" className="text-gray-400 text-sm font-bold uppercase hover:text-white px-4 py-2">
+                            ← Dashboard
+                        </Link>
+                        {/* PATCH: Changed from Link to a Logout Button */}
+                        <button 
+                            onClick={handleLogout} 
+                            className="text-[#fbbf24] text-sm font-bold uppercase hover:text-yellow-400 px-4 py-2 border border-[#fbbf24]/30 rounded bg-[#fbbf24]/10 transition-colors"
+                        >
+                            Logout & Exit
+                        </button>
+                    </div>
                 </div>
 
                 <div className="space-y-8">
