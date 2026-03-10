@@ -34,10 +34,9 @@ export default function AdminDashboard() {
         setMeetings(await mtg.json());
     };
 
-    // PATCH: True Logout Handler for the Dashboard
     const handleLogout = async () => {
         await fetch('/api/logout', { method: 'POST' });
-        window.location.href = '/'; // Hard redirect to wipe cache
+        window.location.href = '/'; 
     };
 
     const handleCreateSquadron = async (e) => { e.preventDefault(); await fetch('/api/squadrons', { method: 'POST', body: JSON.stringify({ name: newSquadronName }) }); fetchData(); };
@@ -67,7 +66,7 @@ export default function AdminDashboard() {
                 lateMemberIds: lateMembers.filter(id => sqMemberIds.includes(id)),
                 rolesCount: 0, speechesCount: 0, awardsCount: 0,
                 manualAdjustment: parseInt(manualAdjustments[sq.id] || 0),
-                totalMembersCount: sqMembers.length // PATCH: Sending the exact squad size!
+                totalMembersCount: sqMembers.length
             };
         });
 
@@ -100,19 +99,6 @@ export default function AdminDashboard() {
     const toggleLateMember = (id) => setLateMembers(p => p.includes(id) ? p.filter(x => x !== id) : [...p, id]);
     const updateManual = (sqId, val) => setManualAdjustments(p => ({ ...p, [sqId]: val }));
 
-    const hasMissingDetails = (meeting) => {
-        if (!meeting.roleAssignments) return false;
-        return meeting.roleAssignments.some(assign => {
-            const isSpeaker = assign.roleName && assign.roleName.toLowerCase().includes('speaker');
-            const isMember = assign.memberId && !assign.fulfilledExternally;
-            if (isSpeaker && isMember) {
-                const pw = assign.pathwaysProgress || {};
-                return !pw.pathwayName || !pw.level || !pw.projectName || !pw.speechTitle;
-            }
-            return false;
-        });
-    };
-
     return (
         <div className="min-h-screen pt-[100px] pb-20 px-6">
             <div className="max-w-7xl mx-auto">
@@ -126,7 +112,6 @@ export default function AdminDashboard() {
                         <Link href="/admin/auction" className="px-6 py-2 bg-white/10 text-white font-bold uppercase rounded-md hover:bg-white/20">Auction House</Link>
                         <Link href="/admin/settings" className="px-6 py-2 bg-white/10 text-white font-bold uppercase rounded-md hover:bg-white/20">Settings</Link>
                         
-                        {/* PATCH: Changed Link to Button with handleLogout */}
                         <button 
                             onClick={handleLogout}
                             className="px-6 py-2 bg-[#fbbf24] text-black font-bold uppercase rounded-md shadow-[0_0_15px_rgba(251,191,36,0.4)] hover:scale-105 transition-transform"
@@ -212,7 +197,6 @@ export default function AdminDashboard() {
                         <h3 className="text-sm font-bold text-gray-500 uppercase mb-4">Session Lifecycle</h3>
                         <div className="space-y-2">
                             {meetings.sort((a, b) => new Date(b.date) - new Date(a.date)).map(meeting => {
-                                const detailsMissing = hasMissingDetails(meeting);
                                 return (
                                     <div key={meeting.id} className="flex justify-between items-center p-4 bg-white/5 border border-white/5 rounded hover:border-[#fbbf24]/30">
                                         <div className="flex items-center gap-3">
@@ -265,9 +249,9 @@ export default function AdminDashboard() {
                                             {meeting.status === 'awards_assigned' && (
                                                 <button
                                                     onClick={() => router.push(`/admin/resolution/${meeting.id}`)}
-                                                    className={`px-3 py-1 text-black text-xs font-bold uppercase rounded ${detailsMissing ? 'bg-red-400 hover:bg-red-300' : 'bg-green-500 hover:bg-green-400'}`}
+                                                    className="px-3 py-1 text-black text-xs font-bold uppercase rounded bg-green-500 hover:bg-green-400"
                                                 >
-                                                    {detailsMissing ? 'Pending Speaker Details' : 'Finalize & Close System'}
+                                                    Finalize & Close System
                                                 </button>
                                             )}
 

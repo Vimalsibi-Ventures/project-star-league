@@ -4,30 +4,29 @@ export function middleware(request) {
     const { pathname } = request.nextUrl;
     let session = request.cookies.get('admin_session');
 
-    // 1. If they land on the main login page, DESTROY any existing session.
-    // This acts as a natural "Logout". If they hit 'Back' to reach this page, 
-    // their session is cleared, forcing a fresh login if they try to go forward again.
+    // 1. Handling the main Login Page (/admin)
     if (pathname === '/admin') {
-        const response = NextResponse.next();
-        
-        // Tell the browser never to cache the login page
-        response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-        
         if (session) {
-            response.cookies.delete('admin_session');
+            // If they are already logged in and try to go to the login page, 
+            // bounce them directly into the Command Center.
+            return NextResponse.redirect(new URL('/admin/dashboard', request.url));
         }
+        
+        // If not logged in, let them see the lock screen, but tell the browser NOT to cache it.
+        const response = NextResponse.next();
+        response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
         return response;
     }
 
-    // 2. Protect everything INSIDE the /admin/ folder and your /api/admin/ endpoints
+    // 2. Protecting the Command Center (/admin/... and /api/admin/...)
     if (pathname.startsWith('/admin/') || pathname.startsWith('/api/admin/')) {
         if (!session) {
-            // No pass? Kick them back to the login screen
+            // No VIP pass? Kick them back to the login screen.
             return NextResponse.redirect(new URL('/admin', request.url));
         }
     }
     
-    // 3. Prevent the browser's "Back/Forward Cache" from bypassing security
+    // 3. For all protected routes, apply strict no-cache headers to defeat the Back button.
     const response = NextResponse.next();
     response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     response.headers.set('Pragma', 'no-cache');
@@ -38,6 +37,5 @@ export function middleware(request) {
 
 // This tells the bouncer exactly which routes to stand in front of
 export const config = {
-    // Explicitly added '/admin' so the logout logic triggers perfectly
     matcher: ['/admin', '/admin/:path*', '/api/admin/:path*'],
 };

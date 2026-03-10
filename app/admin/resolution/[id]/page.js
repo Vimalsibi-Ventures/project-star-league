@@ -16,7 +16,6 @@ export default function RoleResolutionPage({ params }) {
     const [squadrons, setSquadrons] = useState([]);
     const [members, setMembers] = useState([]);
     const [assignments, setAssignments] = useState({});
-    const [missingDetails, setMissingDetails] = useState([]);
     const [currentMeetingIndex, setCurrentMeetingIndex] = useState(0);
 
     const [ttParticipants, setTtParticipants] = useState([]);
@@ -58,9 +57,6 @@ export default function RoleResolutionPage({ params }) {
                     initial[item.id] = {
                         memberId: memberValue,
                         status: saved ? saved.status : 'completed',
-                        pathways: saved && saved.pathwaysProgress ? saved.pathwaysProgress : {
-                            pathwayName: '', level: '', projectName: '', speechTitle: ''
-                        },
                         substitutionFee: saved && saved.substitutionFee ? saved.substitutionFee : 0
                     };
                 });
@@ -70,34 +66,8 @@ export default function RoleResolutionPage({ params }) {
         loadData();
     }, [params.id]);
 
-    useEffect(() => {
-        const errors = [];
-        auctionItems.forEach(item => {
-            const assign = assignments[item.id];
-            if (!assign) return;
-            const isSpeaker = item.roleTemplateId === 'speaker' || item.title.toLowerCase().includes('speaker');
-            const isMember = assign.memberId && assign.memberId !== GUEST_EXTERNAL_KEY;
-            if (isSpeaker && isMember) {
-                const pw = assign.pathways || {};
-                const missingFields = [];
-                if (!pw.pathwayName) missingFields.push('Pathway Name');
-                if (!pw.level) missingFields.push('Level');
-                if (!pw.projectName) missingFields.push('Project');
-                if (!pw.speechTitle) missingFields.push('Title');
-                if (missingFields.length > 0) errors.push(`${item.title}: Missing ${missingFields.join(', ')}`);
-            }
-        });
-        setMissingDetails(errors);
-    }, [assignments, auctionItems]);
-
     const handleAssignmentChange = (itemId, field, value) => {
         setAssignments(prev => ({ ...prev, [itemId]: { ...prev[itemId], [field]: value } }));
-    };
-
-    const handlePathwaysChange = (itemId, field, value) => {
-        setAssignments(prev => ({
-            ...prev, [itemId]: { ...prev[itemId], pathways: { ...prev[itemId].pathways, [field]: value } }
-        }));
     };
 
     const handleFeeChange = (itemId, value) => {
@@ -137,12 +107,6 @@ export default function RoleResolutionPage({ params }) {
         return auctionItems.map(item => {
             const assignment = assignments[item.id];
             const isGuest = assignment.memberId === GUEST_EXTERNAL_KEY;
-            const isSpeaker = item.roleTemplateId === 'speaker' || item.title.toLowerCase().includes('speaker');
-
-            let pathwaysProgress = null;
-            if (isSpeaker && !isGuest && assignment.memberId) {
-                pathwaysProgress = assignment.pathways;
-            }
 
             let assigneeSquadronId = null;
             let assigneeSquadronName = '';
@@ -154,7 +118,7 @@ export default function RoleResolutionPage({ params }) {
                 }
             }
 
-            const base = {
+            return {
                 auctionItemId: item.id,
                 roleName: item.title,
                 winningSquadronId: item.winningSquadronId,
@@ -163,11 +127,8 @@ export default function RoleResolutionPage({ params }) {
                 memberId: isGuest ? null : assignment.memberId,
                 status: assignment.status,
                 fulfilledExternally: isGuest,
-                substitutionFee: parseInt(assignment.substitutionFee || 0),
-                pathwaysProgress: pathwaysProgress
+                substitutionFee: parseInt(assignment.substitutionFee || 0)
             };
-
-            return base;
         });
     };
 
@@ -187,7 +148,6 @@ export default function RoleResolutionPage({ params }) {
     };
 
     const handleCloseMeeting = async () => {
-        if (missingDetails.length > 0) return alert('Cannot close: Missing Speaker details.');
         if (!confirm('Award stars, Log to Sheets, and CLOSE?')) return;
 
         await fetch('/api/meetings/roles/save', {
@@ -216,7 +176,6 @@ export default function RoleResolutionPage({ params }) {
         return !item.title.toLowerCase().includes('speaker');
     };
 
-    // PATCH: Updated Rotation Warning Logic (Cooldown Only)
     const getRotationWarning = (item, memberId) => {
         const isSpeaker = item.roleTemplateId === 'speaker' || item.title.toLowerCase().includes('speaker');
         if (!isSpeaker || !memberId || memberId === GUEST_EXTERNAL_KEY) return null;
@@ -254,15 +213,6 @@ export default function RoleResolutionPage({ params }) {
                     <Link href="/admin/dashboard" className="text-gray-400 text-xs font-bold uppercase hover:text-white">Cancel</Link>
                 </div>
 
-                {missingDetails.length > 0 && (
-                    <div className="bg-red-500/10 border border-red-500/50 rounded-xl p-6 mb-8">
-                        <h3 className="text-red-500 font-bold uppercase tracking-widest text-sm mb-2">Required: Speaker Details</h3>
-                        <ul className="list-disc list-inside text-xs text-red-400/80 space-y-1">
-                            {missingDetails.map((err, i) => <li key={i}>{err}</li>)}
-                        </ul>
-                    </div>
-                )}
-
                 <div className="flex justify-between items-center mb-4 px-1">
                     <h3 className="text-[#fbbf24] font-bold text-lg uppercase tracking-wide">Table Topics</h3>
                     {!ttLocked ? (
@@ -283,7 +233,7 @@ export default function RoleResolutionPage({ params }) {
                 )}
 
                 <div className="glass-card rounded-2xl p-8 mb-8 mt-8">
-                    <h2 className="text-xl font-bold text-white uppercase tracking-wide mb-6">Assignments & Pathways</h2>
+                    <h2 className="text-xl font-bold text-white uppercase tracking-wide mb-6">Assignments</h2>
 
                     {auctionItems.map(item => {
                         const winningSquadron = squadrons.find(s => s.id === item.winningSquadronId);
@@ -292,7 +242,6 @@ export default function RoleResolutionPage({ params }) {
                         const isUnowned = !winningSquadron;
                         const isSpeaker = item.roleTemplateId === 'speaker' || item.title.toLowerCase().includes('speaker');
                         const currentMemberId = assignments[item.id]?.memberId;
-                        const isMemberSelected = currentMemberId && currentMemberId !== GUEST_EXTERNAL_KEY;
                         const availableMembers = getAvailableMembers(item.id, squadMembers);
                         const rotationWarning = getRotationWarning(item, currentMemberId);
 
@@ -344,18 +293,6 @@ export default function RoleResolutionPage({ params }) {
                                         <span className="text-gray-500 text-xs">Stars (from {winningSquadron.name} to {assignedMember.squadronName})</span>
                                     </div>
                                 )}
-
-                                {isSpeaker && isMemberSelected && (
-                                    <div className="bg-black/20 p-4 rounded-lg border border-white/5 mt-2">
-                                        <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3">Pathways Progress (Mandatory)</h4>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                            <input type="text" placeholder="Pathway Name" className="bg-black/40 border border-white/10 rounded px-3 py-2 text-white text-xs" value={assignments[item.id]?.pathways?.pathwayName || ''} onChange={(e) => handlePathwaysChange(item.id, 'pathwayName', e.target.value)} />
-                                            <input type="text" placeholder="Level" className="bg-black/40 border border-white/10 rounded px-3 py-2 text-white text-xs" value={assignments[item.id]?.pathways?.level || ''} onChange={(e) => handlePathwaysChange(item.id, 'level', e.target.value)} />
-                                            <input type="text" placeholder="Project Name" className="bg-black/40 border border-white/10 rounded px-3 py-2 text-white text-xs" value={assignments[item.id]?.pathways?.projectName || ''} onChange={(e) => handlePathwaysChange(item.id, 'projectName', e.target.value)} />
-                                            <input type="text" placeholder="Speech Title" className="bg-black/40 border border-white/10 rounded px-3 py-2 text-white text-xs" value={assignments[item.id]?.pathways?.speechTitle || ''} onChange={(e) => handlePathwaysChange(item.id, 'speechTitle', e.target.value)} />
-                                        </div>
-                                    </div>
-                                )}
                             </div>
                         );
                     })}
@@ -370,10 +307,9 @@ export default function RoleResolutionPage({ params }) {
                     {isAwardsDone && (
                         <button
                             onClick={handleCloseMeeting}
-                            disabled={missingDetails.length > 0}
-                            className="flex-1 py-4 bg-[#fbbf24] text-black font-black uppercase tracking-widest rounded-xl shadow-[0_0_20px_rgba(251,191,36,0.4)] disabled:opacity-50 disabled:grayscale transition-all"
+                            className="flex-1 py-4 bg-[#fbbf24] text-black font-black uppercase tracking-widest rounded-xl shadow-[0_0_20px_rgba(251,191,36,0.4)] transition-all"
                         >
-                            {missingDetails.length > 0 ? 'Pending Speaker Details...' : 'Finalize, Log & Close'}
+                            Finalize, Log & Close
                         </button>
                     )}
                 </div>
