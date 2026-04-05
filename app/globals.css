@@ -26,9 +26,9 @@
         color: var(--text-primary);
         /* Fixed Background with Vignette Overlay for focus */
         background:
-            radial-gradient(circle at center, transparent 0%, #0a0c10 100%),
+            radial-gradient(circle at center, transparent 0%, rgba(10, 12, 16, 0.5) 100%),
             linear-gradient(rgba(10, 12, 16, 0.4), rgba(10, 12, 16, 0.5)),
-            url('/images/hero-bg.jpg');
+            url('/images/newbge.jpeg');
         background-attachment: fixed;
         background-size: cover;
         background-position: center;
