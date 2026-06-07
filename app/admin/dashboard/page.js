@@ -110,6 +110,8 @@ export default function AdminDashboard() {
                     </div>
                     <div className="flex gap-4">
                         <Link href="/admin/auction" className="px-6 py-2 bg-white/10 text-white font-bold uppercase rounded-md hover:bg-white/20">Auction House</Link>
+                        {/* PHASE 5 PATCH: ADDED EXPEDITIONS LINK HERE */}
+                        <Link href="/admin/expeditions" className="px-6 py-2 bg-white/10 text-white font-bold uppercase rounded-md border border-[#fbbf24]/50 hover:bg-[#fbbf24]/20 transition-colors">Expeditions</Link>
                         <Link href="/admin/settings" className="px-6 py-2 bg-white/10 text-white font-bold uppercase rounded-md hover:bg-white/20">Settings</Link>
                         
                         <button 

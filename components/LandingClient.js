@@ -25,25 +25,22 @@ export default function LandingClient({ leaderboardData, memberData, upcomingMee
         }
 
         // 2. Fallback: Auction Result (Ownership)
-        // If not assigned yet, we show who BOUGHT it.
         if (item.winningSquadronId) {
             return { main: item.winnerName, sub: 'Squadron Right (Pending)' };
         }
 
         // 3. PATCH 4: Unsold / Open State
-        // Instead of hiding or generic text, clearly indicate availability
         return { main: 'Open Slot', sub: 'To Be Assigned' };
     };
 
     return (
         <div className="min-h-screen pt-[80px] pb-20">
-            {/* HERO & LEADERBOARD (Unchanged) */}
+            {/* HERO & LEADERBOARD */}
             <section className="w-full py-20 flex flex-col items-center justify-center text-center relative overflow-hidden">
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#fbbf24] opacity-5 blur-[120px] rounded-full pointer-events-none"></div>
                 <div className="relative z-10 px-6">
                     <div className="inline-flex items-center px-4 py-1.5 bg-[#fbbf24]/10 border border-[#fbbf24]/20 rounded-full mb-6 backdrop-blur-md">
                         <span className="w-2 h-2 bg-[#fbbf24] rounded-full mr-2 animate-pulse shadow-[0_0_10px_#fbbf24]"></span>
-                        {/* UPDATE DISPLAY: Dynamic Season Number */}
                         <span className="text-[#fbbf24] font-bold text-xs uppercase tracking-[0.2em]">
                             Season {seasonNumber} Live
                         </span>
@@ -72,12 +69,13 @@ export default function LandingClient({ leaderboardData, memberData, upcomingMee
                     </div>
                 </div>
                 <div className="glass-card rounded-2xl overflow-hidden p-1">
-                    {activeTab === 'squadron' && <LeaderboardTable squadrons={leaderboardData} />}
+                    {/* UPDATED: Passing memberData so the table can calculate counts live */}
+                    {activeTab === 'squadron' && <LeaderboardTable squadrons={leaderboardData} members={memberData} />}
                     {activeTab === 'individual' && <IndividualLeaderboard members={memberData} />}
                 </div>
             </section>
 
-            {/* NEXT MEETING PREVIEW - SIMPLIFIED */}
+            {/* NEXT MEETING PREVIEW */}
             <section className="max-w-4xl mx-auto px-6">
                 <div className="mb-8 text-center md:text-left">
                     <h2 className="text-3xl font-bold text-white uppercase tracking-wide flex items-center justify-center md:justify-start gap-3">
@@ -89,23 +87,17 @@ export default function LandingClient({ leaderboardData, memberData, upcomingMee
                 {upcomingMeeting ? (
                     <div className="glass-card rounded-2xl p-8 flex flex-col justify-center items-center text-center border-t-4 border-t-[#fbbf24]">
                         <h3 className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-2">Upcoming Session</h3>
-
-                        {/* PATCH 1: Time Display */}
                         <div className="text-4xl font-black text-white mb-2">
                             {new Date(upcomingMeeting.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                             {upcomingMeeting.time && <span className="block text-xl text-gray-400 mt-1">@ {upcomingMeeting.time}</span>}
                         </div>
-
                         <div className="px-3 py-1 bg-white/10 rounded text-xs font-bold uppercase text-[#fbbf24] mb-6">
                             {upcomingMeeting.type} Arena
                         </div>
-
                         <div className="w-full max-w-2xl border-t border-white/10 pt-6 mt-2">
                             <h4 className="text-[#fbbf24] font-bold uppercase text-sm mb-4">
                                 {upcomingMeeting.status === 'auction_finalized' ? 'Auction Results (Rights)' : 'Official Role Call'}
                             </h4>
-
-                            {/* PATCH 4: Iterate ALL items, do not filter by winner */}
                             {auctionData && auctionData.items.length > 0 ? (
                                 <div className="space-y-3">
                                     {auctionData.items.map((item, i) => {
