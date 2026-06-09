@@ -28,6 +28,7 @@ export default function ExpeditionsDashboard() {
     const [roleStatuses, setRoleStatuses] = useState({}); // { expeditionId: 'completed' | 'no-show' }
     const [bestPerformers, setBestPerformers] = useState([]); // Array of expeditionIds
     const [ttParticipants, setTtParticipants] = useState([]); 
+    const [bestTTSpeakerId, setBestTTSpeakerId] = useState(''); // NEW: Tracks Best TT Speaker
 
     useEffect(() => { fetchData(); }, []);
 
@@ -140,6 +141,7 @@ export default function ExpeditionsDashboard() {
             squadronId: activeGroup.squadronId,
             totalMembersCount: sqMembers.length,
             roleUpdates,
+            bestTTSpeakerId, // NEW: Include Best TT winner in payload
             attendanceData: { attended: attendees, late: lateMembers },
             ttData: {
                 participants: ttParticipants.map((memberId, index) => ({
@@ -165,6 +167,7 @@ export default function ExpeditionsDashboard() {
             setRoleStatuses({});
             setBestPerformers([]);
             setTtParticipants([]);
+            setBestTTSpeakerId(''); // Reset Best TT
             fetchData();
         } else {
             alert('Failed to finalize expedition.');
@@ -174,9 +177,20 @@ export default function ExpeditionsDashboard() {
     // Toggle Helpers
     const toggleAttendee = (id) => setAttendees(p => p.includes(id) ? p.filter(x => x !== id) : [...p, id]);
     const toggleLateMember = (id) => setLateMembers(p => p.includes(id) ? p.filter(x => x !== id) : [...p, id]);
-    const toggleTTParticipant = (id) => setTtParticipants(p => p.includes(id) ? p.filter(x => x !== id) : [...p, id]);
     const toggleBestPerformer = (expId) => setBestPerformers(p => p.includes(expId) ? p.filter(x => x !== expId) : [...p, expId]);
     
+    // Custom TT Participant Toggle with safety clear for Best TT
+    const toggleTTParticipant = (id) => {
+        setTtParticipants(p => {
+            if (p.includes(id)) {
+                if (bestTTSpeakerId === id) setBestTTSpeakerId(''); // Clear winner if they are deselected
+                return p.filter(x => x !== id);
+            } else {
+                return [...p, id];
+            }
+        });
+    };
+
     // UI Helpers
     const activeGroup = groupedExpeditions[selectedGroupKey];
     const debriefMembers = activeGroup ? members.filter(m => m.squadronId === activeGroup.squadronId) : [];
@@ -276,7 +290,7 @@ export default function ExpeditionsDashboard() {
                                 onChange={(e) => {
                                     setSelectedGroupKey(e.target.value);
                                     setAttendees([]); setLateMembers([]); setRoleStatuses({}); 
-                                    setBestPerformers([]); setTtParticipants([]);
+                                    setBestPerformers([]); setTtParticipants([]); setBestTTSpeakerId('');
                                 }} 
                                 className="w-full bg-black/40 border-white/10 rounded px-4 py-3 text-white mb-4 focus:outline-none focus:border-[#fbbf24]"
                             >
@@ -373,9 +387,9 @@ export default function ExpeditionsDashboard() {
                                     </div>
                                 </div>
 
-                                <div className="bg-white/5 p-4 rounded-lg border border-white/10">
+                                <div className="bg-white/5 p-4 rounded-lg border border-white/10 flex flex-col">
                                     <h3 className="text-sm font-bold text-white uppercase mb-3 border-b border-white/10 pb-2">2. External Table Topics / Activity</h3>
-                                    <div className="flex flex-wrap gap-2">
+                                    <div className="flex flex-wrap gap-2 mb-2">
                                         {debriefMembers.map(m => (
                                             <button
                                                 key={m.id}
@@ -386,7 +400,32 @@ export default function ExpeditionsDashboard() {
                                             </button>
                                         ))}
                                     </div>
-                                    <p className="text-[10px] text-gray-500 mt-2 uppercase">Select in the order they spoke to properly award Leader/Synergy points.</p>
+                                    <p className="text-[10px] text-gray-500 mt-1 uppercase mb-4">Select in the order they spoke to properly award Leader/Synergy points.</p>
+
+                                    {/* NEW: Best TT Dropdown */}
+                                    {ttParticipants.length > 0 && (
+                                        <div className="mt-auto pt-4 border-t border-white/10">
+                                            <label className="text-xs font-bold text-[#fbbf24] uppercase mb-2 block flex items-center gap-2">
+                                                <span className="w-1.5 h-1.5 bg-[#fbbf24] rounded-full"></span>
+                                                Award Best Table Topics
+                                            </label>
+                                            <select 
+                                                value={bestTTSpeakerId} 
+                                                onChange={(e) => setBestTTSpeakerId(e.target.value)} 
+                                                className="w-full bg-black/40 border-white/10 rounded px-3 py-2 text-white text-sm"
+                                            >
+                                                <option value="">None / Did Not Win</option>
+                                                {ttParticipants.map(participantId => {
+                                                    const participant = members.find(m => m.id === participantId);
+                                                    return (
+                                                        <option key={participantId} value={participantId}>
+                                                            🌟 Best TT: {participant?.name || 'Unknown'}
+                                                        </option>
+                                                    );
+                                                })}
+                                            </select>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <button onClick={handleFinalize} className="w-full bg-green-500 text-black font-black py-3 rounded uppercase hover:bg-green-400 shadow-lg transition-transform active:scale-95">

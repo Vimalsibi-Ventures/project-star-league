@@ -11,7 +11,17 @@ import {
 
 export async function POST(request) {
     try {
-        const { expeditionIds, clubName, squadronId, attendanceData, ttData, totalMembersCount, roleUpdates } = await request.json();
+        const { 
+            expeditionIds, 
+            clubName, 
+            squadronId, 
+            attendanceData, 
+            ttData, 
+            totalMembersCount, 
+            roleUpdates,
+            bestTTSpeakerId // Extracted from the updated frontend payload
+        } = await request.json();
+        
         const db = await getDb();
         const timestamp = new Date().toISOString();
 
@@ -27,6 +37,21 @@ export async function POST(request) {
             category: TRANSACTION_CATEGORY.AWARD, description: `Best Performer: ${r.roleName} at ${clubName}`,
             starsDelta: 5, timestamp, locked: true
         }));
+
+        // NEW: Process Best Table Topics Award
+        if (bestTTSpeakerId) {
+            awardTransactions.push({
+                id: uuidv4(),
+                meetingId: mockMeeting.id,
+                squadronId: squadronId,
+                memberId: bestTTSpeakerId,
+                category: TRANSACTION_CATEGORY.AWARD,
+                description: `Best Performer: Table Topics at ${clubName}`,
+                starsDelta: 5,
+                timestamp,
+                locked: true
+            });
+        }
 
         // 3. Scoring (Runs once per group)
         const allNewTransactions = [
@@ -49,6 +74,7 @@ export async function POST(request) {
         await saveDb(db);
         return NextResponse.json({ success: true });
     } catch (error) {
+        console.error('Error finalizing expedition:', error);
         return NextResponse.json({ error: 'Failed' }, { status: 500 });
     }
 }
