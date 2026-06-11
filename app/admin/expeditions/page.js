@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 // Standardized Toastmasters Roles for the dropdown
 const ROLE_OPTIONS = [
-    "Speaker", "Evaluator", "Toastmaster", "Table Topics Master",
+    "Attendee", "Speaker", "Evaluator", "Toastmaster", "Table Topics Master",
     "General Evaluator", "Timer", "Ah-Counter", "Grammarian"
 ];
 
@@ -28,7 +28,7 @@ export default function ExpeditionsDashboard() {
     const [roleStatuses, setRoleStatuses] = useState({}); // { expeditionId: 'completed' | 'no-show' }
     const [bestPerformers, setBestPerformers] = useState([]); // Array of expeditionIds
     const [ttParticipants, setTtParticipants] = useState([]); 
-    const [bestTTSpeakerId, setBestTTSpeakerId] = useState(''); // NEW: Tracks Best TT Speaker
+    const [bestTTSpeakerId, setBestTTSpeakerId] = useState(''); // Tracks Best TT Speaker
 
     useEffect(() => { fetchData(); }, []);
 
@@ -141,7 +141,7 @@ export default function ExpeditionsDashboard() {
             squadronId: activeGroup.squadronId,
             totalMembersCount: sqMembers.length,
             roleUpdates,
-            bestTTSpeakerId, // NEW: Include Best TT winner in payload
+            bestTTSpeakerId,
             attendanceData: { attended: attendees, late: lateMembers },
             ttData: {
                 participants: ttParticipants.map((memberId, index) => ({
@@ -167,7 +167,7 @@ export default function ExpeditionsDashboard() {
             setRoleStatuses({});
             setBestPerformers([]);
             setTtParticipants([]);
-            setBestTTSpeakerId(''); // Reset Best TT
+            setBestTTSpeakerId('');
             fetchData();
         } else {
             alert('Failed to finalize expedition.');
@@ -402,7 +402,7 @@ export default function ExpeditionsDashboard() {
                                     </div>
                                     <p className="text-[10px] text-gray-500 mt-1 uppercase mb-4">Select in the order they spoke to properly award Leader/Synergy points.</p>
 
-                                    {/* NEW: Best TT Dropdown */}
+                                    {/* Best TT Dropdown */}
                                     {ttParticipants.length > 0 && (
                                         <div className="mt-auto pt-4 border-t border-white/10">
                                             <label className="text-xs font-bold text-[#fbbf24] uppercase mb-2 block flex items-center gap-2">
