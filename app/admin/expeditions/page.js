@@ -23,6 +23,7 @@ export default function ExpeditionsDashboard() {
 
     // Form State: Debriefing
     const [selectedGroupKey, setSelectedGroupKey] = useState('');
+    const [expeditionType, setExpeditionType] = useState('offline');
     const [attendees, setAttendees] = useState([]);
     const [lateMembers, setLateMembers] = useState([]);
     const [roleStatuses, setRoleStatuses] = useState({}); // { expeditionId: 'completed' | 'no-show' }
@@ -63,6 +64,24 @@ export default function ExpeditionsDashboard() {
             fetchData();
         } else {
             alert('Failed to dispatch expedition.');
+        }
+    };
+
+    // NEW: Handle deleting/canceling an active deployment
+    const handleDeleteExpedition = async (id) => {
+        if (!confirm('Are you sure you want to cancel this deployment? Any dispatch fee will be refunded.')) return;
+        
+        const res = await fetch('/api/admin/expeditions', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id })
+        });
+        
+        if (res.ok) {
+            alert('Deployment cancelled and fees refunded.');
+            fetchData();
+        } else {
+            alert('Failed to cancel deployment.');
         }
     };
 
@@ -142,6 +161,7 @@ export default function ExpeditionsDashboard() {
             totalMembersCount: sqMembers.length,
             roleUpdates,
             bestTTSpeakerId,
+            expeditionType,
             attendanceData: { attended: attendees, late: lateMembers },
             ttData: {
                 participants: ttParticipants.map((memberId, index) => ({
@@ -168,6 +188,7 @@ export default function ExpeditionsDashboard() {
             setBestPerformers([]);
             setTtParticipants([]);
             setBestTTSpeakerId('');
+            setExpeditionType('offline');
             fetchData();
         } else {
             alert('Failed to finalize expedition.');
@@ -183,7 +204,7 @@ export default function ExpeditionsDashboard() {
     const toggleTTParticipant = (id) => {
         setTtParticipants(p => {
             if (p.includes(id)) {
-                if (bestTTSpeakerId === id) setBestTTSpeakerId(''); // Clear winner if they are deselected
+                if (bestTTSpeakerId === id) setBestTTSpeakerId(''); 
                 return p.filter(x => x !== id);
             } else {
                 return [...p, id];
@@ -257,9 +278,18 @@ export default function ExpeditionsDashboard() {
                                         <div key={exp.id} className="p-4 bg-white/5 border border-white/10 rounded-lg">
                                             <div className="flex justify-between items-start mb-2">
                                                 <h3 className="text-[#fbbf24] font-bold text-sm uppercase">{exp.clubName}</h3>
-                                                <span className="text-xs font-mono bg-black/50 px-2 py-1 rounded text-gray-300 border border-white/5">
-                                                    Cost: {exp.cost}★
-                                                </span>
+                                                <div className="flex items-center gap-3">
+                                                    <span className="text-xs font-mono bg-black/50 px-2 py-1 rounded text-gray-300 border border-white/5">
+                                                        Cost: {exp.cost}★
+                                                    </span>
+                                                    <button 
+                                                        onClick={() => handleDeleteExpedition(exp.id)}
+                                                        className="text-red-500 font-bold hover:text-red-400 bg-red-500/10 px-2 rounded transition-colors"
+                                                        title="Cancel Deployment"
+                                                    >
+                                                        ✕
+                                                    </button>
+                                                </div>
                                             </div>
                                             <p className="text-xs text-gray-400 mb-1">Role: <span className="text-white font-bold">{exp.roleName}</span></p>
                                             <p className="text-xs text-gray-400 mb-2">Agent: <span className="text-white">{mem ? mem.name : 'Unknown'}</span></p>
@@ -291,6 +321,7 @@ export default function ExpeditionsDashboard() {
                                     setSelectedGroupKey(e.target.value);
                                     setAttendees([]); setLateMembers([]); setRoleStatuses({}); 
                                     setBestPerformers([]); setTtParticipants([]); setBestTTSpeakerId('');
+                                    setExpeditionType('offline');
                                 }} 
                                 className="w-full bg-black/40 border-white/10 rounded px-4 py-3 text-white mb-4 focus:outline-none focus:border-[#fbbf24]"
                             >
@@ -319,15 +350,17 @@ export default function ExpeditionsDashboard() {
                                                     <option value="no-show">No-Show / Failed</option>
                                                 </select>
 
-                                                <label className="flex items-center gap-2 cursor-pointer bg-white/5 p-2 rounded border border-white/10 hover:border-[#fbbf24]/50 transition-colors">
-                                                    <input 
-                                                        type="checkbox" 
-                                                        checked={bestPerformers.includes(exp.id)} 
-                                                        onChange={() => toggleBestPerformer(exp.id)} 
-                                                        className="accent-[#fbbf24] w-4 h-4" 
-                                                    />
-                                                    <span className="text-xs font-bold text-[#fbbf24] uppercase tracking-wider">🌟 Best Performer</span>
-                                                </label>
+                                                {exp.roleName.toLowerCase() !== 'attendee' && (
+                                                    <label className="flex items-center gap-2 cursor-pointer bg-white/5 p-2 rounded border border-white/10 hover:border-[#fbbf24]/50 transition-colors">
+                                                        <input 
+                                                            type="checkbox" 
+                                                            checked={bestPerformers.includes(exp.id)} 
+                                                            onChange={() => toggleBestPerformer(exp.id)} 
+                                                            className="accent-[#fbbf24] w-4 h-4" 
+                                                        />
+                                                        <span className="text-xs font-bold text-[#fbbf24] uppercase tracking-wider">🌟 Best Performer</span>
+                                                    </label>
+                                                )}
                                             </div>
                                         );
                                     })}
@@ -361,6 +394,19 @@ export default function ExpeditionsDashboard() {
 
                         {activeGroup && (
                             <div className="col-span-2 space-y-6">
+
+                                <div className="bg-white/5 p-4 rounded-lg border border-[#fbbf24]/30">
+                                    <h3 className="text-sm font-bold text-[#fbbf24] uppercase mb-3 border-b border-white/10 pb-2">0. Arena Protocol</h3>
+                                    <select 
+                                        value={expeditionType} 
+                                        onChange={(e) => setExpeditionType(e.target.value)} 
+                                        className="w-full bg-black/40 border border-white/10 rounded px-4 py-2 text-white text-sm focus:outline-none focus:border-[#fbbf24]"
+                                    >
+                                        <option value="offline">Offline Expedition (10 Stars Presence)</option>
+                                        <option value="online">Online Expedition (5 Stars Presence)</option>
+                                    </select>
+                                </div>
+
                                 <div className="bg-white/5 p-4 rounded-lg border border-white/10">
                                     <h3 className="text-sm font-bold text-white uppercase mb-3 border-b border-white/10 pb-2">1. Squad Attendance Support</h3>
                                     <div className="space-y-2">
@@ -402,7 +448,6 @@ export default function ExpeditionsDashboard() {
                                     </div>
                                     <p className="text-[10px] text-gray-500 mt-1 uppercase mb-4">Select in the order they spoke to properly award Leader/Synergy points.</p>
 
-                                    {/* Best TT Dropdown */}
                                     {ttParticipants.length > 0 && (
                                         <div className="mt-auto pt-4 border-t border-white/10">
                                             <label className="text-xs font-bold text-[#fbbf24] uppercase mb-2 block flex items-center gap-2">

@@ -30,6 +30,7 @@ export async function POST(request) {
             createdAt: timestamp
         });
 
+        // Your custom logic: Deduct stars for the expedition dispatch fee
         if (Number(cost) > 0) {
             db.transactions.push({
                 id: uuidv4(),
@@ -48,5 +49,29 @@ export async function POST(request) {
         return NextResponse.json({ success: true });
     } catch (error) {
         return NextResponse.json({ error: 'Failed' }, { status: 500 });
+    }
+}
+
+// NEW: Delete handler to cancel an active deployment and refund the fee
+export async function DELETE(request) {
+    try {
+        const { id } = await request.json();
+        const db = await getDb();
+        
+        if (!db.expeditions) return NextResponse.json({ error: 'No expeditions found' }, { status: 404 });
+        
+        // 1. Remove the expedition from the active queue
+        db.expeditions = db.expeditions.filter(exp => exp.id !== id);
+        
+        // 2. Safely remove the dispatch fee transaction to refund the stars
+        if (db.transactions) {
+            db.transactions = db.transactions.filter(t => t.meetingId !== id);
+        }
+        
+        await saveDb(db);
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        console.error('Error deleting expedition:', error);
+        return NextResponse.json({ error: 'Failed to delete expedition' }, { status: 500 });
     }
 }

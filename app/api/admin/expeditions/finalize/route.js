@@ -19,14 +19,22 @@ export async function POST(request) {
             ttData, 
             totalMembersCount, 
             roleUpdates,
-            bestTTSpeakerId // Extracted from the updated frontend payload
+            bestTTSpeakerId,
+            expeditionType // Extracted from payload
         } = await request.json();
         
         const db = await getDb();
         const timestamp = new Date().toISOString();
 
         // 1. Mock Meeting (Using first ID as anchor)
-        const mockMeeting = { id: expeditionIds[0], type: 'offline', clubName, isExpedition: true, tableTopics: ttData || { participants: [] } };
+        // Passed expeditionType dynamically so the engine correctly awards 5 (online) or 10 (offline) stars
+        const mockMeeting = { 
+            id: expeditionIds[0], 
+            type: expeditionType || 'offline', 
+            clubName, 
+            isExpedition: true, 
+            tableTopics: ttData || { participants: [] } 
+        };
         const scoringInputs = { attendedMemberIds: attendanceData.attended || [], lateMemberIds: attendanceData.late || [], totalMembersCount, manualAdjustment: 0 };
 
         // 2. Map Roles & Awards
@@ -38,7 +46,7 @@ export async function POST(request) {
             starsDelta: 5, timestamp, locked: true
         }));
 
-        // NEW: Process Best Table Topics Award
+        // Process Best Table Topics Award
         if (bestTTSpeakerId) {
             awardTransactions.push({
                 id: uuidv4(),
