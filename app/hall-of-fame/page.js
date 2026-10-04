@@ -1,5 +1,6 @@
 import { getDb } from '@/lib/db';
 import Link from 'next/link';
+import LeagueCurrency from '@/components/LeagueCurrency';
 
 export const dynamic = 'force-dynamic';
 
@@ -73,7 +74,7 @@ export default async function HallOfFamePage() {
                                                     <span className={`font-bold ${i === 0 ? 'text-[#fbbf24]' : 'text-gray-300'}`}>
                                                         #{i + 1} {sq.name}
                                                     </span>
-                                                    <span className="font-mono text-gray-500">{sq.stars}★</span>
+                                                    <span className="font-mono text-gray-500">{sq.stars}<LeagueCurrency /></span>
                                                 </div>
                                             ))}
                                         </div>
@@ -85,7 +86,7 @@ export default async function HallOfFamePage() {
                                                     <span className={`font-bold ${i === 0 ? 'text-purple-400' : 'text-gray-300'}`}>
                                                         #{i + 1} {m.name}
                                                     </span>
-                                                    <span className="font-mono text-gray-500">{m.stars}★</span>
+                                                    <span className="font-mono text-gray-500">{m.stars}<LeagueCurrency /></span>
                                                 </div>
                                             ))}
                                         </div>

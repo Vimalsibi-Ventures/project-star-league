@@ -1,5 +1,6 @@
 import { getMembers, getSquadron, getMemberStars } from '@/lib/data';
 import Link from 'next/link';
+import LeagueCurrency from '@/components/LeagueCurrency';
 
 export default async function MembersPage() {
     const members = await getMembers();
@@ -60,7 +61,7 @@ export default async function MembersPage() {
                                         {member.squadronName}
                                     </td>
                                     <td className="px-8 py-6 whitespace-nowrap text-xl font-black text-[#f5f7fa]">
-                                        ★ {member.totalStars}
+                                        <LeagueCurrency /> {member.totalStars}
                                     </td>
                                 </tr>
                             ))}

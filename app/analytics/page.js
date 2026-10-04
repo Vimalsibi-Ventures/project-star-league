@@ -1,6 +1,7 @@
 import { getLeaderboards } from '@/lib/leaderboard';
 import { getTransactions, getMeetings } from '@/lib/data';
 import Link from 'next/link';
+import LeagueCurrency from '@/components/LeagueCurrency';
 
 export const dynamic = 'force-dynamic';
 
@@ -71,7 +72,7 @@ export default async function AnalyticsPage() {
 
                     <div className="glass-card p-6 rounded-2xl border-t-4 border-t-blue-500">
                         <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">Economy Size</h3>
-                        <div className="text-2xl font-black text-white mt-2">{totalStarsDistributed} ★</div>
+                        <div className="text-2xl font-black text-white mt-2">{totalStarsDistributed} <LeagueCurrency /></div>
                         <div className="text-blue-400 text-sm font-bold mt-1">Total Circulation</div>
                     </div>
                     <div className="glass-card p-6 rounded-2xl border-t-4 border-t-purple-500">
@@ -94,7 +95,7 @@ export default async function AnalyticsPage() {
                                         style={{ width: `${Math.min((sq.spent / 200) * 100, 100)}%` }} // Scaling factor
                                     ></div>
                                 </div>
-                                <div className="w-16 text-xs font-bold text-white">{sq.spent} ★</div>
+                                <div className="w-16 text-xs font-bold text-white">{sq.spent} <LeagueCurrency /></div>
                             </div>
                         ))}
                     </div>

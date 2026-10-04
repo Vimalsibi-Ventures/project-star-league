@@ -1,12 +1,29 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 export default function SettingsPage() {
     const router = useRouter();
     const [confirmText, setConfirmText] = useState('');
+    const [isSeasonalThemeEnabled, setIsSeasonalThemeEnabled] = useState(false);
+
+    useEffect(() => {
+        fetch('/api/admin/theme')
+            .then(res => res.json())
+            .then(data => setIsSeasonalThemeEnabled(data.isSeasonalThemeEnabled));
+    }, []);
+
+    const toggleTheme = async () => {
+        const newValue = !isSeasonalThemeEnabled;
+        setIsSeasonalThemeEnabled(newValue);
+        await fetch('/api/admin/theme', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ isSeasonalThemeEnabled: newValue })
+        });
+    };
 
     // PATCH: The True Logout Handler
     const handleLogout = async () => {
@@ -82,6 +99,22 @@ export default function SettingsPage() {
                 </div>
 
                 <div className="space-y-8">
+                    {/* UI Config Card */}
+                    <div className="glass-card p-8 rounded-2xl border-l-4 border-l-blue-500 flex justify-between items-center">
+                        <div>
+                            <h2 className="text-xl font-bold text-white uppercase mb-1">Seasonal Theme UI</h2>
+                            <p className="text-gray-400 text-sm">
+                                Enable the global season-specific override for the Rulebook and UI.
+                            </p>
+                        </div>
+                        <button 
+                            onClick={toggleTheme}
+                            className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${isSeasonalThemeEnabled ? 'bg-blue-500' : 'bg-gray-600'}`}
+                        >
+                            <span className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${isSeasonalThemeEnabled ? 'translate-x-7' : 'translate-x-1'}`} />
+                        </button>
+                    </div>
+
                     {/* Season Management Card */}
                     <div className="glass-card p-8 rounded-2xl border-l-4 border-l-[#fbbf24]">
                         <h2 className="text-xl font-bold text-white uppercase mb-4">Season Management</h2>

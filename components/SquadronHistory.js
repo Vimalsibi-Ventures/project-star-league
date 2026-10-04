@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import LeagueCurrency from '@/components/LeagueCurrency';
 
 export default function SquadronHistory({ transactions, meetings, members = [] }) {
     const [filter, setFilter] = useState('all');
@@ -76,7 +77,7 @@ export default function SquadronHistory({ transactions, meetings, members = [] }
                                             {agentName}
                                         </td>
                                         <td className={`px-6 py-5 text-base font-bold ${transaction.starsDelta >= 0 ? 'text-[#f5c518]' : 'text-[#ef4444]'}`}>
-                                            {transaction.starsDelta >= 0 ? '+' : ''}{transaction.starsDelta}★
+                                            {transaction.starsDelta >= 0 ? '+' : ''}{transaction.starsDelta}<LeagueCurrency />
                                         </td>
                                         <td className="px-6 py-5 text-sm text-[#b3b8c5]">
                                             {transaction.description}

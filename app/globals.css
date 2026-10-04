@@ -34,6 +34,18 @@
         background-position: center;
         min-height: 100vh;
     }
+    
+    /* SEASONAL THEME: ONE PIECE */
+    /* Background handled by Tailwind classes in layout.js */
+    body.theme-op h1,  
+    body.theme-op h2, 
+    body.theme-op h3, 
+    body.theme-op h4, 
+    body.theme-op h5, 
+    body.theme-op h6 {
+        font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+        font-weight: 900; /* font-black */
+    }
 }
 
 @layer components {

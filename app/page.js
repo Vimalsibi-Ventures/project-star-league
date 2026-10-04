@@ -1,6 +1,7 @@
 import { getSquadrons, getMembers, getMeetings, getAuctionByMeeting } from '@/lib/data';
 import { getDb } from '@/lib/db'; // Import DB access for Season info
 import LandingClient from '@/components/LandingClient';
+import SeasonalHomeHero from '@/components/seasonal/one-piece/SeasonalHomeHero';
 import { MEETING_STATUS } from '@/lib/constants';
 
 export const dynamic = 'force-dynamic';
@@ -64,14 +65,20 @@ export default async function HomePage() {
         meetingAssignments = upcomingMeeting.roleAssignments || [];
     }
 
+    const isSeasonal = db.isSeasonalThemeEnabled || false;
+
     return (
-        <LandingClient
-            leaderboardData={leaderboardData}
-            memberData={memberData}
-            upcomingMeeting={upcomingMeeting}
-            auctionData={auctionData}
-            meetingAssignments={meetingAssignments}
-            seasonNumber={currentSeason} // Pass Season Number to Client
-        />
+        <main>
+            {isSeasonal && <SeasonalHomeHero />}
+            <LandingClient
+                leaderboardData={leaderboardData}
+                memberData={memberData}
+                upcomingMeeting={upcomingMeeting}
+                auctionData={auctionData}
+                meetingAssignments={meetingAssignments}
+                seasonNumber={currentSeason}
+                isSeasonalThemeEnabled={isSeasonal}
+            />
+        </main>
     );
 }

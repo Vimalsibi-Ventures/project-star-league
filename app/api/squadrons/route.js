@@ -8,13 +8,16 @@ export async function GET() {
 }
 
 export async function POST(request) {
-    const { name } = await request.json();
+    const { name, logoUrl, faction } = await request.json();
     const db = await getDb();
 
     const newSquadron = {
         id: uuidv4(),
         name,
+        logoUrl: logoUrl || null,
+        faction: faction || 'unaligned',
         memberIds: [],
+        isActive: true,
         createdAt: new Date().toISOString()
     };
 
@@ -46,11 +49,28 @@ export async function DELETE(request) {
     }
 
     const db = await getDb();
-    db.squadrons = db.squadrons.filter(s => s.id !== id);
-    // Also remove members of this squadron
-    db.members = db.members.filter(m => m.squadronId !== id);
-    // Note: We keep transactions for audit logs, or you can delete them if preferred
+    
+    // Soft delete to preserve historical data
+    const squadron = db.squadrons.find(s => s.id === id);
+    if (squadron) {
+        squadron.isActive = false;
+    }
 
     await saveDb(db);
     return NextResponse.json({ success: true });
+}
+
+export async function PUT(request) {
+    const { id, name, logoUrl, faction } = await request.json();
+    const db = await getDb();
+
+    const squadron = db.squadrons.find(s => s.id === id);
+    if (squadron) {
+        if (name) squadron.name = name;
+        if (logoUrl !== undefined) squadron.logoUrl = logoUrl;
+        if (faction !== undefined) squadron.faction = faction;
+    }
+
+    await saveDb(db);
+    return NextResponse.json({ success: true, squadron });
 }

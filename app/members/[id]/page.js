@@ -2,6 +2,7 @@ import { getMembers, getSquadron, getMeetings } from '@/lib/data';
 import { getDb } from '@/lib/db'; 
 import Link from 'next/link';
 import SquadronHistory from '@/components/SquadronHistory';
+import LeagueCurrency from '@/components/LeagueCurrency';
 
 export default async function MemberDetailPage({ params }) {
     const members = await getMembers();
@@ -39,7 +40,7 @@ export default async function MemberDetailPage({ params }) {
                         </div>
                         <div className="flex items-center gap-4">
                             <span className="text-3xl font-bold text-[#fbbf24] drop-shadow-[0_0_15px_rgba(251,191,36,0.4)]">
-                                ★ {totalStars}
+                                <LeagueCurrency /> {totalStars}
                             </span>
                             <span className="text-sm font-bold text-gray-500 uppercase tracking-widest">Personal Contribution</span>
                         </div>

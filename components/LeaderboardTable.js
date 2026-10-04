@@ -2,8 +2,8 @@
 
 import { useRouter } from 'next/navigation';
 
-// Updated to accept 'members' prop
-export default function LeaderboardTable({ squadrons, members }) {
+// Updated to accept 'members' and 'isSeasonal' props
+export default function LeaderboardTable({ squadrons, members, isSeasonal }) {
     const router = useRouter();
 
     // 1. Sort by Stars (Descending)
@@ -23,27 +23,41 @@ export default function LeaderboardTable({ squadrons, members }) {
             <table className="w-full">
                 <thead>
                     <tr className="border-b border-white/5">
-                        <th className="px-6 py-5 text-left text-[11px] font-bold text-gray-500 uppercase tracking-[0.2em]">Rank</th>
-                        <th className="px-6 py-5 text-left text-[11px] font-bold text-gray-500 uppercase tracking-[0.2em]">Squadron</th>
-                        <th className="px-6 py-5 text-left text-[11px] font-bold text-gray-500 uppercase tracking-[0.2em]">Members</th>
-                        <th className="px-6 py-5 text-right text-[11px] font-bold text-gray-500 uppercase tracking-[0.2em]">Stars</th>
+                        <th className="px-6 py-5 text-left text-[11px] font-bold text-white uppercase tracking-[0.2em]">Rank</th>
+                        <th className="px-6 py-5 text-left text-[11px] font-bold text-white uppercase tracking-[0.2em]">Squadron</th>
+                        <th className="px-6 py-5 text-left text-[11px] font-bold text-white uppercase tracking-[0.2em]">Members</th>
+                        <th className="px-6 py-5 text-right text-[11px] font-bold text-white uppercase tracking-[0.2em]">Stars</th>
                     </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
-                    {rankedSquadrons.map((squadron) => {
+                    {rankedSquadrons.map((squadron, index) => {
                         const isRankOne = squadron.rank === 1;
                         
                         // DYNAMIC COUNT CALCULATION
                         const dynamicMemberCount = members.filter(m => m.squadronId === squadron.id).length;
 
+                        // FACTION STYLING LOGIC
+                        let rowClasses = `group cursor-pointer transition-all duration-300 ${isRankOne ? 'bg-gradient-to-r from-[#fbbf24]/10 to-transparent' : (index % 2 === 0 ? 'bg-white/5' : 'bg-transparent')} hover:bg-white/10`;
+                        let nameClasses = `font-bold text-base transition-colors ${isRankOne ? 'text-[#fbbf24]' : 'text-gray-100 group-hover:text-white'}`;
+                        let subText = isRankOne ? "Current Leader" : "";
+
+                        if (isSeasonal) {
+                            if (squadron.faction === 'pirate') {
+                                rowClasses += " backdrop-blur-md bg-amber-950/70 border-l-4 border-[#fbbf24]/50 shadow-2xl";
+                                nameClasses += " font-serif text-[#fbbf24] drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]";
+                                subText = isRankOne ? "Pirate King" : "Wanted Pirate Crew";
+                            } else if (squadron.faction === 'marine') {
+                                rowClasses += " backdrop-blur-md bg-blue-950/70 border-l-4 border-red-600/50 shadow-2xl";
+                                nameClasses += " font-serif text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]";
+                                subText = isRankOne ? "Fleet Admiral" : "Marine Base";
+                            }
+                        }
+
                         return (
                             <tr
                                 key={squadron.id}
                                 onClick={() => router.push(`/squadrons/${squadron.id}`)}
-                                className={`
-                                    group cursor-pointer transition-all duration-300
-                                    ${isRankOne ? 'bg-gradient-to-r from-[#fbbf24]/10 to-transparent' : 'hover:bg-white/[0.02]'}
-                                `}
+                                className={rowClasses}
                             >
                                 <td className="px-6 py-6">
                                     <div className={`
@@ -57,19 +71,19 @@ export default function LeaderboardTable({ squadrons, members }) {
                                 </td>
 
                                 <td className="px-6 py-6">
-                                    <div className={`font-bold text-base transition-colors ${isRankOne ? 'text-[#fbbf24]' : 'text-gray-200 group-hover:text-white'}`}>
+                                    <div className={nameClasses}>
                                         {squadron.name}
                                     </div>
-                                    {isRankOne && <div className="text-[10px] text-[#fbbf24] uppercase tracking-wider font-bold mt-1">Current Leader</div>}
+                                    {subText && <div className={`text-[10px] uppercase tracking-wider font-bold mt-1 ${isSeasonal && squadron.faction === 'marine' ? 'text-red-400' : 'text-[#fbbf24]'}`}>{subText}</div>}
                                 </td>
 
                                 {/* DYNAMIC COUNT DISPLAY */}
-                                <td className="px-6 py-6 text-sm text-gray-500 group-hover:text-gray-300">
+                                <td className="px-6 py-6 text-sm text-gray-100 group-hover:text-white">
                                     {dynamicMemberCount} Members
                                 </td>
 
                                 <td className="px-6 py-6 text-right">
-                                    <div className={`text-2xl font-black tracking-tight ${isRankOne ? 'text-[#fbbf24] drop-shadow-[0_0_10px_rgba(251,191,36,0.5)]' : 'text-white'}`}>
+                                    <div className={`text-2xl font-black tracking-tight ${isRankOne ? 'text-[#fbbf24] drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]' : 'text-gray-100 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]'}`}>
                                         {squadron.totalStars}
                                     </div>
                                 </td>

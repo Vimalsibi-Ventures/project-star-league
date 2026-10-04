@@ -5,7 +5,7 @@ import LeaderboardTable from '@/components/LeaderboardTable';
 import IndividualLeaderboard from '@/components/IndividualLeaderboard';
 
 // Accept seasonNumber prop
-export default function LandingClient({ leaderboardData, memberData, upcomingMeeting, auctionData, meetingAssignments, seasonNumber }) {
+export default function LandingClient({ leaderboardData, memberData, upcomingMeeting, auctionData, meetingAssignments, seasonNumber, isSeasonalThemeEnabled }) {
     const [activeTab, setActiveTab] = useState('squadron');
 
     const getSlotDisplay = (item) => {
@@ -34,27 +34,27 @@ export default function LandingClient({ leaderboardData, memberData, upcomingMee
     };
 
     return (
-        <div className="min-h-screen pt-[80px] pb-20">
+        <div className={`min-h-screen pb-20 ${isSeasonalThemeEnabled ? 'pt-0' : 'pt-[80px]'}`}>
             {/* HERO & LEADERBOARD */}
             <section className="w-full py-20 flex flex-col items-center justify-center text-center relative overflow-hidden">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#fbbf24] opacity-5 blur-[120px] rounded-full pointer-events-none"></div>
-                <div className="relative z-10 px-6">
-                    <div className="inline-flex items-center px-4 py-1.5 bg-[#fbbf24]/10 border border-[#fbbf24]/20 rounded-full mb-6 backdrop-blur-md">
-                        <span className="w-2 h-2 bg-[#fbbf24] rounded-full mr-2 animate-pulse shadow-[0_0_10px_#fbbf24]"></span>
-                        <span className="text-[#fbbf24] font-bold text-xs uppercase tracking-[0.2em]">
-                            Season {seasonNumber} Live
-                        </span>
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#fbbf24] opacity-5 blur-[120px] rounded-full pointer-events-none"></div>
+                    <div className="relative z-10 px-6">
+                        <div className="inline-flex items-center px-4 py-1.5 bg-[#fbbf24]/10 border border-[#fbbf24]/20 rounded-full mb-6 backdrop-blur-md">
+                            <span className="w-2 h-2 bg-[#fbbf24] rounded-full mr-2 animate-pulse shadow-[0_0_10px_#fbbf24]"></span>
+                            <span className="text-[#fbbf24] font-bold text-xs uppercase tracking-[0.2em]">
+                                Season {seasonNumber} Live
+                            </span>
+                        </div>
+                        <h1 className="text-6xl md:text-8xl font-black text-white mb-6 tracking-tighter uppercase drop-shadow-2xl">
+                            Oratio's <span className="text-gradient-gold">Star League</span>
+                        </h1>
+                        <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto font-light leading-relaxed">
+                            The ultimate competitive arena. Rise through the ranks, claim your stars, and dominate the leaderboard.
+                        </p>
                     </div>
-                    <h1 className="text-6xl md:text-8xl font-black text-white mb-6 tracking-tighter uppercase drop-shadow-2xl">
-                        Oratio's <span className="text-gradient-gold">Star League</span>
-                    </h1>
-                    <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto font-light leading-relaxed">
-                        The ultimate competitive arena. Rise through the ranks, claim your stars, and dominate the leaderboard.
-                    </p>
-                </div>
-            </section>
+                </section>
 
-            <section className="max-w-6xl mx-auto px-6 mb-24">
+            <section className="max-w-6xl mx-auto px-6 mb-24 mt-12">
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
                     <div>
                         <h2 className="text-3xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
@@ -70,8 +70,9 @@ export default function LandingClient({ leaderboardData, memberData, upcomingMee
                 </div>
                 <div className="glass-card rounded-2xl overflow-hidden p-1">
                     {/* UPDATED: Passing memberData so the table can calculate counts live */}
-                    {activeTab === 'squadron' && <LeaderboardTable squadrons={leaderboardData} members={memberData} />}
-                    {activeTab === 'individual' && <IndividualLeaderboard members={memberData} />}
+                    {/* UPDATED: Passing memberData so the table can calculate counts live */}
+                    {activeTab === 'squadron' && <LeaderboardTable squadrons={leaderboardData} members={memberData} isSeasonal={isSeasonalThemeEnabled} />}
+                    {activeTab === 'individual' && <IndividualLeaderboard members={memberData} squadrons={leaderboardData} isSeasonal={isSeasonalThemeEnabled} />}
                 </div>
             </section>
 

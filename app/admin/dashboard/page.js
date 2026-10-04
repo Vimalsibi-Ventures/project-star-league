@@ -11,6 +11,7 @@ export default function AdminDashboard() {
     const [members, setMembers] = useState([]);
     const [meetings, setMeetings] = useState([]);
     const [newSquadronName, setNewSquadronName] = useState('');
+    const [newSquadronLogo, setNewSquadronLogo] = useState(null);
     const [newMemberName, setNewMemberName] = useState('');
     const [newMemberSquadronId, setNewMemberSquadronId] = useState('');
 
@@ -29,8 +30,10 @@ export default function AdminDashboard() {
         const [sq, mem, mtg] = await Promise.all([
             fetch('/api/squadrons'), fetch('/api/members'), fetch('/api/meetings')
         ]);
-        setSquadrons(await sq.json());
-        setMembers(await mem.json());
+        const sqData = await sq.json();
+        const memData = await mem.json();
+        setSquadrons(sqData.filter(s => s.isActive !== false));
+        setMembers(memData.filter(m => m.isActive !== false));
         setMeetings(await mtg.json());
     };
 
@@ -39,8 +42,25 @@ export default function AdminDashboard() {
         window.location.href = '/'; 
     };
 
-    const handleCreateSquadron = async (e) => { e.preventDefault(); await fetch('/api/squadrons', { method: 'POST', body: JSON.stringify({ name: newSquadronName }) }); fetchData(); };
-    const handleCreateMember = async (e) => { e.preventDefault(); await fetch('/api/members', { method: 'POST', body: JSON.stringify({ name: newMemberName, squadronId: newMemberSquadronId }) }); fetchData(); };
+    const handleCreateSquadron = async (e) => { 
+        e.preventDefault(); 
+        
+        let logoUrl = null;
+        if (newSquadronLogo) {
+            const formData = new FormData();
+            formData.append('file', newSquadronLogo);
+            const uploadRes = await fetch('/api/upload', { method: 'POST', body: formData });
+            const uploadData = await uploadRes.json();
+            if (uploadData.success) logoUrl = uploadData.url;
+            else return alert('Upload failed: ' + uploadData.error);
+        }
+
+        await fetch('/api/squadrons', { method: 'POST', body: JSON.stringify({ name: newSquadronName, logoUrl }) }); 
+        setNewSquadronName('');
+        setNewSquadronLogo(null);
+        fetchData(); 
+    };
+    const handleCreateMember = async (e) => { e.preventDefault(); await fetch('/api/members', { method: 'POST', body: JSON.stringify({ name: newMemberName, squadronId: newMemberSquadronId }) }); setNewMemberName(''); fetchData(); };
 
     const handleCreateMeeting = async (e) => {
         e.preventDefault();
@@ -115,6 +135,9 @@ export default function AdminDashboard() {
                         
                         {/* NEW: House Management Portal */}
                         <Link href="/admin/house-management" className="px-6 py-2 bg-white/10 text-white font-bold uppercase rounded-md hover:bg-white/20 transition-colors">House Mgt</Link>
+                        
+                        {/* ROSTERS */}
+                        <Link href="/admin/rosters" className="px-6 py-2 bg-white/10 text-white font-bold uppercase rounded-md hover:bg-white/20 transition-colors">Rosters</Link>
                         
                         <Link href="/admin/settings" className="px-6 py-2 bg-white/10 text-white font-bold uppercase rounded-md hover:bg-white/20">Settings</Link>
                         
@@ -271,43 +294,7 @@ export default function AdminDashboard() {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                    <div className="glass-card rounded-2xl p-8">
-                        <h2 className="text-lg font-bold text-white uppercase tracking-wide mb-6">Squadrons</h2>
-                        <form onSubmit={handleCreateSquadron} className="flex gap-2 mb-6">
-                            <input type="text" value={newSquadronName} onChange={(e) => setNewSquadronName(e.target.value)} placeholder="New Squadron Name" className="flex-1 bg-black/40 border-white/10 rounded px-4 py-2 text-white" required />
-                            <button type="submit" className="bg-white/10 text-white font-bold px-4 py-2 rounded uppercase text-sm border border-white/20 hover:bg-white/20">Add</button>
-                        </form>
-                        <div className="space-y-2 max-h-60 overflow-y-auto pr-2">
-                            {squadrons.map(s => (
-                                <div key={s.id} className="flex justify-between items-center p-3 bg-white/5 rounded border border-white/5">
-                                    <span className="font-bold text-white">{s.name}</span>
-                                    <button onClick={() => handleDeleteSquadron(s.id)} className="text-red-400 text-[10px] font-bold uppercase hover:text-red-300">Delete</button>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="glass-card rounded-2xl p-8">
-                        <h2 className="text-lg font-bold text-white uppercase tracking-wide mb-6">Agents</h2>
-                        <form onSubmit={handleCreateMember} className="flex gap-2 mb-6">
-                            <input type="text" value={newMemberName} onChange={(e) => setNewMemberName(e.target.value)} placeholder="Agent Name" className="flex-1 bg-black/40 border-white/10 rounded px-4 py-2 text-white" required />
-                            <select value={newMemberSquadronId} onChange={(e) => setNewMemberSquadronId(e.target.value)} className="bg-black/40 border-white/10 rounded px-2 py-2 text-white w-32" required>
-                                <option value="">Squadron</option>
-                                {squadrons.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-                            </select>
-                            <button type="submit" className="bg-white/10 text-white font-bold px-4 py-2 rounded uppercase text-sm border border-white/20 hover:bg-white/20">Add</button>
-                        </form>
-                        <div className="space-y-2 max-h-60 overflow-y-auto pr-2">
-                            {members.map(m => (
-                                <div key={m.id} className="flex justify-between items-center p-3 bg-white/5 rounded border border-white/5">
-                                    <span className="text-gray-300 text-sm">{m.name}</span>
-                                    <button onClick={() => handleDeleteMember(m.id)} className="text-red-400 text-[10px] font-bold uppercase hover:text-red-300">Remove</button>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
+                {/* Agents & Squadrons moved to Rosters panel */}
 
                 <div className="border border-red-500/30 bg-red-500/5 rounded-xl p-6 flex justify-between items-center">
                     <div>
