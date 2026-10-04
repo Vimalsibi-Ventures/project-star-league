@@ -8,11 +8,15 @@ export default function SettingsPage() {
     const router = useRouter();
     const [confirmText, setConfirmText] = useState('');
     const [isSeasonalThemeEnabled, setIsSeasonalThemeEnabled] = useState(false);
+    const [currentSeasonIsland, setCurrentSeasonIsland] = useState(1);
 
     useEffect(() => {
         fetch('/api/admin/theme')
             .then(res => res.json())
-            .then(data => setIsSeasonalThemeEnabled(data.isSeasonalThemeEnabled));
+            .then(data => {
+                setIsSeasonalThemeEnabled(data.isSeasonalThemeEnabled);
+                setCurrentSeasonIsland(data.currentSeasonIsland || 1);
+            });
     }, []);
 
     const toggleTheme = async () => {
@@ -22,6 +26,16 @@ export default function SettingsPage() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ isSeasonalThemeEnabled: newValue })
+        });
+    };
+
+    const updateIsland = async (e) => {
+        const val = parseInt(e.target.value);
+        setCurrentSeasonIsland(val);
+        await fetch('/api/admin/island', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ currentSeasonIsland: val })
         });
     };
 
@@ -114,6 +128,24 @@ export default function SettingsPage() {
                             <span className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${isSeasonalThemeEnabled ? 'translate-x-7' : 'translate-x-1'}`} />
                         </button>
                     </div>
+
+                    {/* Seasonal Island Progress */}
+                    {isSeasonalThemeEnabled && (
+                        <div className="glass-card p-8 rounded-2xl border-l-4 border-l-[#fbbf24]">
+                            <h2 className="text-xl font-bold text-white uppercase mb-1">Grand Line Progress</h2>
+                            <p className="text-gray-400 text-sm mb-4">Set the current active island for the season tracker.</p>
+                            <select 
+                                value={currentSeasonIsland} 
+                                onChange={updateIsland}
+                                className="w-full bg-black/40 border border-[#fbbf24]/30 rounded px-4 py-3 text-white font-bold"
+                            >
+                                <option value={1}>Island 1: Alabasta</option>
+                                <option value={2}>Island 2: Skypiea</option>
+                                <option value={3}>Island 3: Water 7</option>
+                                <option value={4}>Island 4: Thriller Bark</option>
+                            </select>
+                        </div>
+                    )}
 
                     {/* Season Management Card */}
                     <div className="glass-card p-8 rounded-2xl border-l-4 border-l-[#fbbf24]">

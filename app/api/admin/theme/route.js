@@ -3,7 +3,11 @@ import { getDb, saveDb } from '@/lib/db';
 
 export async function GET() {
     const db = await getDb();
-    return NextResponse.json({ isSeasonalThemeEnabled: db.isSeasonalThemeEnabled || false });
+    const currentSeasonIsland = db.season?.currentSeasonIsland || 1;
+    return NextResponse.json({ 
+        isSeasonalThemeEnabled: db.isSeasonalThemeEnabled || false,
+        currentSeasonIsland
+    });
 }
 
 export async function POST(request) {

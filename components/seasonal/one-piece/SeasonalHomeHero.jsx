@@ -1,4 +1,13 @@
-export default function SeasonalHomeHero() {
+import React from 'react';
+
+export default function SeasonalHomeHero({ currentSeasonIsland = 1 }) {
+    const islands = [
+        { id: 1, name: 'Alabasta' },
+        { id: 2, name: 'Skypiea' },
+        { id: 3, name: 'Water 7' },
+        { id: 4, name: 'Thriller Bark' },
+    ];
+
     return (
         <section className="w-full pt-[120px] pb-16 flex flex-col items-center justify-center text-center relative overflow-hidden bg-slate-900/70 backdrop-blur-md border border-white/10 shadow-2xl">
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#fbbf24] opacity-10 blur-[150px] rounded-full pointer-events-none"></div>
@@ -20,25 +29,40 @@ export default function SeasonalHomeHero() {
                 </p>
 
                 <div className="flex justify-center items-center gap-4 text-xs font-bold uppercase tracking-widest text-gray-400">
-                    <div className="flex flex-col items-center">
-                        <span className="w-8 h-1 bg-[#fbbf24] mb-2 rounded-full"></span>
-                        <span>Alabasta</span>
-                    </div>
-                    <span className="text-[#fbbf24]/50">→</span>
-                    <div className="flex flex-col items-center opacity-50">
-                        <span className="w-8 h-1 bg-gray-600 mb-2 rounded-full"></span>
-                        <span>Skypiea</span>
-                    </div>
-                    <span className="text-gray-600">→</span>
-                    <div className="flex flex-col items-center opacity-50">
-                        <span className="w-8 h-1 bg-gray-600 mb-2 rounded-full"></span>
-                        <span>Water 7</span>
-                    </div>
-                    <span className="text-gray-600">→</span>
-                    <div className="flex flex-col items-center opacity-50">
-                        <span className="w-8 h-1 bg-gray-600 mb-2 rounded-full"></span>
-                        <span>Thriller Bark</span>
-                    </div>
+                    {islands.map((island, index) => {
+                        const isActive = island.id === currentSeasonIsland;
+                        const isPast = island.id < currentSeasonIsland;
+                        const isFuture = island.id > currentSeasonIsland;
+                        
+                        let islandColor = "text-white/40";
+                        let barColor = "bg-white/20";
+                        let opacityClass = "opacity-50";
+
+                        if (isActive) {
+                            islandColor = "text-[#fbbf24] drop-shadow-[0_0_10px_rgba(251,191,36,0.8)]";
+                            barColor = "bg-[#fbbf24] shadow-[0_0_10px_rgba(251,191,36,0.8)]";
+                            opacityClass = "opacity-100";
+                        } else if (isPast) {
+                            islandColor = "text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]";
+                            barColor = "bg-white shadow-[0_2px_2px_rgba(0,0,0,0.8)]";
+                            opacityClass = "opacity-100";
+                        }
+
+                        return (
+                            <React.Fragment key={island.id}>
+                                <div className={`flex flex-col items-center transition-all duration-300 ${opacityClass} ${islandColor}`}>
+                                    <span className={`w-8 h-1 mb-2 rounded-full ${barColor}`}></span>
+                                    <span className="flex items-center gap-1">
+                                        {isPast && <span className="text-[#fbbf24]">✓</span>}
+                                        {island.name}
+                                    </span>
+                                </div>
+                                {index < islands.length - 1 && (
+                                    <span className={island.id < currentSeasonIsland ? "text-[#fbbf24]/50" : "text-gray-600"}>→</span>
+                                )}
+                            </React.Fragment>
+                        );
+                    })}
                 </div>
             </div>
             
