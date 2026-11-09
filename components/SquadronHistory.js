@@ -51,8 +51,12 @@ export default function SquadronHistory({ transactions, meetings, members = [] }
                         ) : (
                             filteredTransactions.map((transaction, index) => {
                                 const meeting = meetings.find(m => m.id === transaction.meetingId);
-                                const member = members.find(m => m.id === transaction.memberId);
-                                const agentName = member ? member.name : (transaction.memberId ? 'Unknown Agent' : 'Squadron Level');
+                                const member = members.find(m => 
+                                    m.id === transaction.memberId || 
+                                    m.id === transaction.agent || 
+                                    (transaction.agent && m.name && m.name.toLowerCase() === transaction.agent.toLowerCase())
+                                );
+                                const agentName = member ? member.name : (transaction.agent || (transaction.memberId ? 'Unknown Agent' : 'Squadron Level'));
 
                                 return (
                                     <tr key={transaction.id} className={`hover:bg-[#1f2430]/80 transition-colors ${index % 2 === 0 ? 'bg-transparent' : 'bg-[#1a1e26]/30'

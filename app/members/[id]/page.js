@@ -20,7 +20,11 @@ export default async function MemberDetailPage({ params }) {
     
     // Fetch directly from DB for an exact individual filter
     const db = await getDb();
-    const memberTransactions = db.transactions.filter(t => t.memberId === params.id);
+    const memberTransactions = db.transactions.filter(t => 
+        t.memberId === params.id || 
+        t.agent === params.id || 
+        (t.agent && member.name && t.agent.toLowerCase() === member.name.toLowerCase())
+    );
     const totalStars = memberTransactions.reduce((sum, t) => sum + t.starsDelta, 0);
     
     const meetings = await getMeetings();

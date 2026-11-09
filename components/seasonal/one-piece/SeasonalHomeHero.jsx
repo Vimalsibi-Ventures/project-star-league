@@ -1,12 +1,14 @@
 import React from 'react';
 
-export default function SeasonalHomeHero({ currentSeasonIsland = 1 }) {
+export default function SeasonalHomeHero({ currentSeasonIsland = 1, meetingsCompleted = 0 }) {
     const islands = [
         { id: 1, name: 'Alabasta' },
         { id: 2, name: 'Skypiea' },
         { id: 3, name: 'Water 7' },
         { id: 4, name: 'Thriller Bark' },
     ];
+
+    const meetingsLeft = 10 - (Number(meetingsCompleted) || 0);
 
     return (
         <section className="w-full pt-[120px] pb-16 flex flex-col items-center justify-center text-center relative overflow-hidden bg-slate-900/70 backdrop-blur-md border border-white/10 shadow-2xl">
@@ -25,10 +27,22 @@ export default function SeasonalHomeHero({ currentSeasonIsland = 1 }) {
                 </h1>
                 
                 <p className="text-lg md:text-xl text-[#fbbf24] max-w-3xl mx-auto font-medium leading-relaxed mb-8 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
-                    The Grand Line Voyage has commenced. Sail the perilous waters, claim your bounties, and prepare for the ultimate showdown.
+                    {meetingsLeft > 0 ? (
+                        <>
+                            The Grand Line Voyage is nearing its end.{' '}
+                            <span className="font-black text-[#fbbf24] drop-shadow-[0_0_10px_rgba(251,191,36,0.8)]">
+                                {meetingsLeft}
+                            </span>{' '}
+                            meetings remain until the ultimate showdown at Marineford.
+                        </>
+                    ) : (
+                        <>
+                            The Paramount War has begun. The ultimate showdown at Marineford is here.
+                        </>
+                    )}
                 </p>
 
-                <div className="flex justify-center items-center gap-4 text-xs font-bold uppercase tracking-widest text-gray-400">
+                <div className="flex flex-wrap justify-center items-center gap-4 text-xs font-bold uppercase tracking-widest text-gray-400">
                     {islands.map((island, index) => {
                         const isActive = island.id === currentSeasonIsland;
                         const isPast = island.id < currentSeasonIsland;
@@ -63,6 +77,18 @@ export default function SeasonalHomeHero({ currentSeasonIsland = 1 }) {
                             </React.Fragment>
                         );
                     })}
+
+                    {currentSeasonIsland === 5 && (
+                        <>
+                            <span className="text-red-500/70">→</span>
+                            <div className="flex flex-col items-center transition-all duration-300 opacity-100">
+                                <span className="w-8 h-1 mb-2 rounded-full bg-red-500 shadow-[0_0_10px_rgba(220,38,38,0.8)] animate-pulse"></span>
+                                <span className="text-red-500 font-black animate-pulse drop-shadow-[0_0_8px_rgba(220,38,38,0.8)]">
+                                    PARAMOUNT WAR
+                                </span>
+                            </div>
+                        </>
+                    )}
                 </div>
             </div>
             

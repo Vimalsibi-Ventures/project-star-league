@@ -21,6 +21,8 @@ export default function IndividualLeaderboard({ members, squadrons, isSeasonal }
     });
 
     // Determine Top Pirates & Marines for titles
+    // Permanently locked titles (lockedSeasonTitle) take precedence over dynamic calculation.
+    const titlesLocked = rankedMembers.some(m => m.lockedSeasonTitle);
     let pirateCount = 0;
     let marineCount = 0;
     const rankedWithTitles = rankedMembers.map((member) => {
@@ -28,7 +30,19 @@ export default function IndividualLeaderboard({ members, squadrons, isSeasonal }
         let seasonalFaction = 'unaligned';
 
         if (isSeasonal) {
-            if (member.faction === 'pirate') {
+            if (member.lockedSeasonTitle) {
+                seasonalTitle = member.lockedSeasonTitle === 'Yonko' ? 'Yonko (Emperor)' : member.lockedSeasonTitle;
+                seasonalFaction = member.lockedSeasonTitle === 'Yonko' ? 'pirate' : 'marine';
+            } else if (titlesLocked) {
+                // Titles are locked: everyone else is a rank-and-file member of their faction
+                if (member.faction === 'pirate') {
+                    seasonalTitle = "Pirate";
+                    seasonalFaction = 'pirate';
+                } else if (member.faction === 'marine') {
+                    seasonalTitle = "Marine";
+                    seasonalFaction = 'marine';
+                }
+            } else if (member.faction === 'pirate') {
                 pirateCount++;
                 if (pirateCount <= 4) {
                     seasonalTitle = "Yonko (Emperor)";

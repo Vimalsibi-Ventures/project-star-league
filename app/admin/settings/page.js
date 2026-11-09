@@ -9,6 +9,7 @@ export default function SettingsPage() {
     const [confirmText, setConfirmText] = useState('');
     const [isSeasonalThemeEnabled, setIsSeasonalThemeEnabled] = useState(false);
     const [currentSeasonIsland, setCurrentSeasonIsland] = useState(1);
+    const [meetingsCompleted, setMeetingsCompleted] = useState(0);
 
     useEffect(() => {
         fetch('/api/admin/theme')
@@ -16,6 +17,7 @@ export default function SettingsPage() {
             .then(data => {
                 setIsSeasonalThemeEnabled(data.isSeasonalThemeEnabled);
                 setCurrentSeasonIsland(data.currentSeasonIsland || 1);
+                setMeetingsCompleted(data.meetingsCompleted ?? 0);
             });
     }, []);
 
@@ -30,13 +32,41 @@ export default function SettingsPage() {
     };
 
     const updateIsland = async (e) => {
-        const val = parseInt(e.target.value);
+        const val = parseInt(e.target.value, 10);
         setCurrentSeasonIsland(val);
         await fetch('/api/admin/island', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ currentSeasonIsland: val })
         });
+    };
+
+    const updateMeetingsCompleted = async (e) => {
+        const raw = e.target.value;
+        const val = raw === '' ? 0 : Math.max(0, parseInt(raw, 10) || 0);
+        setMeetingsCompleted(val);
+        await fetch('/api/admin/island', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ meetingsCompleted: val })
+        });
+    };
+
+    const handleLockTitles = async () => {
+        if (!confirm("⚠️ PERMANENT ACTION ⚠️\n\nThis will:\n1. Permanently lock Yonko / Admiral / Vice Admiral titles to the current top 4 Pirates and top 4 Marines\n2. Award +100 Stars to each of those members (and their squadrons)\n\nThis cannot be undone. Continue?")) return;
+
+        try {
+            const res = await fetch('/api/admin/lock-titles', { method: 'POST' });
+            const data = await res.json();
+            if (res.ok) {
+                alert(`Titles locked. ${data.bountiesAwarded} bounties disbursed.`);
+            } else {
+                alert(`Error: ${data.error || 'Failed to lock titles'}`);
+            }
+        } catch (e) {
+            console.error(e);
+            alert('Failed to connect.');
+        }
     };
 
     // PATCH: The True Logout Handler
@@ -131,19 +161,55 @@ export default function SettingsPage() {
 
                     {/* Seasonal Island Progress */}
                     {isSeasonalThemeEnabled && (
-                        <div className="glass-card p-8 rounded-2xl border-l-4 border-l-[#fbbf24]">
-                            <h2 className="text-xl font-bold text-white uppercase mb-1">Grand Line Progress</h2>
-                            <p className="text-gray-400 text-sm mb-4">Set the current active island for the season tracker.</p>
-                            <select 
-                                value={currentSeasonIsland} 
-                                onChange={updateIsland}
-                                className="w-full bg-black/40 border border-[#fbbf24]/30 rounded px-4 py-3 text-white font-bold"
+                        <div className="glass-card p-8 rounded-2xl border-l-4 border-l-[#fbbf24] space-y-6">
+                            <div>
+                                <h2 className="text-xl font-bold text-white uppercase mb-1">Grand Line Progress</h2>
+                                <p className="text-gray-400 text-sm mb-4">Set the current active island for the season tracker.</p>
+                                <select 
+                                    value={currentSeasonIsland} 
+                                    onChange={updateIsland}
+                                    className="w-full bg-black/40 border border-[#fbbf24]/30 rounded px-4 py-3 text-white font-bold"
+                                >
+                                    <option value={1}>Island 1: Alabasta</option>
+                                    <option value={2}>Island 2: Skypiea</option>
+                                    <option value={3}>Island 3: Water 7</option>
+                                    <option value={4}>Island 4: Thriller Bark</option>
+                                    <option value={5}>Island 5: Paramount War</option>
+                                </select>
+                            </div>
+
+                            <div className="border-t border-white/10 pt-6">
+                                <label className="text-sm font-bold text-white uppercase block mb-1">
+                                    Season Meetings Completed
+                                </label>
+                                <p className="text-gray-400 text-xs mb-3">
+                                    Track the number of completed meetings toward the 10-meeting Marineford showdown.
+                                </p>
+                                <input
+                                    type="number"
+                                    min={0}
+                                    max={10}
+                                    value={meetingsCompleted}
+                                    onChange={updateMeetingsCompleted}
+                                    className="w-full bg-black/40 border border-[#fbbf24]/30 rounded px-4 py-3 text-white font-bold"
+                                />
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Title Locking (Seasonal only) */}
+                    {isSeasonalThemeEnabled && (
+                        <div className="glass-card p-8 rounded-2xl border-l-4 border-l-red-600">
+                            <h2 className="text-xl font-bold text-white uppercase mb-2">Faction Titles</h2>
+                            <p className="text-gray-400 text-sm mb-6">
+                                After Meeting 6, permanently lock the top 4 Pirates as Yonko and the top 4 Marines as Admiral / Vice Admirals, and award each +100 Stars.
+                            </p>
+                            <button
+                                onClick={handleLockTitles}
+                                className="w-full py-4 bg-red-600 text-white font-black uppercase tracking-widest rounded-xl hover:bg-red-500 transition-all shadow-lg"
                             >
-                                <option value={1}>Island 1: Alabasta</option>
-                                <option value={2}>Island 2: Skypiea</option>
-                                <option value={3}>Island 3: Water 7</option>
-                                <option value={4}>Island 4: Thriller Bark</option>
-                            </select>
+                                Lock Faction Titles & Disburse Bounties (Post-Meet 6)
+                            </button>
                         </div>
                     )}
 

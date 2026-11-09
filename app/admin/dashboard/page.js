@@ -135,6 +135,9 @@ export default function AdminDashboard() {
                         
                         {/* NEW: House Management Portal */}
                         <Link href="/admin/house-management" className="px-6 py-2 bg-white/10 text-white font-bold uppercase rounded-md hover:bg-white/20 transition-colors">House Mgt</Link>
+
+                        {/* TRANSACTIONS LOG */}
+                        <Link href="/admin/transactions" className="px-6 py-2 bg-white/10 text-white font-bold uppercase rounded-md hover:bg-white/20 transition-colors">Transactions</Link>
                         
                         {/* ROSTERS */}
                         <Link href="/admin/rosters" className="px-6 py-2 bg-white/10 text-white font-bold uppercase rounded-md hover:bg-white/20 transition-colors">Rosters</Link>

@@ -18,6 +18,7 @@ export default async function HomePage() {
     // 1. Get Active Season Number
     const currentSeason = db.season ? db.season.seasonNumber : 1;
     const currentSeasonIsland = db.season?.currentSeasonIsland || 1;
+    const meetingsCompleted = db.meetingsCompleted ?? db.season?.meetingsCompleted ?? 0;
 
     // PATCH-A & PATCH-F: STRICT VISIBILITY LOGIC (Preserved)
     const upcomingMeeting = allMeetings
@@ -70,7 +71,7 @@ export default async function HomePage() {
 
     return (
         <main>
-            {isSeasonal && <SeasonalHomeHero currentSeasonIsland={currentSeasonIsland} />}
+            {isSeasonal && <SeasonalHomeHero currentSeasonIsland={currentSeasonIsland} meetingsCompleted={meetingsCompleted} />}
             <LandingClient
                 leaderboardData={leaderboardData}
                 memberData={memberData}

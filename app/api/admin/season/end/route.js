@@ -17,7 +17,11 @@ export async function POST(request) {
 
     const memberStats = db.members.map(m => {
         const stars = db.transactions
-            .filter(t => t.memberId === m.id)
+            .filter(t => 
+                t.memberId === m.id || 
+                t.agent === m.id || 
+                (t.agent && m.name && t.agent.toLowerCase() === m.name.toLowerCase())
+            )
             .reduce((acc, t) => acc + t.starsDelta, 0);
         return { ...m, totalStars: stars };
     }).sort((a, b) => b.totalStars - a.totalStars);
@@ -57,12 +61,15 @@ export async function POST(request) {
     }));
 
     // 5. Reset Member States
-    db.members = db.members.map(m => ({
-        ...m,
-        totalStars: 0,
-        lastSpeechMeetingIndex: -10, 
-        speechCooldownUntilMeetingIndex: 0
-    }));
+    db.members = db.members.map(m => {
+        const { lockedSeasonTitle, ...rest } = m;
+        return {
+            ...rest,
+            totalStars: 0,
+            lastSpeechMeetingIndex: -10, 
+            speechCooldownUntilMeetingIndex: 0
+        };
+    });
 
     // 6. Initialize New Season
     db.season = {

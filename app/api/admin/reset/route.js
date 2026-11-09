@@ -22,12 +22,15 @@ export async function POST(request) {
         db.auctions = [];
         db.transactions = [];
 
-        db.members = db.members.map(m => ({
-            ...m,
-            totalStars: 0,
-            lastSpeechMeetingIndex: -10, 
-            speechCooldownUntilMeetingIndex: 0
-        }));
+        db.members = db.members.map(m => {
+            const { lockedSeasonTitle, ...rest } = m;
+            return {
+                ...rest,
+                totalStars: 0,
+                lastSpeechMeetingIndex: -10, 
+                speechCooldownUntilMeetingIndex: 0
+            };
+        });
 
         db.squadrons = db.squadrons.map(sq => ({
             ...sq,
